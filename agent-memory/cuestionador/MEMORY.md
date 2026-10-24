@@ -1,0 +1,1 @@
+- [Fallas frecuentes al cuestionar](feedback_fallas_frecuentes.md) — defaults de servidor, banderas duplicadas, rutas hermanas sin parchear, estado no persistido, pruebas que describen.

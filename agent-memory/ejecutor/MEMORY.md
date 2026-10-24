@@ -1,0 +1,2 @@
+- [Python y saltos de línea en Windows](feedback_windows_line_endings_python.md) — python open() mete CRLF; usar newline='' o Edit/Write y verificar con `file`.
+- [Trampas del SDK NEGOCIO (VB)](negocio-vb-sdk-trampas.md) — build/pack, trigger de auditoria cuadratico, TBitacoraSQL, transacciones, como probar contra Docker.
