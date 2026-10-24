@@ -1,0 +1,79 @@
+{
+  "cliente": "dospinos",
+  "nombre": "Dos Pinos",
+  "carpeta": "DP",
+  "repos": {
+    "ldcom": "LDCOM13_DOS_PINOS",
+    "int": "LDCOM13_INTEGRATIONS",
+    "seg": "LDCOM13_SEGURIDAD_DOS_PINOS"
+  },
+  "worktreesDir": "worktrees",
+  "iis": {
+    "site": "Default Web Site",
+    "root": "C:\\inetpub\\wwwroot\\dp",
+    "urlBase": "http://localhost/dp",
+    "appsWcf": [ "ServiciosWCF", "SERVICIOSWCF_LINQ" ]
+  },
+  "slots": {
+    "principal":    { "repo": "ldcom", "worktree": "LDCOM13_DOS_PINOS",             "ambiente": "dev", "reportPath": "/LDCOM13_DP_PRUEBA", "dockerServer": "{PC},1433" },
+    "develop":      { "repo": "ldcom", "worktree": "worktrees\\dp-develop",         "ambiente": "dev" },
+    "release":      { "repo": "ldcom", "worktree": "worktrees\\dp-release",         "ambiente": "docker" },
+    "integrations": { "repo": "int",   "worktree": "LDCOM13_INTEGRATIONS",          "ambiente": "dev" },
+    "seguridad":    { "repo": "seg",   "worktree": "LDCOM13_SEGURIDAD_DOS_PINOS",   "ambiente": "docker", "reportPath": "/LDCOM13_DP_PRUEBA", "dockerServer": "{PC},1433" },
+    "otros":        { "repo": "ldcom", "worktree": null,                            "ambiente": "dev" },
+    "interfaces":   { "repo": "ldcom", "worktree": "worktrees\\1928-interfaces",    "ambiente": "docker-develop" }
+  },
+  "ambientes": {
+    "dev": {
+      "pwDe": "172.177.16.230",
+      "server": "172.177.16.230",
+      "db": "LDCOM13_CR_DOS_PINOS",
+      "dbIntegrations": "LDCOM13_CR_DOS_PINOS_INTEGRATIONS",
+      "integrationStage": "DEV",
+      "fe": { "server": "DEV-SQL\\mssql2017", "db": "LD_FACTURAELECTRONICA_44", "pwDe": "DEV-SQL" },
+      "preventa": { "emp": 1, "suc": 3, "caja": 2, "tipoFactura": "TICKET", "tipoProforma": "MACHOTE", "tipoComprobante": "DETALLADO" },
+      "posLocal": null
+    },
+    "docker": {
+      "pwDe": "TESTINGSQL",
+      "server": "localhost,1433",
+      "db": "LDCOM_DOS_PINOS_STAGING_DOCKER",
+      "dbIntegrations": "LDCOM_DOS_PINOS_INTEGRATIONS_STAGING_DOCKER",
+      "integrationStage": "TESTING",
+      "fe": { "server": "localhost,1433", "db": "LDCOM_LD11_FE_DOCKER", "pwDe": "TESTINGSQL" },
+      "adminFiles": "http://localhost/dp/SERV_ADMIN_FILES/wsUpload.asmx",
+      "preventa": { "emp": 1, "suc": 19, "caja": 3, "tipoFactura": "TICKET", "tipoProforma": "MACHOTE", "tipoComprobante": "DETALLADO" },
+      "posLocal": null
+    },
+    "docker-develop": {
+      "pwDe": "TESTINGSQL",
+      "server": "localhost,1433",
+      "db": "LDCOM_DOS_PINOS_DEVELOP_DOCKER",
+      "dbIntegrations": "LDCOM_DOS_PINOS_INTEGRATIONS_DEVELOP_DOCKER",
+      "integrationStage": "TESTING",
+      "fe": { "server": "localhost,1433", "db": "LDCOM_LD11_FE_DOCKER", "pwDe": "TESTINGSQL" },
+      "adminFiles": "http://localhost/dp/SERV_ADMIN_FILES/wsUpload.asmx",
+      "preventa": { "emp": 1, "suc": 19, "caja": 3, "tipoFactura": "TICKET", "tipoProforma": "MACHOTE", "tipoComprobante": "DETALLADO" },
+      "posLocal": null
+    },
+    "testing": {
+      "pwDe": "TESTINGSQL",
+      "server": "TESTINGSQL\\SQL2022",
+      "db": "LDCOM_DOS_PINOS_STAGING",
+      "dbIntegrations": "LDCOM_DOS_PINOS_INTEGRATIONS_STAGING",
+      "integrationStage": "TESTING",
+      "fe": { "server": "testingsql", "db": "LDCOM_LD11_FE", "pwDe": "TESTINGSQL" },
+      "posLocal": null
+    }
+  },
+  "reportes": {
+    "ldcom": {
+      "servidor": "http://dev-sql/ReportServer",
+      "carpetaDev": "/LDCOM13_DP",
+      "carpetaPrueba": "/LDCOM13_DP_PRUEBA",
+      "carpetaRdl": "NEGOCIO\\ReportingService",
+      "scriptSubida": "pipelines\\scripts\\releases\\deploy-reports.ps1",
+      "webConfigServidor": "INTERFACE\\ADMIN_LDCOM\\ADMIN_LDCOM\\Web.config"
+    }
+  }
+}
