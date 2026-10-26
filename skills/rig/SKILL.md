@@ -19,10 +19,10 @@ es seguro. `dp` es el nombre viejo y sigue funcionando.
 
 ## Configurar una PC nueva ("ayúdame a configurar rig")
 
-1. ¿Tiene rig? `Get-Command rig`. Si no: que clone el repo de rig y corra `powershell -File .\rig.ps1 setup` en esa
+1. ¿Tiene rig? `Get-Command rig`. Si no: que clone https://dev.azure.com/LD-Vacas/AV%20Retail%20Dos%20Pinos/_git/ldcom.rig (en la carpeta que quiera) y corra `powershell -File .\rig.ps1 setup` en esa
    carpeta, y abra una terminal nueva.
-2. `rig setup -Plan`: muéstrale qué falta. Él corre `rig setup` (instala con winget tras mostrar la lista, pregunta
-   su carpeta de proyectos y ubica o clona neuron-ld).
+2. `rig setup -Plan`: muéstrale qué falta. Él corre `rig setup` (instala con winget tras mostrar la lista y pregunta
+   su carpeta de proyectos).
 3. En la carpeta del cliente (`C:\FUENTES\DP` para Dos Pinos, o la suya): `rig init -Plan` para ver qué detecta;
    luego él corre `rig init`.
 4. IIS: si usa los slots estándar, `rig setup-iis` (administrador). Si ya publica en su propio IIS, va en `iis`
@@ -43,7 +43,7 @@ es seguro. `dp` es el nombre viejo y sigue funcionando.
 
 ## Configuración en tres capas
 
-rig (genérico) ← `neuron-ld/clientes/<cliente>/rig.json` (igual para todo el equipo) ← `config.local.json` en
+rig (genérico) ← `clientes/<cliente>/rig.json` (viene con rig; el de neuron-ld gana si existe) ← `config.local.json` en
 `%LOCALAPPDATA%\dp-tools\` (solo de esa PC: rutas, IIS, impresora, base local del POS). El cliente sale de la
 carpeta actual. Un cliente sin perfil: `rig init <cliente>` lo crea desde una plantilla y se sube a neuron-ld por PR.
 
