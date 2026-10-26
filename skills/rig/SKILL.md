@@ -34,7 +34,7 @@ es seguro. `dp` es el nombre viejo y sigue funcionando.
 
 ## Día a día
 
-- Cambió NEGOCIO → `rig publicar` antes de `rig pos` (el POS usa los WCF publicados, no lo compilado).
+- Cambió NEGOCIO → `rig publish` antes de `rig pos` (el POS usa los WCF publicados, no lo compilado). Se puede elegir: `rig publish wcf` (ServiciosWCF y WS Express), `rig publish linq` (solo WS Express), `rig publish admin`.
 - Solo cambió Facturación → `rig pos -SoloFacturacion -Reiniciar`. Preventa → `-Preventa`.
 - Cambió JS/CSS del Admin → `rig admin -ConAssets`.
 - Se apagó la PC → `rig docker`.
