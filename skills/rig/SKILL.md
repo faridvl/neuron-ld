@@ -19,8 +19,9 @@ es seguro. `dp` es el nombre viejo y sigue funcionando.
 
 ## Configurar una PC nueva ("ayúdame a configurar rig")
 
-1. ¿Tiene rig? `Get-Command rig`. Si no: que clone https://dev.azure.com/LD-Vacas/AV%20Retail%20Dos%20Pinos/_git/ldcom.rig (en la carpeta que quiera) y corra `powershell -File .\rig.ps1 setup` en esa
-   carpeta, y abra una terminal nueva.
+1. ¿Tiene rig? `Get-Command rig`. Si no, que pegue en PowerShell (cambiando `$carpeta` si lo quiere en otro lado):
+   `$carpeta = "$HOME\rig"; git clone https://dev.azure.com/LD-Vacas/AV%20Retail%20Dos%20Pinos/_git/ldcom.rig $carpeta; powershell -ExecutionPolicy Bypass -File "$carpeta\rig.ps1" setup`
+   y abra una terminal nueva.
 2. `rig setup -Plan`: muéstrale qué falta. Él corre `rig setup` (instala con winget tras mostrar la lista y pregunta
    su carpeta de proyectos).
 3. En la carpeta del cliente (`C:\FUENTES\DP` para Dos Pinos, o la suya): `rig init -Plan` para ver qué detecta;
