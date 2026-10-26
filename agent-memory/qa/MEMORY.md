@@ -1,0 +1,1 @@
+- [Trampas de entorno QA](reference-trampas-entorno-qa.md) — heredocs de Bash que rompen comillas/backslashes, Docker SQL, reseed dinamico, API en copia, cola con servidor falso

@@ -1,2 +1,10 @@
 - [Python y saltos de línea en Windows](feedback_windows_line_endings_python.md) — python open() mete CRLF; usar newline='' o Edit/Write y verificar con `file`.
 - [Trampas del SDK NEGOCIO (VB)](negocio-vb-sdk-trampas.md) — build/pack, trigger de auditoria cuadratico, TBitacoraSQL, transacciones, como probar contra Docker.
+- [testhost bloquea bin: usar --artifacts-path](dotnet-testhost-bloquea-bin-artifacts-path.md) — no matar procesos ajenos; build/test con artifacts-path; Write para archivos grandes.
+- [Limpieza con rangos exactos](feedback_limpieza_rangos_exactos.md) — no borrar por >= N en el Docker real (borre 13k relaciones); BETWEEN + COUNT antes; sqlcmd QUOTED_IDENTIFIER.
+- [Heredoc grande falla en Bash: usar Write](bash-heredoc-grande-falla-usar-write.md) — scripts largos con comillas/acentos: Write + python <ruta>; conservar CRLF/BOM.
+- [API con planificador y trampas de sqlcmd](api-con-planificador-y-sqlcmd-trampas.md) — el arranque del API corre jobs contra Docker; desactivar hosted services en la copia; -I/-f/-Q en sqlcmd.
+- [Trampas E2E del API de colas contra Docker](e2e-docker-api-colas-trampas.md) — respaldo SQL ZZ_, biseccion, jrows con cp1252, backslashes en heredoc, endpoints manuales sin validacion.
+- [paridad-clientes contador/control residuo](paridad-clientes-contador-control-residuo.md) — paridad del Admin gasta Contador_Cadena_Control: devolverlo con borrado contado o la siguiente corrida falla.
+- [Simulador CIH: trampas bcp y formato](simulador-cih-trampas-bcp-formato.md) — bcp sin -u, UTF-16 con terminadores largos, CIH omite nulos, pools con marcas internas.
+- [migrate no interactivo y trampas de cabecera](migrate-no-interactivo-y-comentario-cron.md) — push --force; '*/' cierra el comentario; Fallida = renombrar carpeta; sqlcmd :r con ruta relativa.

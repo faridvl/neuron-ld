@@ -1,0 +1,1 @@
+- [Revisar corridas previas antes de planificar](feedback-revisar-corridas-previas.md) — encargos largos: comparar con avances y fechas; tandas cortas; ante pausa, nada más

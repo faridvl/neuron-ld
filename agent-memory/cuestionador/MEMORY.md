@@ -1,1 +1,2 @@
-- [Fallas frecuentes al cuestionar](feedback_fallas_frecuentes.md) — defaults de servidor, banderas duplicadas, rutas hermanas sin parchear, estado no persistido, pruebas que describen.
+- [Fallas frecuentes al cuestionar](feedback_fallas_frecuentes.md) — defaults de servidor, banderas duplicadas, rutas hermanas sin parchear, estado no persistido, pruebas que describen; colas destructivas, reproceso vs reintentos, job en serie, higiene de sandbox.
+- [E2E CIH->LDCOM: resultado del cuestionador](project_e2e_cih_ldcom_avance.md) — hallazgos B-170+, sandbox restaurado, limites del hook (sin `<`/`>` en Bash).
