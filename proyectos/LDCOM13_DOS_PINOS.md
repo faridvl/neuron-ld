@@ -29,6 +29,7 @@ VB.NET (lógica de negocio, POS WinForms) y C# (.NET Framework 4.7.2, Admin ASP.
 - Camino en línea (WCF) vs local (BD local del POS y su sincronización).
 - El POS usa los WCF **publicados** en IIS, no lo compilado: si cambió NEGOCIO, `rig publicar`.
 - Migraciones y SPs (bases compartidas solo lectura), `.rdl` (credenciales), Web.config del Admin.
+- Ticket_Encabezado/Factura_Encabezado, `PV_Cerrar_Caja` y la sincronización local→servidor: columna nueva = revisar los SPs que copian el encabezado. Guía para los POS-xx de Dos Pinos: `aprendizajes/integrar-endpoint-pos-dos-pinos.md`.
 
 ## Relacionados
 LDCOM13_SEGURIDAD_DOS_PINOS (seguridad), LDCOM13_INTEGRATIONS (integraciones), DatabaseMigration (`migrate`).

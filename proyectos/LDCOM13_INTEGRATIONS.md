@@ -21,7 +21,7 @@ Worktrees de trabajo hermanos: `LDCOM13_INTEGRATIONS-<tema>` (por ejemplo `-cola
 - **Postman_LDCOM13_DOSPINOS**: colección Bruno (YAML Open Collection) con ejemplos reales de las APIs y colas.
   Cada endpoint LD-01…LD-10 que cambia se documenta en tres lugares: Swagger, Postman y Confluence
   (skill `documentar-endpoint-integraciones`).
-- LDCOM13_DOS_PINOS: el Admin configura las integraciones; se comunica por SDK/Runner por proceso, nunca HTTP.
+- LDCOM13_DOS_PINOS: el Admin configura las integraciones; se comunica por SDK/Runner por proceso, nunca HTTP. El POS llega por el WCF, que necesita su propio IntegrationStage/Tenant (guía: `aprendizajes/integrar-endpoint-pos-dos-pinos.md`).
 
 ## Riesgos
 - Existencia de maestros: clientes, materiales y proveedores se buscan en LDCOM por código SAP sin ceros;
