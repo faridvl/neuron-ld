@@ -1,0 +1,2560 @@
+Informe de Automatización QA
+61. Objetivo 
+Documentar la cobertura de pruebas automatizadas implementada: las validaciones de reglas de negocio a nivel de servicios WCF/API, las pruebas HTTP y de interfaz de Site Admin con Playwright, y las pruebas de interfaz de escritorio de LDCOM Facturación y LDCOM Preventa con FlaUI.
+La automatización busca cubrir los principales flujos y reglas de negocio, detectar regresiones durante el desarrollo y mantener evidencia automatizada de los defectos identificados, separando los bugs conocidos de la regresión estable para que no oculten fallos nuevos.
+La cobertura se distribuye en tres suites:
+WCF/API: reglas de negocio, cálculos, persistencia, validaciones y comportamiento de los servicios.
+
+Playwright: validaciones HTTP y recorridos sobre Site Admin: smoke, CRUD y regresión.
+
+UI de escritorio (FlaUI): flujos reales de LDCOM Facturación y Preventa sobre el ejecutable
+
+2. Alcance
+La automatización contempla funcionalidades relacionadas con:
+Venta Cruzada / Artículos Sugeridos
+
+Dinámicas Comerciales (sorteos, bonificaciones, combos, descuento escalonado)
+
+Entradas y Salidas de Caja
+
+Formas de Pago
+
+Manejo de Fletes
+
+Tipo Cliente y Tarifa Reducida
+
+Ajustes de Precios
+
+Seguridad (auditoría)
+
+Facturación (contado, devolución y anulación, pagos con transferencia, autoconsumo, regalía, autogestión, receta y serie, reimpresión)
+
+Preventa (pantalla de pago, guardado, formas de pago, bloqueo de edición por tipo)
+
+Granel, mantenimiento de Tipos de Preventa
+
+3. Ambiente y herramientas
+Ambiente principal: Testing (Testing-IIS)
+Suite
+ | Tecnología
+ | Qué cubre
+ | Pendiente de merge (rama de trabajo)
+ | 
+WCF/API
+ | MSTest, .NET Framework 4.7.2 (VB)
+ | Contratos y reglas de negocio vía WCF; consultas de solo lectura a BD
+ | +13: Granel 6, Reporte Descuentos Manuales 3, Tarifa Reducida por cliente 4. Total 108
+ | 
+Playwright
+ | TypeScript
+ | HTTP y UI de Site Admin: smoke, CRUD y regresión
+ | +5: CRUD de Tipo de Preventa 4 y regresión de eliminación con permisos 1. Total 35
+ | 
+UI de escritorio
+ | FlaUI.UIA2, MSTest 4.0.2, net8.0-windows
+ | LDCOM Facturación y Preventa (WinForms) sobre el ejecutable real
+ | +15 (clases nuevas de pago con transferencia, guardado y pantalla de pago de Preventa, tarifa reducida, y ampliaciones). Total 35
+ | 
+Unitarias del producto
+ | NUnit / MSTest en cada solución
+ | Lógica de negocio sin base de datos: Facturación, Site Admin, Inventario, Catálogos, Reportes y Facturación Electrónica
+ |  | 
+Pruebas unitarias
+Proyecto
+ | Qué prueban
+ | Pruebas
+ | Resultado
+ | 
+ADMIN_LDCOMTests (Site Admin)
+ | Mapeo de datos a modelos: Bonificaciones de Venta, Exoneración de Cliente, Tipo de Cliente y Artículo Sugerido 
+ | 35
+ | ✅ 35 de 35
+ | 
+LD.DP.FE.Tests (INTERFACE/FE)
+ | Adaptadores de Hacienda (actividad económica 5, agropecuario 4, exoneración 10), adaptador de parámetros (6), conversor flexible de texto (7) y serializador de la trama (22)
+ | 54
+ | ✅ 54 de 54
+ | 
+SITE_INVENTARIO_WEB.Tests (Inventario)
+ | Descuentos de Compra Dirigida (3), Compra Local (3) y Entrada Local (4) y totales de Vale Domicilio (3)
+ | 13
+ | ✅ 13 de 13
+ | 
+FacturacionElectronica.Domain.Tests
+ | Composición del documento normal (8) y formato del documento (10)
+ | 18
+ | ✅ 18 de 18
+ | 
+Total
+ | 120
+ | ✅ 120 de 120
+ | 
+Proyecto
+ | Casos
+ | Backend
+ | UI web / HTTP
+ | UI escritorio
+ | Unitaria
+ | Pasan
+ | Bug abierto
+ | Omitidas
+ | 
+Facturación
+ | 53
+ | 22
+ | 0
+ | 28
+ | 3
+ | 52
+ | 1
+ | 0
+ | 
+Preventa
+ | 7
+ | 0
+ | 0
+ | 7
+ | 0
+ | 7
+ | 0
+ | 0
+ | 
+Granel (Tipos de Preventa)
+ | 96
+ | 53
+ | 5
+ | 38
+ | 0
+ | 89
+ | 5
+ | 0
+ | 
+Venta Cruzada
+ | 23
+ | 14
+ | 3
+ | 0
+ | 6
+ | 18
+ | 0
+ | 1
+ | 
+Dinámicas Comerciales
+ | 151
+ | 95
+ | 20
+ | 14
+ | 22
+ | 145
+ | 2
+ | 3
+ | 
+Entradas y Salidas de Caja
+ | 9
+ | 3
+ | 2
+ | 0
+ | 4
+ | 7
+ | 2
+ | 0
+ | 
+Formas de Pago
+ | 12
+ | 2
+ | 4
+ | 0
+ | 6
+ | 11
+ | 1
+ | 0
+ | 
+Manejo de Fletes
+ | 6
+ | 2
+ | 4
+ | 0
+ | 0
+ | 5
+ | 0
+ | 0
+ | 
+Tipo de Cliente y Tarifa Reducida
+ | 14
+ | 2
+ | 1
+ | 0
+ | 11
+ | 13
+ | 0
+ | 1
+ | 
+Ajustes de Precios
+ | 18
+ | 3
+ | 0
+ | 0
+ | 15
+ | 15
+ | 0
+ | 3
+ | 
+Seguridad (auditoría)
+ | 11
+ | 11
+ | 0
+ | 0
+ | 0
+ | 9
+ | 0
+ | 0
+ | 
+Catálogos de
+ | 14
+ | 0
+ | 11
+ | 0
+ | 3
+ | 13
+ | 1
+ | 0
+ | 
+Facturación Electrónica
+ | 78
+ | 5
+ | 0
+ | 0
+ | 73
+ | 73
+ | 0
+ | 5
+ | 
+Inventario
+ | 13
+ | 0
+ | 0
+ | 0
+ | 13
+ | 13
+ | 0
+ | 0
+ | 
+Total
+ | 469
+ | 212
+ | 50
+ | 87
+ | 120
+ | 470
+ | 11
+ | 13
+ | 
+4. Caso de prueba
+4.1 Venta cruzada
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | Resultado
+ | 
+Artículo sugerido válido se guarda y aparece en la tabla
+ | Abre el artículo 0000000000062 desde la pantalla de Artículo, entra a Sugeridos, busca el sustituto real 245021 y exige que se muestre su nombre. Completa sugerencia y fechas, guarda y exige respuesta vacía (éxito); luego comprueba que la fila del sustituto aparece en la tabla de sugeridos.
+Requiere: Sesión de QA activa; artículo 0000000000062 encontrable buscando 'Prueba'; sustituto 245021 que coincida con un solo artículo. Escribe en la base y borra la relación al terminar.
+Nota: Hoy falla en una espera de conteo de filas (toHaveCount); no tiene marca de bug abierto.
+ | UI web / HTTP
+ | Inconclusa
+ | 
+Alta de artículo sugerido sin sesión queda bloqueada solo por accidente
+ | Sin cookies de sesión, intenta crear un artículo sugerido y exige que la respuesta sea el error de referencia nula (la protección accidental actual). Si el alta se ejecutara, la prueba falla como hallazgo crítico.
+Nota: Documenta que ArticuloSugeridoController no protege sus métodos de datos; solo Index valida sesión.
+ | UI web / HTTP
+ | Pasa
+ | 
+Sustituto inexistente en un artículo sugerido debería rechazarse
+ | En la pantalla, busca el sustituto QA_NOEXISTE01, comprueba que la propia pantalla muestra 'El Artículo no existe', completa el formulario, guarda y exige que el servidor responda con un mensaje de rechazo (no vacío).
+Requiere: Sesión de QA activa; artículo 0000000000062 encontrable buscando 'Prueba'. Si el alta se acepta, la relación queda creada y se borra al terminar.
+Nota: Marcada como bug abierto (caso VC12): TArticuloSugerido.vb solo validaba pares duplicados, no que el sustituto exista. Hoy la prueba pasa, por lo que la marca ya no refleja la realidad.
+ | UI web / HTTP
+ | Pasa: Se corrigio
+ | 
+Articulo sugerido: copia campos sin cruzarlos
+ | Mapea un registro y comprueba empresa, sucursal, artículo, sugerido (desde Sustituto_Id, no Articulo_Id) y fechas de inicio y fin.
+ | Unitaria
+ | Pasa
+ | 
+Articulo sugerido general: copia campos sin cruzarlos
+ | Mapea un registro y comprueba empresa, artículo, sustituto con sus nombres, consecutivo y fechas como texto aaaa-mm-dd.
+ | Unitaria
+ | Pasa
+ | 
+Articulo sugerido general vacío arranca en valores por defecto
+ | Crea el modelo con el constructor vacío y comprueba que artículo, sustituto y ambas fechas son cadena vacía.
+ | Unitaria
+ | Pasa
+ | 
+Fecha centinela 1900-01-01 se muestra vacía
+ | Mapea una fecha de inicio 1900-01-01 y comprueba que FechaInicio queda vacía, porque significa sin vigencia definida.
+Nota: Task 1696 segun el comentario de la clase.
+ | Unitaria
+ | Pasa
+ | 
+Fecha anterior a 1900 también se muestra vacía
+ | Mapea una fecha fin por defecto de .NET (anno 1) y comprueba que FechaFin queda vacía.
+ | Unitaria
+ | Pasa
+ | 
+Fecha real se formatea aaaa-mm-dd para ordenar
+ | Mapea 2026-12-05 y comprueba que FechaInicio es 2026-12-05.
+ | Unitaria
+ | Pasa
+ | 
+Consulta de sugeridos de un artículo inexistente devuelve lista vacía
+ | Llama a SugeridoGeneral_Lista por el servicio de Facturación con el artículo QA_AUTO_NOEXISTE y comprueba que la respuesta no es nula y trae 0 sugeridos. Confirma que el contrato responde sin fallar.
+Requiere: Servicio WCF de Facturación desplegado y login real. No escribe en la base de datos.
+Nota: Caso CO-696-0017. Es una consulta de solo lectura.
+ | Backend
+ | Pasa
+ | 
+Alta de sugerido con el mismo artículo como sustituto se rechaza
+ | Intenta dar de alta un sugerido donde el artículo y su sustituto son el mismo (fechas válidas, hoy a 30 días) y comprueba que el mensaje de rechazo contiene "no pueden ser iguales". Luego consulta la base y confirma que no quedó ninguna fila creada.
+Requiere: Conexión SQL de pruebas y servicio de catálogo configurados. Usa el artículo 0000000000062 (ancla de Testing). Limpia al terminar cualquier fila de Articulo_Sugerido que haya quedado.
+Nota: Regresión del Bug 1668 (validaciones de Articulo_Sugerido). Ejecuta Validar, Insert y ActualizarSugerencia de la capa de negocio directamente, sin pasar por IIS.
+ | Backend
+ | Pasa
+ | 
+Alta de sugerido con fecha fin menor a la fecha inicio se rechaza
+ | Intenta dar de alta un sugerido con fecha inicio a 10 días y fecha fin a 5 días (ambas futuras, sustituto distinto del artículo) y comprueba que el rechazo dice "fecha fin no puede ser menor a la fecha de inicio". Confirma por consulta que no se creó ninguna fila.
+Requiere: Conexión SQL de pruebas y servicio de catálogo configurados. Artículo 0000000000062 y sustituto 0001. Limpia al terminar cualquier fila que haya quedado.
+Nota: Regresión del Bug 1668.
+ | Backend
+ | Pasa
+ | 
+Alta de sugerido con fecha inicio en el pasado se rechaza
+ | Intenta dar de alta un sugerido con fecha inicio 5 días atrás y fecha fin a 30 días, y comprueba que el rechazo dice "fecha inicio no puede ser menor a la fecha de hoy". Confirma por consulta que no quedó ninguna fila.
+Requiere: Conexión SQL de pruebas y servicio de catálogo configurados. Artículo 0000000000062 y sustituto 0001. Limpia al terminar cualquier fila que haya quedado.
+Nota: Regla adicional del Bug 1668 descubierta al leer el código de validación.
+ | Backend
+ | Pasa
+ | 
+Alta de sugerido con sustituto que no existe como artículo debería rechazarse
+ | Da de alta un sugerido con el sustituto QA_NOEXISTE01, que no existe como artículo, y exige que el sistema devuelva un mensaje de rechazo. Hoy el alta se acepta, por eso la prueba está marcada como bug abierto: el código solo valida que el par artículo y sustituto no esté duplicado.
+Requiere: Conexión SQL de pruebas y servicio de catálogo configurados. Guarda el valor original de Articulo_Sugerencia del artículo 0000000000062 y lo restaura al terminar, además de borrar la fila creada.
+Nota: Marcada con BugAbierto, pero hoy pasa: el sistema ya rechaza el sustituto inexistente, así que la marca puede retirarse.
+ | Backend
+ | Pasa: corregido
+ | 
+La bitácora atribuye el alta al usuario real de la sesión del servicio
+ | Da de alta un sugerido (sustituto 219007) por el servicio de catálogo real, luego ejecuta el procedimiento de bitácora de sugeridos y exige que el evento de Creación esté atribuido al usuario con el que se inició sesión (formato "Id - nombre"), no a una heurística.
+Requiere: Servicio WCF de catálogo desplegado, login real, conexión SQL de pruebas y datos ancla de Testing (artículos 0000000000062 y 219007). Limpia la fila creada y restaura Articulo_Sugerencia al terminar. Los registros de auditoría no se borran.
+Nota: Marcada con BugAbierto: el servicio de catálogo no pasaba el usuario al alta, por lo que la bitácora no podía atribuirla. Hoy la prueba pasa, así que la marca puede retirarse. Solo Testing.
+ | Backend
+ | Pasa
+ | 
+Reporte de bitácora de sugeridos registra creación, modificación y eliminación con usuario correcto
+ | Crea, modifica (extiende la vigencia a 60 días) y elimina un sugerido por SQL directo publicando el usuario 3 en la sesión, y luego pide el reporte de bitácora por el servicio de reportes. Exige exactamente 3 eventos (Creación, Modificación, Eliminación) para ese sustituto y que cada uno esté atribuido al usuario 3.
+Requiere: Servicio de reportes desplegado, login real, conexión SQL de pruebas y datos de Testing (usuario 3 Logical Data, artículos 0000000000062 y 0000000000055). Borra la fila de sugerido al terminar, pero los registros de auditoría quedan a propósito.
+Nota: Tareas 1236, 1716, 1783 y 1766. Usa un sustituto exclusivo para no mezclar eventos de otras pruebas.
+ | Backend
+ | Pasa
+ | 
+Reporte de venta cruzada coincide en líneas, cantidad y monto con la venta real
+ | Calcula por SQL independiente las líneas, la cantidad y el monto (cantidad por precio) de venta cruzada de la sucursal 3 entre 2025-08-07 y 2026-06-15 (ventas y devoluciones), pide el reporte 421 por el servicio de reportes y compara los tres totales. Si no hay datos históricos, queda inconclusa.
+Requiere: Servicio de reportes desplegado, login real, conexión SQL de pruebas y datos históricos reales de venta cruzada en Testing (empresa 1, sucursal 3, rango fijo). No escribe en la base de datos.
+Nota: Regresión del Bug 897 (líneas del reporte no coinciden con las de factura). Depende de datos reales de Testing, no crea los suyos.
+ | Backend
+ | Omitida: no hay datos históricos de venta cruzada para empresa 1 y sucursal 3 en el rango
+ | 
+Sugerido vigente con inventario real se sugiere
+ | Siembra un sustituto activo con existencia 100 y una regla vigente (de ayer a 30 días), consulta SugeridoGeneral_Lista por el servicio de Facturación y exige que el sustituto aparezca en la lista.
+Requiere: Servicio WCF de Facturación, login real y conexión SQL de pruebas. Siembra por SQL un artículo sustituto (con info y bodega) y la regla sobre el artículo de arranque 15000788. Limpia todo al terminar, incluso si falla.
+Nota: CO-696-0017.
+ | Backend
+ | Pasa
+ | 
+Sugerido con vigencia vencida no se sugiere
+ | Igual que el caso vigente (sustituto activo con existencia 100), pero la regla venció hace 30 días. Exige que el sustituto no aparezca en la lista de sugeridos.
+Requiere: Servicio WCF de Facturación, login real y conexión SQL de pruebas. Siembra sustituto y regla por SQL y los limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Sugerido con vigencia que aún no inicia no se sugiere
+ | Igual que el caso vigente, pero la regla empieza dentro de 5 días. Exige que el sustituto no aparezca, porque el filtro pide fecha inicio menor o igual a hoy y fecha fin mayor o igual a hoy.
+Requiere: Servicio WCF de Facturación, login real y conexión SQL de pruebas. Siembra sustituto y regla por SQL y los limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Sustituto sin existencia disponible no se sugiere
+ | Siembra un sustituto activo con regla vigente pero con existencia 0 en la bodega. Exige que no aparezca en la lista, porque el filtro pide existencia menos comprometido mayor a cero.
+Requiere: Servicio WCF de Facturación, login real y conexión SQL de pruebas. Siembra sustituto, bodega y regla por SQL y los limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Un artículo puede tener varios sustitutos simultáneos
+ | Siembra dos sustitutos activos con existencia 100 y reglas vigentes para el mismo artículo, y exige que la lista de sugeridos devuelva ambos, no solo uno.
+Requiere: Servicio WCF de Facturación, login real y conexión SQL de pruebas. Siembra dos sustitutos y dos reglas por SQL y los limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Con sucursal 0 la lista administrativa muestra también las reglas vencidas
+ | Siembra un sustituto sin existencia y una regla vencida hace 30 días, consulta con Suc_Id=0 y Bod_Id=0 (grilla administrativa) y exige que la regla vencida sí aparezca, porque esa ruta no filtra por vigencia ni por inventario.
+Requiere: Servicio WCF de Facturación, login real y conexión SQL de pruebas. Siembra sustituto y regla por SQL y los limpia al terminar.
+Nota: Documenta un diseño real, no un bug: la grilla general de Site Admin muestra todas las reglas.
+ | Backend
+ | Pasa
+ | 
+4.2 Dinámicas comerciales 
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | Resultado
+ | 
+Agregar y quitar un tramo de bonificación de artículo por proveedor
+ | Selecciona el proveedor 103260, abre el primer artículo en edición, entra a Bonificaciones, agrega un tramo (cantidad única y bonificación 10) y exige que aparezca en la tabla. Luego lo selecciona, lo elimina y exige que desaparezca.
+Requiere: Sesión de QA activa; proveedor 103260 (BOU-MATIC) con artículos asociados. Crea un tramo de prueba y lo elimina al terminar (con limpieza por servicio si falla antes).
+ | UI web / HTTP
+ | Pasa
+ | 
+Alta, edición y baja de un descuento escalonado
+ | Crea un descuento escalonado con fechas lejanas (enero de 2031) para no chocar con promociones vigentes, lo ubica en la tabla, lo edita, comprueba el nombre nuevo y lo elimina con confirmación hasta que deja de aparecer.
+Requiere: Sesión de QA activa. Crea un descuento de prueba y lo elimina al terminar (con limpieza por servicio si falla antes).
+ | UI web / HTTP
+ | Pasa
+ | 
+Alta, edición y baja de un sorteo
+ | Crea un sorteo con descripción, un ganador y mecánica, lo ubica en la tabla, lo edita, comprueba el nombre nuevo y lo elimina con confirmación hasta que deja de aparecer.
+Requiere: Sesión de QA activa. Crea un sorteo de prueba y lo elimina al terminar (con limpieza por servicio si falla antes).
+ | UI web / HTTP
+ | Pasa
+ | 
+Borrar un descuento escalonado también borra sus tramos
+ | Crea un descuento escalonado con un tramo (cantidad 5), lo elimina desde la pantalla con confirmación y luego consulta por servicio la lista de tramos del descuento borrado, exigiendo que esté vacía.
+Requiere: Sesión de QA activa. Crea un descuento y un tramo de prueba con fechas lejanas (enero de 2032); al terminar los borra por servicio por si quedó algo.
+ | UI web / HTTP
+ | Pasa
+ | 
+Borrar un sorteo con tarjeta asociada deja la tarjeta huérfana
+ | Crea un sorteo con tarjeta débito-crédito activada, le asocia la primera tarjeta disponible, lo elimina con confirmación y exige que la lista de tarjetas del sorteo borrado quede vacía.
+Requiere: Sesión de QA activa y al menos una tarjeta disponible. Crea un sorteo y una asociación de prueba; al terminar los borra por servicio, incluida la tarjeta huérfana si el bug se manifiesta.
+ | UI web / HTTP
+ | Falla: bug abierto de estándar 
+ | 
+Bonificación de CEDI: el modelo copia cantidad y bonificación pero no el artículo
+ | Construye BonificacionModel desde un registro de bonificación de artículo y comprueba que Cantidad (10) y Bonificación (2) se copian y que ArticuloId queda vacío.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de CEDI con detalle: copia encabezado y arrastra el detalle
+ | Mapea una bonificación con un detalle y comprueba id, artículo, nombre, cantidad y fechas del encabezado, los datos del detalle sin cruzarse y que el detalle hereda el id de bonificación del encabezado.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de CEDI sin lista de detalles (nula) no falla
+ | Mapea una bonificación con Detalles nulo y comprueba que no lanza excepción y que la lista del modelo queda vacía.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de CEDI con lista de detalles vacía
+ | Mapea una bonificación con lista de detalles vacía y comprueba que la lista del modelo queda vacía y no nula.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de venta: encabezado y cinco listas anidadas sin cruzar campos
+ | Mapea un encabezado con sucursal, tipo de cliente, cliente, precio y artículo y comprueba que cada Id y Nombre del modelo viene de su campo correcto (Suc_Id, Tipo_Id, Cliente_Id, Precio_Id, Articulo_Id), incluida la cédula y la cantidad.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de venta: fechas en formato dd/MM/yyyy
+ | Comprueba que fecha de inicio 2026-03-15 y fin 2026-04-20 salen como texto 15/03/2026 y 20/04/2026 en el modelo.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de venta: la lista de artículos de busqueda no se mapea
+ | Siembra ArticulosBusqueda con un artículo y comprueba que en el modelo queda siempre vacía.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación de venta con listas nulas no falla
+ | Mapea un encabezado con las cinco listas en nulo y comprueba que no lanza excepción y que las cinco listas del modelo quedan vacias.
+ | Unitaria
+ | Pasa
+ | 
+Sucursal con consecutivo mayor a cero queda seleccionada
+ | Mapea una sucursal con Consecutivo 3 y comprueba que State es verdadero.
+ | Unitaria
+ | Pasa
+ | 
+Sucursal con consecutivo cero queda sin seleccionar
+ | Mapea una sucursal con Consecutivo 0 y comprueba que State es falso.
+ | Unitaria
+ | Pasa
+ | 
+Tipo de cliente de la bonificación: copia todos los campos
+ | Mapea un tipo de cliente y comprueba empresa, bonificación, Id (desde Tipo_Id), nombre y consecutivo.
+ | Unitaria
+ | Pasa
+ | 
+Cliente de la bonificación: copia todos los campos incluida la cédula
+ | Mapea un cliente y comprueba Tipo (desde Tipo_Id), Id (desde Cliente_Id), nombre, cédula y consecutivo.
+ | Unitaria
+ | Pasa
+ | 
+Precio de la bonificación: copia todos los campos
+ | Mapea un precio y comprueba Id (desde Precio_Id), nombre y consecutivo.
+ | Unitaria
+ | Pasa
+ | 
+Articulo de la bonificación con su detalle, sin cruzar cantidades
+ | Mapea un artículo con un detalle y comprueba que el artículo es nodo padre y el detalle nodo hijo, que el Id del detalle viene de Bonificar y su Cantidad de Bonificacion_Cantidad, sin cruzarse con Articulo_Id ni Articulo_Cantidad (vendido).
+ | Unitaria
+ | Pasa
+ | 
+Articulo de la bonificación con detalle nulo no falla
+ | Mapea un artículo con Detalle nulo y comprueba que no lanza excepción y que la lista queda vacía.
+ | Unitaria
+ | Pasa
+ | 
+Titulo del detalle usa el artículo bonificado
+ | Comprueba que Articulo_Titulo del detalle es el código a bonificar más el nombre (00009999 - Producto Bonificado), no el código del artículo vendido.
+ | Unitaria
+ | Pasa
+ | 
+Titulo del detalle sin artículo a bonificar lanza error de referencia nula
+ | Deja Bonificar en nulo y comprueba que leer Articulo_Titulo lanza NullReferenceException.
+Nota: Fija el comportamiento actual, que no valida el nulo.
+ | Unitaria
+ | Pasa
+ | 
+Tipo de bonificación de venta: copia todos los campos
+ | Mapea un tipo de bonificación y comprueba empresa, Id (desde Bonificacion_Tipo_Id), nombre, orden y fecha de actualización.
+ | Unitaria
+ | Pasa
+ | 
+Bonificación CEDI: ciclo completo de alta, consulta y baja
+ | Da de alta una bonificación CEDI con un artículo gatillo (cantidad 10) y un detalle de regalo (cantidad 2) por el servicio real, la lee, la borra y confirma que ya no existe. Comprueba que el alta devuelve el formato ID:<número>, que la lectura trae el artículo gatillo y exactamente 1 fila de detalle, y que tras borrar la consulta devuelve vacío.
+Requiere: Servicio WCFCatalogoAux2 desplegado, conexión SQL directa configurada y al menos un artículo real en Articulo_Info. Escribe en la base (PV_Bonificacion_Encabezado, Detalle y Cliente) y limpia al terminar aunque la prueba falle.
+ | Backend
+ | Pasa
+ | 
+Bonificación CEDI: la modificación guarda la nueva cantidad
+ | Crea una bonificación CEDI con cantidad 10, la modifica a 25 por el servicio y vuelve a leerla para comprobar que la cantidad guardada es 25 y no la original.
+Requiere: Servicio WCFCatalogoAux2 desplegado, conexión SQL directa configurada y un artículo real en Articulo_Info. Escribe en la base y limpia al terminar (borra las tablas de la bonificación creada).
+ | Backend
+ | Pasa
+ | 
+Bonificación CEDI: asociar un cliente real y leerlo de vuelta
+ | Asocia a una bonificación CEDI el cliente 10000001 y luego consulta los clientes de la bonificación. Comprueba que el cliente aparece y que su nombre es exactamente CLIENTE CONTADO.
+Requiere: Servicio WCFCatalogoAux2 desplegado, conexión SQL directa, un artículo real en Articulo_Info y el cliente 10000001 llamado CLIENTE CONTADO existente en el ambiente. Escribe en la base y limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Bonificación CEDI: el listado filtrado por código encuentra la bonificación
+ | Crea una bonificación CEDI y la busca en el listado filtrando por su código. Comprueba que devuelve exactamente 1 resultado y que su artículo es el real.
+ | Backend
+ | Pasa
+ | 
+Bonificación Proveedor: ciclo de alta, modificación y baja de un tramo
+ | Sobre el artículo 15000788 y un proveedor sin bonificaciones previas, da de alta un tramo de 5 unidades con bonificación 1, lo modifica a 3 y lo borra. En cada paso lee el tramo y comprueba el valor guardado; al final confirma que ya no existe.
+ | Backend
+ | Pasa
+ | 
+Bonificación Proveedor: calcula la bonificación con el tramo más alto alcanzado
+ | Siembra dos tramos (5 unidades bonifica 1, 10 unidades bonifica 3) y consulta cuanto bonifica una compra de 12. Comprueba que se queda con el tramo de 10 y que la bonificación es 3 (parte entera de 12 entre 10, por 3), sin interpolar.
+ | Backend
+ | Pasa
+ | 
+Bonificación de Venta: con dos bonificaciones vigentes iguales solo debe aplicar la de mayor prioridad
+ | Crea dos bonificaciones de venta tipo 4 vigentes, con el mismo artículo gatillo (15000788), la misma lista de precio y el mismo umbral, y regalos distintos. Consulta las bonificaciones del artículo y espera 1 sola fila para ese umbral, no las dos.
+Requiere: Servicio WCFFacturacion desplegado, conexión SQL directa y los artículos de regalo 245021 y 287574 que solo existen en Testing. Inserta las bonificaciones por SQL y las borra al terminar.
+ | Backend
+ | Falla: bug abierto (falta revalidar)
+ | 
+Bonificación de Venta: la consulta por artículo devuelve todos los tramos reales
+ | Descubre una bonificación de venta tipo 3 vigente hoy con su sucursal, lista de precio y artículo gatillo, calcula los tramos esperados desde la base y comprueba que el servicio devuelve la misma cantidad de filas y cada tramo (artículo bonificado, cantidad y cantidad bonificada).
+ | Backend
+ | Pasa: corregida
+ | 
+Descuento Escalonado: el alta se lee con los mismos datos
+ | Da de alta un descuento de tipo escalonado (tipo 9) por el servicio y lo lee por su código. Comprueba que el nombre guardado y el tipo 9 coinciden.
+Requiere: Servicio WCFCatalogoAux desplegado y conexión SQL directa. Escribe en Descuento_Venta y limpia al terminar sus tablas relacionadas.
+Nota: El alta devuelve ID:<Descuento_Id>, no cadena vacía.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: borrar el descuento también borra sus tramos
+ | Crea un descuento escalonado, le inserta un tramo por SQL (5 unidades, 10 por ciento), lo borra por el servicio y cuenta los tramos que quedan en Descuento_Venta_Escalonado. Espera que no quede ninguno huerfano.
+Requiere: Servicio WCFCatalogoAux desplegado y conexión SQL directa. Escribe en la base y limpia al terminar.
+Nota: Regresión del bug 2314 (tramos huerfanos tras borrar el descuento).
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: entre dos descuentos vigentes gana el de mayor porcentaje
+ | Crea dos descuentos escalonados vigentes con el mismo artículo 15000788 y el mismo tramo de 5 unidades, uno al 10 por ciento y otro al 15 por ciento. Con cantidad 7 comprueba que el servicio aplica el 15 por ciento, sin sumar ni elegir el menor.
+Requiere: Servicio WCFFacturacion desplegado, conexión SQL directa, una sucursal real y el artículo 15000788. Inserta los descuentos por SQL y los borra al terminar.
+Nota: Confirma la oferta CO-696-0009 v5, cambio 1 punto 5 (aplicar el descuento de mayor valor sin acumular). Contrasta con la bonificación de venta, que no la cumple.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: por debajo del primer tramo no aplica descuento
+ | Con tramos de 5 unidades (10 por ciento) y 10 unidades (20 por ciento), consulta con cantidad 3 y espera que no se devuelva ningún descuento.
+Requiere: Servicio WCFFacturacion desplegado, conexión SQL directa, una sucursal real y el artículo 15000788. Crea su propio descuento escalonado por SQL y lo borra al terminar.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: en el primer tramo aplica su porcentaje
+ | Con cantidad 7 comprueba que se alcanza el tramo de 5 unidades y que el porcentaje es 10, no el del segundo tramo.
+Requiere: Mismas que la prueba anterior: crea por SQL un descuento escalonado con dos tramos y lo borra al terminar.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: en el segundo tramo aplica el más alto sin acumular
+ | Con cantidad 15 comprueba que el tramo alcanzado es el de 10 unidades y que el porcentaje es 20, sin sumarse ni promediarse con el 10 del primer tramo.
+Requiere: Mismas que las pruebas anteriores de la clase: crea por SQL un descuento escalonado con dos tramos y lo borra al terminar.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: el listado por código y tipo encuentra el descuento
+ | Crea un descuento escalonado por el servicio y lo busca en el listado filtrando por código y tipo 9. Comprueba que devuelve exactamente 1 resultado con el nombre guardado.
+Requiere: Servicio WCFCatalogoAux desplegado y conexión SQL directa. Escribe en la base y limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: asociar una sucursal activa y leerla de vuelta
+ | Guarda la asociación de una sucursal real al descuento (indicando que es CEDI) y consulta las sucursales del descuento. Comprueba que la sucursal aparece exactamente una vez.
+Requiere: Servicio WCFCatalogoAux desplegado, conexión SQL directa y una sucursal real existente (la primera de la empresa). Escribe en la base y limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Descuento Escalonado: listar todos los tramos vigentes de un artículo en orden ascendente
+ | Con un descuento de dos tramos (5 unidades al 10 por ciento y 10 unidades al 20 por ciento), lista los tramos del artículo y comprueba que devuelve los 2, primero el de menor cantidad, con sus porcentajes.
+Requiere: Servicio WCFFacturacion desplegado, conexión SQL directa, una sucursal real y el artículo 15000788. Crea el descuento por SQL y lo borra al terminar.
+ | Backend
+ | Pasa
+ | 
+Sorteo: el alta por monto asigna id y se lee con los mismos datos
+ | Da de alta un sorteo por monto (mínimo 100, 2 acciones) por el servicio y lo lee por su id. Comprueba que el alta devuelve ID mayor a 0, y que nombre, monto mínimo, acciones y estado activo coinciden con lo guardado.
+Requiere: Servicio WCFCatalogoAux2 desplegado y conexión SQL directa. Escribe en la base y limpia al terminar borrando el sorteo.
+ | Backend
+ | Pasa
+ | 
+Sorteo: por debajo del monto mínimo no genera acciones y omite la fila
+ | Con un sorteo por monto mínimo de 100, calcula las acciones de una compra de 50 y comprueba que el sorteo no aparece en el resultado (el servicio omite la fila cuando el total es 0).
+Requiere: Servicio WCFCatalogoAux2 desplegado y conexión SQL directa. Inserta por SQL un sorteo y su sucursal y los borra al terminar.
+ | Backend
+ | Pasa
+ | 
+Sorteo: sobre el monto mínimo calcula las acciones segun la formula
+ | Calcula las acciones de una compra de 250 con mínimo 100 y 2 acciones por tramo, y comprueba que el resultado es 4 (parte entera de 250 entre 100, por 2).
+ | Backend
+ | Pasa
+ | 
+Sorteo: la modificación de un cliente guarda los datos nuevos
+ | Crea un cliente de sorteo, lo modifica (nombre, teléfono, email y formato de identificación 3) por el servicio y lo lee. Comprueba que nombre, teléfono y formato guardados son los nuevos.
+ | Backend
+ | Pasa
+ | 
+Sorteo: el alta de un cliente se lee con los mismos datos
+ | Da de alta un cliente de sorteo por el servicio y lo lee por empresa e identificación. Comprueba que nombre, teléfono, email y formato de identificación coinciden con lo guardado.
+Requiere: Servicio WCFCatalogoAux2 desplegado y conexión SQL directa. Escribe en Sorteo_Cliente con una identificación única y la borra al terminar.
+ | Backend
+ | Pasa
+ | 
+Sorteo: borrar un cliente lo elimina
+ | Crea un cliente de sorteo directamente, lo borra por el servicio y comprueba que la respuesta es de exito y que la lectura posterior ya no lo encuentra.
+ | Backend
+ | Pasa
+ | 
+Sorteo: la devolución sin factura real no marca devuelta pero reporta exito
+ | Crea un sorteo con una factura asociada que no existe como factura real, ejecuta la devolución y comprueba que responde exito pero que la factura del sorteo sigue sin marcarse como devuelta.
+Requiere: Servicio WCFCatalogoAux2 desplegado y conexión SQL directa. Escribe en Sorteo y Sorteo_Factura y limpia las tablas del sorteo al terminar.
+ | Backend
+ | Pasa
+ | 
+Sorteo: ciclo de vida de la factura asociada (alta, modificación y baja)
+ | Asocia una factura a un sorteo con 5 puntos, la modifica a 50 puntos, comprueba el valor leido, la borra y confirma que ya no existe.
+Requiere: Servicio WCFCatalogoAux2 desplegado y conexión SQL directa. Escribe en Sorteo y Sorteo_Factura y limpia al terminar; la factura no necesita existir como factura real.
+ | Backend
+ | Pasa
+ | 
+Sorteo: la carga masiva de facturas guarda todas las del lote
+ | Envia un lote de dos facturas del mismo sorteo (3 y 5 puntos) y comprueba que ambas quedaron guardadas, verificando la segunda con sus 5 puntos y no solo la primera.
+Requiere: Servicio WCFCatalogoAux2 desplegado y conexión SQL directa. Escribe en Sorteo y Sorteo_Factura y limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Sorteo: el listado filtrado por código encuentra el sorteo con su nombre
+ | Crea un sorteo que aplica a todas las sucursales y lo busca en el listado filtrando por empresa y código. Comprueba que devuelve exactamente 1 fila con el nombre real.
+ | Backend
+ | Pasa
+ | 
+Sorteo: un sorteo para todas las sucursales aparece en la lista de la sucursal de prueba
+ | Crea un sorteo con aplicación a todas las sucursales, lo que lo asocia automaticamente a cada sucursal activa. Consulta la lista de sorteos de una sucursal real y comprueba que incluye el sorteo creado.
+ | Backend
+ | Pasa
+ | 
+Sorteo: la lista de sucursales marca como asociada la sucursal vinculada al sorteo
+ | Crea un sorteo, lo asocia a mano a una sucursal real y consulta la lista de sucursales del sorteo. Comprueba que esa sucursal aparece y viene con Asociado igual a 1.
+Requiere: Servicio WCFCatalogoAux2 desplegado, conexión SQL directa y una sucursal real activa. Escribe en Sorteo y Sorteo_Sucursal y limpia al terminar.
+ | Backend
+ | Pasa
+ | 
+Combo: copia campos y listas sin cruzar
+ | Mapea un combo desde TRegCombo y comprueba que los campos y las listas de artículos y sucursales se copian sin cruzar Id, cantidad ni descuento.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+ | Unitaria
+ | Pasa
+ | 
+Combo con listas nulas no falla
+ | Mapea un combo con artículos y sucursales nulos y comprueba que no lanza excepción y que las listas quedan vacías.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+ | Unitaria
+ | Pasa
+ | 
+Sucursal del combo con consecutivo mayor a cero queda seleccionada
+ | Mapea una sucursal con Consecutivo mayor a cero y comprueba que State es verdadero.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+ | Unitaria
+ | Pasa
+ | 
+Sucursal del combo con consecutivo cero queda sin seleccionar
+ | Mapea una sucursal con Consecutivo 0 y comprueba que State es falso.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+ | Unitaria
+ | Pasa
+ | 
+RET-UT-DC-0024: Crear SKU combo (paquete) con descuento automático y vigencia.
+ | Consulta un combo vigente con un artículo por 2 unidades y 10% de descuento y exige que se ofrezca, que el subtotal sea el precio por la cantidad y que el precio del combo sea esa suma menos el descuento, menor que los artículos sueltos.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0027: Intentar facturar SKU combo fuera del rango de vigencia. Garantizando que los combos se reflejen...
+ | Siembra un combo cuya vigencia terminó ayer y exige que el procedimiento no lo ofrezca.
+Requiere: Conexión SQL de pruebas. Usa un artículo activo de la sucursal con precio y existencia suficientes; siembra su combo (QA_AUTO_Combo_) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0027 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0027: Intentar facturar SKU combo fuera del rango de vigencia. Garantizando que los combos se reflejen...
+ | Siembra un combo que empieza en dos días y exige que hoy no se ofrezca.
+Requiere: Conexión SQL de pruebas. Usa un artículo activo de la sucursal con precio y existencia suficientes; siembra su combo (QA_AUTO_Combo_) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0027 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0030: Facturar un combo fuera de los días u horarios configurados. Garantizando que los combos se...
+RET-UT-DC-0028: Crear combo definiendo vigencia, sucursales, artículos y reglas de aplicación.
+ | Siembra un combo que no aplica el día de la semana de hoy y exige que no se ofrezca.
+Requiere: Conexión SQL de pruebas. Usa un artículo activo de la sucursal con precio y existencia suficientes; siembra su combo (QA_AUTO_Combo_) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0030, RET-UT-DC-0028 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0030: Facturar un combo fuera de los días u horarios configurados. Garantizando que los combos se...
+RET-UT-DC-0028: Crear combo definiendo vigencia, sucursales, artículos y reglas de aplicación.
+ | Siembra un combo con un horario que empieza una hora después de la hora actual y exige que no se ofrezca.
+Requiere: Conexión SQL de pruebas. Usa un artículo activo de la sucursal con precio y existencia suficientes; siembra su combo (QA_AUTO_Combo_) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0030, RET-UT-DC-0028 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0033: Proforma, Preventa, Factura: Ingreso de un combo y validar si la transacción cumple con la...
+ | Siembra un combo que exige una unidad más que la existencia disponible y exige que no se ofrezca.
+Requiere: Conexión SQL de pruebas. Usa un artículo activo de la sucursal con precio y existencia suficientes; siembra su combo (QA_AUTO_Combo_) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0033 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0033: Proforma, Preventa, Factura: Ingreso de un combo y validar si la transacción cumple con la...
+ | Consulta un combo con existencia suficiente y exige que informe cuántos combos completos alcanzan: la existencia entre las unidades que exige.
+Requiere: Conexión SQL de pruebas. Usa un artículo activo de la sucursal con precio y existencia suficientes; siembra su combo (QA_AUTO_Combo_) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0033 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0047: Crear una proforma, preventa y facturar artículo con bonificación vigente y luego repetir cuando...
+ | Siembra una bonificación por lista de precios vigente y exige que la consulta del artículo la devuelva.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0047 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0047: Crear una proforma, preventa y facturar artículo con bonificación vigente y luego repetir cuando...
+ | Siembra una bonificación que venció ayer y exige que no se devuelva.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0047 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0047: Crear una proforma, preventa y facturar artículo con bonificación vigente y luego repetir cuando...
+RET-UT-DC-0039: Crear una proforma, preventa y facturar antes del inicio y después del fin de vigencia de una...
+ | Siembra una bonificación que empieza en dos días y exige que hoy no se devuelva.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre la vigencia en el servicio; la proforma, la preventa y la factura no. Cubre RET-UT-DC-0047, RET-UT-DC-0039 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0038: Crear bonificación por cliente y producto con vigencia (inicio/fin) días de la semana y horarios...
+ | Siembra una bonificación que no aplica el día de la semana de hoy y exige que no se devuelva.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0038 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0038: Crear bonificación por cliente y producto con vigencia (inicio/fin) días de la semana y horarios...
+ | Siembra una bonificación con un horario que empieza una hora después de la hora actual y exige que no se devuelva.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0038 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0038: Crear bonificación por cliente y producto con vigencia (inicio/fin) días de la semana y horarios...
+ | Siembra una bonificación por cliente y exige que se devuelva para ese cliente y no para otro.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0038 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0040: Crear bonificación por lista de precios + sucursal + producto; con días de la semana y horarios...
+ | Siembra una bonificación por lista de precios y sucursal y exige que se devuelva en esa sucursal y no en otra.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0040 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0041: Crear bonificación por lista de precios + producto; facturar en múltiples centros con esa lista....
+ | Siembra una bonificación por lista de precios y exige que se devuelva con esa lista y no con otra.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) con un artículo gatillo y otro de regalo; la borra al terminar.
+Nota: Cubre RET-UT-DC-0041 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0060: consultar las bonificaciones actualmente activas en el sistema, facilitando la gestión...
+ | Siembra una bonificación vigente hoy y exige que aparezca en el reporte de activas.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0060 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0060: consultar las bonificaciones actualmente activas en el sistema, facilitando la gestión...
+ | Siembra una bonificación que venció ayer y exige que no aparezca como activa.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0060 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0060: consultar las bonificaciones actualmente activas en el sistema, facilitando la gestión...
+ | Siembra una bonificación que vence hoy y exige que siga apareciendo todo el día.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Regresión del issue 2235. Cubre RET-UT-DC-0060 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0060: consultar las bonificaciones actualmente activas en el sistema, facilitando la gestión...
+ | Siembra una bonificación que empieza en dos días y exige que no aparezca como activa.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0060 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0054: Generar reporte con filtros {cliente, lista, centro, producto, fecha inicio/fin} y exportar XLS.
+ | Pide el reporte con un rango de vigencia que empieza en 20 días y exige que no incluya una bonificación que termina en 5.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0054 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0054: Generar reporte con filtros {cliente, lista, centro, producto, fecha inicio/fin} y exportar XLS.
+RET-UT-DC-0055: Ejecutar reporte con filtros sin datos y exportar.
+ | Filtra el reporte por una bonificación que no existe y exige cero filas, sin error.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0054, RET-UT-DC-0055 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0054: Generar reporte con filtros {cliente, lista, centro, producto, fecha inicio/fin} y exportar XLS.
+ | Filtra por el artículo vendido, por el bonificado y por uno ajeno: los dos primeros la incluyen y el tercero no.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0054 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0054: Generar reporte con filtros {cliente, lista, centro, producto, fecha inicio/fin} y exportar XLS.
+ | Filtra por la sucursal asociada y por una ajena: la primera la incluye y la segunda no.
+Requiere: Conexión SQL de pruebas. Siembra su bonificación (QA_AUTO_BonifRegla_) y filtra el reporte por su Id; la borra al terminar.
+Nota: Cubre RET-UT-DC-0054 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0012: Consultar descuentos pasados/vigentes/futuros y bitácora de cambios.
+RET-UT-DC-0056: Reporte que permita consultar y analizar el historial de cambios realizados en los descuentos,...
+ | Revisa que las 25 tablas de descuentos, bonificaciones, combos y premios estén activas en Audit_Config, audite insertar, actualizar y eliminar en Audit_Promociones y tengan su trigger TR_*_Audit habilitado.
+Requiere: Conexión SQL de pruebas, solo Testing. Publica el usuario en la sesión. La bitácora no se limpia a propósito (es un registro de auditoría).
+Nota: Cubre la bitácora, no la pantalla de consulta del historial. Cubre RET-UT-DC-0012, RET-UT-DC-0056 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-SEG-0044: Acción: registrar un dato transaccional (bonificación) y verificar en bitácora que se almacenen...
+RET-UT-SEG-0045: Acción: modificar un dato transaccional (bonificación) y verificar en bitácora que se almacenen...
+RET-UT-SEG-0046: Acción: eliminar un dato transaccional (bonificación) y verificar en bitácora que se almacenen...
+RET-UT-DC-0056: Reporte que permita consultar y analizar el historial de cambios realizados en los descuentos,...
+ | Crea, renombra y elimina una bonificación con un usuario en la sesión y exige los eventos de creación, modificación (valor anterior y nuevo del nombre) y eliminación, atribuidos a ese usuario.
+Requiere: Conexión SQL de pruebas, solo Testing. Publica el usuario en la sesión. La bitácora no se limpia a propósito (es un registro de auditoría).
+Nota: También cubre SEG-0044, SEG-0045 y SEG-0046 del Excel de Seguridad. Cubre RET-UT-SEG-0044, RET-UT-SEG-0045, RET-UT-SEG-0046, RET-UT-DC-0056 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0056: Reporte que permita consultar y analizar el historial de cambios realizados en los descuentos,...
+ | Crea, renombra y elimina un combo con un usuario en la sesión y exige los tres eventos con el valor anterior y nuevo del nombre.
+Requiere: Conexión SQL de pruebas, solo Testing. Publica el usuario en la sesión. La bitácora no se limpia a propósito (es un registro de auditoría).
+Nota: Cubre RET-UT-DC-0056 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0005: Mantenimiento de Premiaciones
+ | Crea una premiación con nombre, vigencia, monto mínimo de compra, monto del premio, frecuencia y cantidad máxima, y exige que ListKey devuelva cada regla.
+Requiere: Conexión SQL de pruebas. Crea premiaciones con prefijo QA_AUTO_Premio_ y las borra con sus artículos y entregas al terminar.
+Nota: Cubre el servicio de mantenimiento, no la pantalla. Cubre RET-UT-DC-0005 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0005: Mantenimiento de Premiaciones
+RET-UT-DC-0008: Que el identificador único de la premiación (ID), el cual no podrá modificarse una vez creado.
+ | Modifica el nombre, el monto y la cantidad máxima de una premiación y exige que queden guardados y que el Id no cambie.
+Requiere: Conexión SQL de pruebas. Crea premiaciones con prefijo QA_AUTO_Premio_ y las borra con sus artículos y entregas al terminar.
+Nota: Cubre RET-UT-DC-0005, RET-UT-DC-0008 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0008: Que el identificador único de la premiación (ID), el cual no podrá modificarse una vez creado.
+ | Crea dos premiaciones y exige que cada una reciba un Id asignado por el sistema y distinto.
+Requiere: Conexión SQL de pruebas. Crea premiaciones con prefijo QA_AUTO_Premio_ y las borra con sus artículos y entregas al terminar.
+Nota: Cubre RET-UT-DC-0008 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0009: El sistema permita que un mismo artículo esté asociado a más de una premiación de forma...
+ | Asocia un mismo artículo a dos premiaciones y exige que quede en ambas.
+Requiere: Conexión SQL de pruebas. Crea premiaciones con prefijo QA_AUTO_Premio_ y las borra con sus artículos y entregas al terminar.
+Nota: Cubre RET-UT-DC-0009 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0001: Facturar caso que califica para premiación con parámetros preestablecidos.
+RET-UT-DC-0005: Mantenimiento de Premiaciones
+ | Con cantidad máxima 2, llama tres veces a Premio_Valida_Cantidad: las dos primeras registran la entrega y la tercera no.
+Requiere: Conexión SQL de pruebas. Crea premiaciones con prefijo QA_AUTO_Premio_ y las borra con sus artículos y entregas al terminar.
+Nota: Cubre el límite de premios; el cálculo de quién califica ocurre en el punto de venta. Cubre RET-UT-DC-0001, RET-UT-DC-0005 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0005: Mantenimiento de Premiaciones
+ | Con cantidad máxima 0 (sin límite) registra cuatro entregas seguidas.
+Requiere: Conexión SQL de pruebas. Crea premiaciones con prefijo QA_AUTO_Premio_ y las borra con sus artículos y entregas al terminar.
+Nota: Cubre RET-UT-DC-0005 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0007: Validación de las premiaciones aleatorias aplicarán a nivel empresa, por lo que las reglas...
+ | Comprueba que la tabla Premio no tiene sucursal ni existe una tabla Premio_Sucursal: la premiación aplica a toda la empresa.
+Requiere: Conexión SQL de pruebas (Test.SQL.ConnectionString). Siembra sus propios datos y los borra al terminar.
+Nota: Cubre RET-UT-DC-0007 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento escalonado vigente y exige que se aplique con el porcentaje de su tramo.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento que venció ayer y exige que no se aplique.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento que empieza en dos días y exige que hoy no se aplique.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento que no aplica el día de la semana de hoy y exige que no se aplique.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento con horario que empieza una hora después de la hora actual y exige que no se aplique.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento para una sucursal y exige que se aplique ahí y no en otra.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento por tipo de cliente y exige que se aplique a ese tipo y no a otro.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento por cliente y exige que se aplique a ese cliente y no a otro.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Excluye el artículo del descuento y exige que no lo reciba.
+Requiere: Conexión SQL de pruebas. Siembra su descuento escalonado (QA_AUTO_DescReglas_, tramos de 5 y 10 unidades al 90% y 95%) y lo borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+RET-UT-DC-0020: Facturar una cantidad inferior al mínimo del primer rango de descuento escalonado.
+RET-UT-DC-0022: Mantenimiento de Descuentos Escalonados (consulta y modificación)
+ | Siembra un descuento escalonado vigente (7 unidades al 37%), agrega el artículo en la caja y exige que la ventana de descuento escalonado informe el tramo.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0011, RET-UT-DC-0020, RET-UT-DC-0022 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0011: Mantenimiento de descuentos automáticos por centro/tipo cliente y facturar producto aplicable.
+ | Siembra un descuento escalonado vencido y exige que la caja no informe su tramo al agregar el artículo.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0011 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0053: Crear una proforma, preventa y facturar un artículo que tenga una bonificación activa.
+RET-UT-DC-0038: Crear bonificación por cliente y producto con vigencia (inicio/fin) días de la semana y horarios...
+RET-UT-DC-0047: Crear una proforma, preventa y facturar artículo con bonificación vigente y luego repetir cuando...
+ | Siembra una bonificación vigente por cliente y exige que la caja abra la ventana de bonificación con los productos gratis al agregar el artículo.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0053, RET-UT-DC-0038, RET-UT-DC-0047 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0047: Crear una proforma, preventa y facturar artículo con bonificación vigente y luego repetir cuando...
+RET-UT-DC-0039: Crear una proforma, preventa y facturar antes del inicio y después del fin de vigencia de una...
+ | Siembra una bonificación vencida y exige que la caja no abra la ventana de bonificación.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre la vigencia en la caja; la proforma y la preventa no. Cubre RET-UT-DC-0047, RET-UT-DC-0039 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0024: Crear SKU combo (paquete) con descuento automático y vigencia.
+RET-UT-DC-0027: Intentar facturar SKU combo fuera del rango de vigencia. Garantizando que los combos se reflejen...
+ | Escribe el nombre de un combo vigente con 10% de descuento y exige que se agregue y que el total sea el precio menos el descuento más el flete.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0024, RET-UT-DC-0027 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0027: Intentar facturar SKU combo fuera del rango de vigencia. Garantizando que los combos se reflejen...
+ | Escribe el nombre de un combo vencido ayer y exige que no se agregue al documento.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0027 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0030: Facturar un combo fuera de los días u horarios configurados. Garantizando que los combos se...
+ | Escribe el nombre de un combo que no aplica el día de hoy y exige que no se agregue.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0030 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0033: Proforma, Preventa, Factura: Ingreso de un combo y validar si la transacción cumple con la...
+ | Escribe el nombre de un combo que exige una unidad más que la existencia y exige que no se agregue.
+Requiere: VPN, usuario de prueba y base de Testing. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0033 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0017: Configurar dos rangos de descuentos escalonados con traslape parcial o total.
+ | En la pantalla del descuento escalonado agrega un tramo con cantidad igual o menor al anterior y exige el mensaje "La cantidad debe ser mayor a la anterior".
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: El mensaje real no dice "traslape". Cubre RET-UT-DC-0017 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0019: Configurar rangos donde el porcentaje de descuento no sea estrictamente mayor al anterior.
+ | Agrega un tramo con el mismo porcentaje que otro y exige el mensaje "Ya existe un escalonado con el mismo porcentaje de descuento".
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0019 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0023: Carga Masiva de Descuentos Escalonados
+ | Sube por Carga Masiva un Excel con el encabezado de un descuento escalonado y exige que se cree con los valores del archivo.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0023 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0023: Carga Masiva de Descuentos Escalonados
+ | Sube un archivo con fechas pasadas y exige que se rechace y que no se cree nada.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0023 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0025: Cargar combos por XLS con cifra de control.
+ | Sube un Excel con el encabezado de un combo y exige que se cree con su vigencia, días y horario.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: La cifra de control del Excel no existe en el código. Cubre RET-UT-DC-0025 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0029: Cargar combos mediante carga masiva con encabezados, sucursales y artículos.
+ | Sube un Excel con un artículo de un combo y exige que se agregue con su cantidad y descuento.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0029 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0044: Cargar bonificaciones por plantilla XLS con cifra de control (# registros).
+ | Sube un Excel con el encabezado de una bonificación y exige que se cree con su tipo, vigencia, días y horario.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: La cifra de control del Excel no existe en el código. Cubre RET-UT-DC-0044 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0045: Cargar plantilla XLS donde la cifra de control no coincide con filas.
+ | Sube un archivo con una columna que no es de la plantilla y exige que se rechace sin cargar nada.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: No existe una cifra de control: lo que el servidor rechaza es una columna ajena a la plantilla. Cubre RET-UT-DC-0045 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0045: Cargar plantilla XLS donde la cifra de control no coincide con filas.
+ | Sube un archivo con la hoja o las columnas alteradas y exige que se rechace sin cargar nada.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0045 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0043: Cambiar orden de aplicación 1/2/3 por perfil administrador y repetir prueba.
+ | Mueve un tipo de bonificación al primer lugar, verifica que se guarda en la base y al reabrir la pantalla, y restaura el orden original siempre.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Hay 4 tipos de bonificación, no 3. Modifica el catálogo compartido y lo restaura. Cubre RET-UT-DC-0043 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0054: Generar reporte con filtros {cliente, lista, centro, producto, fecha inicio/fin} y exportar XLS.
+ | Genera el reporte de bonificaciones activas con filtros de sucursal, artículo y bonificación, y exige que incluya la bonificación sembrada y que se exporte a XLS.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0054 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0054: Generar reporte con filtros {cliente, lista, centro, producto, fecha inicio/fin} y exportar XLS.
+ | Filtra el reporte por otra sucursal y exige que deje fuera la bonificación sembrada.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0054 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0055: Ejecutar reporte con filtros sin datos y exportar.
+ | Genera el reporte con filtros sin datos y exige un archivo con título y encabezados, con 0 registros.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0055 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0012: Consultar descuentos pasados/vigentes/futuros y bitácora de cambios.
+ | Siembra un descuento pasado, uno vigente y uno futuro y exige lo que muestra cada filtro de vigencia de la lista.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Comportamiento real: "Vigente" incluye el futuro; la pantalla no separa los descuentos futuros. Cubre RET-UT-DC-0012 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0028: Crear combo definiendo vigencia, sucursales, artículos y reglas de aplicación.
+ | Crea un combo por la pantalla con vigencia, días, horario, sucursal y artículo, y exige que quede guardado con esos valores, en la base y al reabrirlo.
+Requiere: Sesión de QA activa y QA_SQL_CONNECTION (si no está, la prueba se omite). Siembra o crea sus datos con prefijo QA_AUTO_ y los borra al terminar. Depende de datos de Testing (sucursal, artículos y ids de carga masiva).
+Nota: Cubre RET-UT-DC-0028 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0057: Consultar y analizar el historial de los clientes ganadores de las premiaciones, con el objetivo...
+ | Siembra una factura ganadora y exige que salga una vez con sucursal, fecha, número de factura, caja, cliente, premiación, monto y cajero.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0057 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0057: Consultar y analizar el historial de los clientes ganadores de las premiaciones, con el objetivo...
+ | Siembra un premio entregado en una venta abierta (ticket) y exige que también salga en el reporte.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0057 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0057: Consultar y analizar el historial de los clientes ganadores de las premiaciones, con el objetivo...
+ | Filtra por sucursal y exige que salga la del ganador y no otra.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0057 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0057: Consultar y analizar el historial de los clientes ganadores de las premiaciones, con el objetivo...
+ | Filtra por rango de fechas y exige que incluya el día del premio (también como primer o último día) y excluya rangos anteriores y posteriores.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0057 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0057: Consultar y analizar el historial de los clientes ganadores de las premiaciones, con el objetivo...
+ | Filtra por una premiación y por dos a la vez y exige que salgan solo las pedidas.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0057 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0006: Consulta del registro y control centralizado y automatizado de las premiaciones brindadas
+ | Siembra dos premios en dos sucursales y exige que salgan juntos en una sola consulta, cada uno con su sucursal.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Es el mismo reporte de DC-0057. Cubre RET-UT-DC-0006 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Siembra una factura con combo y exige factura, preventa, caja, cliente, combo, artículo, porcentaje y monto de descuento y precio final.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: El SP toma Detalle_Saldo como la cantidad ya devuelta: lo respaldan los datos reales, no se confirmó con el equipo. Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Siembra un ticket con combo y exige que aparezca en el reporte.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Devuelve una factura con combo con nota de crédito y exige la fila de la factura y la de la nota de crédito.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Filtra por sucursal y exige que salga solo la pedida.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Filtra por cliente y exige que salga solo el pedido.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Filtra por combo y exige que salga solo el pedido.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0058: Consultar y analizar las facturas en las que se aplicaron combos, facilitando el control...
+ | Filtra por fechas y exige que incluya el día de la factura y excluya los demás.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0058 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Siembra una factura con bono y exige sucursal, documento, caja, cliente, tipo, bonificación, artículos vendido y bonificado, cantidades, monto y cajero.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Siembra un ticket con bono y exige que aparezca.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Devuelve una factura con bono y exige dos filas, la de la factura y la de la nota de crédito, ambas con la factura original.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Filtra por sucursal y exige que salga solo la pedida.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Filtra por cliente y exige que salga solo el pedido.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Filtra por tipo de bonificación y exige que salga solo el pedido.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Filtra por artículo y exige que salga tanto por el vendido como por el bonificado.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0059: Consultar y analizar el detalle de todas las bonificaciones efectivamente aplicadas en el punto...
+ | Filtra por fechas y exige que incluya el día del documento y excluya los demás.
+Requiere: VPN y base de Testing. Siembra facturas, tickets, notas de crédito, combos, bonos y premios con ids altos y prefijo QA_AUTO_, y los borra al terminar cada prueba.
+Nota: Cubre RET-UT-DC-0059 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0037: Facturación: Al cargar una preventa que contiene Combos, esta debe cargarse y nuevamente...
+ | Guarda una preventa con un combo vigente, la carga en Facturación y exige que conserve el precio con descuento del combo.
+Requiere: VPN, usuario de prueba, base de Testing y base local de la caja. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0037 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0037: Facturación: Al cargar una preventa que contiene Combos, esta debe cargarse y nuevamente...
+ | Guarda una preventa con un combo, vence el combo, la carga y exige que conserve el precio pactado en la preventa (9,345.16).
+Requiere: VPN, usuario de prueba, base de Testing y base local de la caja. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Comportamiento acordado con Dos Pinos en el Issue 2276: no se revalida al cargar la preventa. El Excel pide lo contrario: lo decide el PO. Cubre RET-UT-DC-0037 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0037: Facturación: Al cargar una preventa que contiene Combos, esta debe cargarse y nuevamente...
+ | Guarda una preventa con un combo, cambia su descuento de 10 a 20%, la carga y exige que conserve el precio pactado.
+Requiere: VPN, usuario de prueba, base de Testing y base local de la caja. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Mismo acuerdo del Issue 2276. Cubre RET-UT-DC-0037 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0050: Cargar una preventa con bonificaciones y luego facturar después de cambiar condiciones de la...
+ | Carga una preventa con bonificación vigente, la factura y exige que la factura guardada en la base local incluya el producto bonificado.
+Requiere: VPN, usuario de prueba, base de Testing y base local de la caja. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Cubre RET-UT-DC-0050 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0050: Cargar una preventa con bonificaciones y luego facturar después de cambiar condiciones de la...
+ | Carga una preventa cuya bonificación venció después de guardarla, la factura y exige que la factura conserve el producto bonificado.
+Requiere: VPN, usuario de prueba, base de Testing y base local de la caja. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Comportamiento acordado en el Issue 2276: no se revalida. El Excel y los casos de prueba de Azure 1099 y 1122 piden lo contrario: lo decide el PO. Cubre RET-UT-DC-0050 del Excel.
+ | Backend
+ | Pasa
+ | 
+RET-UT-DC-0062: Facturar cliente exonerado con bonificación aplicada.
+ | Factura a un cliente exonerado con una bonificación y exige dos facturas: la cobrada exonerada (impuesto 0) y la del producto bonificado con total e impuesto en 0.
+Requiere: VPN, usuario de prueba, base de Testing y base local de la caja. Abre el punto de venta real y siembra su propio dato (prefijo QA_AUTO_), que borra al terminar.
+Nota: Regla de la US 1814 (SepararFactura_Exonerados_Bonificados). Deja facturas en la base local de la caja. Cubre RET-UT-DC-0062 del Excel.
+ | Backend
+ | Pasa
+ | 
+4.3 Entradas y Salidas de Caja
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | 
+Alta, edición y baja de un tipo de entrada/salida desde la pantalla
+ | Crea un tipo de movimiento de tipo Entrada, lo ubica con el filtro de la tabla, lo edita, comprueba el nombre nuevo y lo elimina con confirmación hasta que deja de aparecer.
+Requiere: Sesión de QA activa. Crea un registro de prueba y lo elimina al terminar (con limpieza por servicio si falla antes).
+ | UI web / HTTP
+ | 
+Alta, edición y baja de un tipo de movimiento por el servicio
+ | Crea un tipo de movimiento y exige respuesta exitosa con un identificador nuevo, lo encuentra en el listado, lo edita, comprueba el nombre nuevo, lo elimina con respuesta exitosa y verifica que ya no aparece.
+Requiere: Sesión de QA activa. Crea un registro de prueba y lo elimina al terminar.
+ | UI web / HTTP
+ | 
+Insertar y aplicar una entrada de caja en efectivo queda aplicada con el monto correcto
+ | Inserta y aplica por WCF una entrada de 100 en efectivo (tipo 1) en la caja 2 de la sucursal 16 y exige respuesta que empiece con ID:; luego lee la fila y comprueba estado AP, total y efectivo iguales a 100.
+Requiere: WCF desplegado, solo Testing, caja con cierre 4 abierto. Escribe un movimiento real y lo anula en la limpieza para revertir el monto.
+Nota: Prueba marcada BugAbierto: según el comentario, Actualizar_Consecutivo devuelve siempre No se encontró la caja para actualizar el consecutivo.
+ | Backend
+ | 
+Anular un movimiento aplicado lo deja en estado AN con usuario y fecha reales
+ | Inserta y aplica una entrada de 150, la anula por WCF y verifica estado AN, fecha de anulación distinta de la fecha por defecto y usuario de anulación igual al usuario logueado.
+Requiere: WCF desplegado, solo Testing, caja 2 sucursal 16 con cierre 4 abierto. Escribe un movimiento real; si ya lo anuló no lo anula de nuevo en la limpieza.
+Nota: Prueba marcada BugAbierto: falla en la precondición porque Insertar_Aplicar no aplica el movimiento (mismo problema que Caja01).
+ | Backend
+ | 
+La lista de entradas y salidas de caja responde sin error
+ | Llama MovCajaEntradaSalida_Lista para la caja configurada con rango de ayer a hoy y exige que el resultado no sea nulo.
+Requiere: WCF de Facturación desplegado. Ninguna, solo lectura.
+Nota: Solo verifica que la llamada responde, no el contenido.
+ | Backend
+ | 
+Tipo de entrada o salida: tipo 0 es Entrada
+ | Construye el modelo a mano con Tipo 0 y comprueba que Des_Tipo es Entrada.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Hay dos caminos de construcción que calculan Des_Tipo distinto.
+ | Unitaria
+ | 
+Tipo de entrada o salida: tipo 1 es Salida
+ | Construye el modelo a mano con Tipo 1 y comprueba que Des_Tipo es Salida.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Tipo de entrada o salida: desde el registro usa el valor del backend
+ | Construye el modelo desde TReg y comprueba que usa el Des_Tipo que ya trae el backend, sin recalcularlo.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Tipo de entrada o salida: las dos rutas coinciden
+ | Para el mismo Tipo_Movimiento comprueba que ambas rutas de construcción producen el mismo resultado.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+                   
+4.4 Formas de pago
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | 
+Alta, edición y baja de otra forma de pago desde la pantalla
+ | Crea una otra forma de pago con nombre y abreviatura de 3 caracteres, la ubica con el filtro de la tabla, la edita, comprueba el nombre nuevo y la elimina con confirmación hasta que deja de aparecer.
+Requiere: Sesión de QA activa. Crea un registro de prueba y lo elimina al terminar (con limpieza por servicio si falla antes).
+ | UI web / HTTP
+ | 
+Alta, edición y baja de otra forma de pago por el servicio
+ | Crea una otra forma de pago y exige respuesta exitosa con ID numérico, comprueba nombre y abreviatura en el listado, la edita (nombre, abreviatura y desactivada), comprueba nombre y estado inactivo, la elimina y verifica que ya no aparece.
+Requiere: Sesión de QA activa. Crea un registro de prueba y lo elimina al terminar.
+ | UI web / HTTP
+ | 
+Otra forma de pago con nombre duplicado se rechaza
+ | Crea una otra forma de pago y luego intenta crear otra con el mismo nombre y distinta abreviatura. Exige que el segundo intento falle con el mensaje 'Ya existe una forma de pago con el mismo nombre'.
+Requiere: Sesión de QA activa. Crea un registro de prueba y lo elimina al terminar.
+ | UI web / HTTP
+ | 
+Alta de otra forma de pago sin sesión queda bloqueada solo por accidente
+ | Sin cookies de sesión, intenta crear una otra forma de pago y exige que no responda éxito y que el texto sea el error de referencia nula (la protección accidental actual).
+Nota: Documenta que OtraFormaPagoController no tiene ninguna anotación de autorización.
+ | UI web / HTTP
+ | 
+El listado de otras formas de pago incluye una forma sembrada con Tipo_Otra = 1
+ | Siembra una fila en Tipo_Forma_Pago con Tipo_Otra = 1, llama OtraFormaPago_Lista y exige encontrarla con su nombre, activa y su abreviatura.
+Requiere: WCF de Catálogo desplegado y cadena SQL. Inserta una fila QA_AUTO_OtraFP_ en Tipo_Forma_Pago y la borra al terminar.
+Nota: Prueba marcada BugAbierto: según el comentario, la fila sembrada no aparece en el resultado del WCF aunque el mismo SELECT sí la encuentra por SQL directo. CO-696-0012, Cambio 1.
+ | Backend
+ | 
+Consultar y eliminar un tipo de forma de pago por WCF funciona
+ | Siembra una fila en Tipo_Forma_Pago, la lee con TipoForma_Pago_ListKey y compara nombre y código de interfaz, la elimina con TipoForma_Pago_Delete sin error y exige que ListKey ya no la encuentre.
+Requiere: WCF de Catálogo Aux3 desplegado y cadena SQL. Inserta una fila QA_AUTO_TipoFP_ y la borra al terminar si el Delete no llegó a ejecutarse.
+Nota: CO-696-0004.
+ | Backend
+ | 
+Cupón de forma de pago: las fechas salen en dd/MM/yyyy
+ | Construye el modelo desde TReg y comprueba que las fechas quedan en formato día/mes/año.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Formato para la grilla de cupones.
+ | Unitaria
+ | 
+Cupón de forma de pago: Id, Nombre y Tipo no se cruzan
+ | Construye el modelo desde TReg y comprueba Id, Nombre, Tipo y TipoNombre sin cruces.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Otra forma de pago: Activo verdadero se muestra Sí
+ | Construye desde TReg con Activo verdadero y comprueba que ActivoD es Sí.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). El cálculo de ActivoD está duplicado en dos sobrecargas del constructor.
+ | Unitaria
+ | 
+Otra forma de pago: Activo falso se muestra No
+ | Construye desde TReg con Activo falso y comprueba que ActivoD es No.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Otra forma de pago (cinco parámetros): Activo verdadero se muestra Sí
+ | Construye con el constructor de cinco parámetros y Activo verdadero y comprueba que ActivoD es Sí.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). La segunda sobrecarga debe comportarse igual que la primera.
+ | Unitaria
+ | 
+Otra forma de pago (cinco parámetros): Activo falso se muestra No
+ | Construye con el constructor de cinco parámetros y Activo falso y comprueba que ActivoD es No.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+4.5 Manejo de Fletes
+Caso / escenario
+ | Qué valida
+ | Capa
+ | Estado
+ | 
+Registro de factura con flete interno
+ | Una factura puede manejar un flete interno utilizando la configuración correspondiente del sistema.
+ | WCF
+ | ✅ Validado
+ | 
+Identificación de flete interno
+ | Los fletes internos se manejan sin requerir un proveedor transportista externo.
+ | WCF
+ | ✅ Validado
+ | 
+Consulta de proveedores transportistas
+ | El servicio recupera los proveedores configurados como transportistas.
+ | WCF
+ | ✅ Validado
+ | 
+Filtro por categoría de transportista
+ | La consulta utilizada para fletes devuelve proveedores pertenecientes a la categoría de transportista correspondiente.
+ | WCF
+ | ✅ Validado
+ | 
+Consulta de proveedores activos
+ | El listado utilizado para seleccionar proveedores debería aplicar correctamente el filtro esperado. Actualmente se detectó que la consulta puede devolver el mismo conjunto que el listado general.
+ | HTTP
+ | ⚠️ Bug abierto
+ | 
+Generación del Histórico de Fletes
+ | El reporte puede generarse y descargarse correctamente desde Site Admin.
+ | UI
+ | ✅ Validado
+ | 
+Información del Histórico de Fletes
+ | Se valida que una factura con información de flete pueda localizarse en el reporte generado.
+ | UI
+ | ✅ Validado
+ | 
+Flete interno en Histórico de Fletes
+ | Las facturas que utilizan flete interno deberían aparecer en el Histórico de Fletes. Actualmente pueden quedar excluidas del reporte.
+ | WCF 
+ | ⚠️ Bug abierto
+ | 
+4.6 Tipo Cliente / Tarifa Reducida
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | Resultado
+ | 
+Exoneración de cliente vencida se guarda sin rechazo
+ | Edita el cliente CLIENTE CONTADO, agrega una exoneración cuya fecha de vencimiento fue ayer y exige que el sistema la guarde igual, con consecutivo asignado y aviso de éxito. Documenta que la validación de vencimiento está desactivada hoy. Luego borra la exoneración creada y confirma que desaparece de la tabla.
+ | UI web / HTTP
+ | Pasa
+ | 
+Exoneración de cliente: copia todos los campos del encabezado
+ | Mapea una exoneración completa y comprueba consecutivo, empresa, cliente, documento, proyecto CFIA, porcentaje, autorización, fechas, anno, tipos, institución, indicadores y nombres.
+ | Unitaria
+ | Pasa
+ | 
+Exoneración de cliente: las fechas descriptivas vienen ya formateadas del DTO
+ | Comprueba que DesFechaEmision y DesFechaVencimiento del modelo son 01/03/2026 y 01/03/2027, copiadas tal cual del DTO.
+ | Unitaria
+ | Pasa
+ | 
+Exoneración de cliente: la identificación del cliente no se mapea
+ | Siembra Cliente_Identificacion y comprueba que ClienteIdentificacion del modelo queda vacía.
+ | Unitaria
+ | Pasa
+ | 
+Exoneración de cliente: mapea los códigos CABYS sin cruzar campos
+ | Agrega un CABYS y comprueba que Cabys_Id viene de CABYS_Id y Nombre de CABYS_Nombre.
+ | Unitaria
+ | Pasa
+ | 
+Exoneración de cliente con lista CABYS nula no falla
+ | Deja Cabys en nulo y comprueba que no lanza excepción y que la lista queda vacía.
+ | Unitaria
+ | Pasa
+ | 
+Exoneración vencida se rechaza
+ | Llama validateExoneracion con fecha de vencimiento de ayer y comprueba que lanza una excepción con el texto 'La exoneración se encuentra vencida.'
+ | Unitaria
+ | Pasa
+ | 
+Exoneración vigente se acepta
+ | Llama validateExoneracion con vencimiento de manana y comprueba que devuelve verdadero.
+Nota: Regla hoy sin uso real en flujos (TODO 239).
+ | Unitaria
+ | Pasa
+ | 
+Cédulas distintas no bloquean la exoneración
+ | Llama validateExoneracion con cédulas distintas y vencimiento futuro y comprueba que devuelve verdadero, porque el chequeo de cédula tiene su excepción comentada en el código.
+ | Unitaria
+ | Pasa
+ | 
+Tipo de cliente desde registro: copia solo Id, nombre y autorizado
+ | Construye el modelo desde TRegTipoCliente y comprueba Id, Nombre y Permite_Autorizado; descuento, precio, tipo institucional y comportamiento quedan en sus valores por defecto.
+ | Unitaria
+ | Pasa
+ | 
+Tipo de cliente con constructor manual: copia los siete campos
+ | Construye el modelo con siete parámetros y comprueba Id, nombre, descuento, precio, tipo institucional, permite autorizado y comportamiento.
+ | Unitaria
+ | Pasa
+ | 
+Ningún constructor mapea el id de empresa
+ | Construye el modelo por ambos constructores con empresa 7 y comprueba que Emp_Id queda en cero en ambos.
+ | Unitaria
+ | Pasa
+ | 
+Con dos grupos de tarifa reducida se aplica el del cliente y no el de menor porcentaje
+ | Escanea el artículo 219007 (en grupos 5 al 4% y 12 al 2%) con el cliente 10100778 (grupo 5) y tarifa reducida activa, y exige grupo de impuesto 5 y monto 4.0.
+Requiere: WCF desplegado, solo Testing. El artículo debe tener impuesto configurado en la sucursal; si no, queda inconclusa. Ninguna, solo lectura.
+ | Backend
+ | Omitida: el artículo 219007 no tiene impuesto configurado para la sucursal 3
+ | 
+CRUD básico de Tipo de Cliente por WCF
+ | Inserta un tipo de cliente (respuesta ID:), lo lee y compara nombre, descuento y precio, lo actualiza y vuelve a comparar, lo elimina y exige que ListKey ya no lo encuentre.
+Requiere: WCF de Catálogo Aux desplegado. Crea un tipo QA_AUTO_ y lo borra por SQL al terminar si el Delete no se ejecutó.
+ | Backend
+ | Pasa
+ | 
+4.7 Ajustes de Precios
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | 
+La pantalla Artículo por Sucursal devuelve el precio de flete real
+ | Lee el flete del artículo 00016001 por SQL y comprueba que AXS_ListKey_Precios devuelve el mismo Precio_Flete.
+Requiere: WCF de Catálogo Aux desplegado y cadena SQL. El artículo ancla debe existir y tener flete distinto de cero en la sucursal, si no queda inconclusa. Ninguna, solo lectura.
+Nota: CO-696-0014, Cambio 2 de la oferta v4.
+ | Backend
+ | 
+Los habladores devuelven el precio de flete real
+ | Lee el flete del artículo 00016001 por SQL y comprueba que AXS_ListKey_Precios_Etiquetas devuelve el mismo Precio_Flete.
+Requiere: WCF de Catálogo Aux desplegado y cadena SQL. El artículo ancla debe existir y tener flete distinto de cero, si no queda inconclusa. Ninguna, solo lectura.
+Nota: CO-696-0014, Cambio 5 de la oferta v4.
+ | Backend
+ | 
+El precio de Punto de Venta suma el flete al precio base
+ | Lee AxS_Precio1 y AxS_Precio_Flete del artículo 00016001 por SQL, escanea el artículo con Articulo_Scaneo y exige que Precio_Flete coincida y que Precio(0) sea precio base más flete.
+Requiere: WCF de Facturación desplegado y cadena SQL. El artículo ancla debe existir y tener flete distinto de cero, si no queda inconclusa. Ninguna, solo lectura.
+Nota: CO-696-0014, Cambio 8 de la oferta v4 (Task 1505).
+ | Backend
+ | 
+Ajuste de flete: la fila de trabajo copia cada campo a su propiedad
+ | Mapea una fila de la tabla de trabajo y comprueba que cada campo llega a su propiedad sin cruces y que PrecioFinalSinIVA es PrecioBase más FleteNuevo.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Riesgo de copiar y pegar entre las dos sobrecargas.
+ | Unitaria
+ | 
+Ajuste de flete: un flete nuevo nulo se conserva nulo
+ | Mapea una fila con FleteNuevo nulo y comprueba que el modelo lo deja nulo (no lo convierte en 0) y que el precio final usa FleteActual.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Distingue mantener el flete actual de ponerlo en cero.
+ | Unitaria
+ | 
+Ajuste de flete: la tabla definitiva deja en blanco lo que no guarda
+ | Mapea desde la tabla definitiva y comprueba que TrabajoId, PrecioBase y PrecioFinalSinIVA quedan en su valor por defecto.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Esa tabla no tiene esos campos.
+ | Unitaria
+ | 
+Ajuste de flete: una lista nula da lista vacía
+ | Llama las 4 variantes de RegToModel_List con la lista de entrada nula y comprueba que devuelven una lista vacía y no nula.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Ajuste de flete: el mapeo de listas conserva el orden
+ | Mapea una lista y comprueba que el resultado respeta el orden de entrada.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Ajuste de flete: el artículo arrastra sus sucursales
+ | Mapea un artículo con sucursales anidadas y comprueba que el Id viene de Articulo_Id y que las sucursales hijas se mapean bien.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Ajuste de flete: un artículo recién creado trae la lista vacía
+ | Construye un modelo nuevo y comprueba que Sucursales no es nula y está vacía.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Ajuste de flete: el mapeo inverso no lleva las sucursales
+ | Mapea del modelo al DTO de trabajo y comprueba que copia el encabezado pero no la lista de sucursales.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Comportamiento deliberado, documentado por la prueba.
+ | Unitaria
+ | 
+Ajuste de flete: un TrabajoId inválido cae en Guid vacío
+ | Mapea con un TrabajoId con texto inválido y comprueba que queda en Guid.Empty sin lanzar excepción.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Hallazgo documentado: la conversión es silenciosa.
+ | Unitaria
+ | 
+Precio final sin flete nuevo usa el flete actual
+ | Con Flete_Nuevo nulo comprueba que el precio final es Precio_Base más Flete_Actual.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). Fórmula de negocio Precio_Final_Sin_IVA.
+ | Unitaria
+ | 
+Precio final con flete nuevo usa el nuevo y no el actual
+ | Con Flete_Nuevo definido comprueba que el precio final usa ese valor y no el actual.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Precio final con flete nuevo en cero pone el flete en cero
+ | Con Flete_Nuevo igual a 0 (distinto de nulo) comprueba que el precio final es solo Precio_Base.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Precio final con flete nuevo negativo resta del precio base
+ | Con un flete nuevo negativo comprueba que se resta del precio base.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674). No hay validación de signo.
+ | Unitaria
+ | 
+Precio final con decimales no pierde precisión
+ | Suma 0.1 y 0.2 y comprueba que el resultado es exactamente 0.3 (usa decimal, no double).
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+Un DTO de ajuste recién creado arranca en cero
+ | Crea el DTO y comprueba Flete_Nuevo nulo y Precio_Final_Sin_IVA en 0.
+Requiere: Ninguno: unitaria sin base de datos ni servicios.
+Nota: Proyecto ADMIN_LDCOMTests (Sprint 20, PR #674).
+ | Unitaria
+ | 
+4.8 Seguridad
+Caso / escenario
+ | Qué valida
+ | Capa
+ | Estado
+ | 
+Auditoría al crear Rol
+ | La creación de un rol genera el registro correspondiente en la bitácora de auditoría.
+ | WCF + BD
+ | ✅ Validado
+ | 
+Auditoría al modificar Rol
+ | Los cambios realizados sobre un rol quedan registrados correctamente en la bitácora.
+ | WCF + BD
+ | ✅ Validado
+ | 
+Auditoría al eliminar Rol
+ | La eliminación de un rol genera la evidencia de auditoría correspondiente.
+ | WCF + BD
+ | ✅ Validado
+ | 
+Datos de auditoría de Rol
+ | Los registros de bitácora conservan la información necesaria para identificar la operación realizada sobre el rol.
+ | WCF + BD
+ | ✅ Validado
+ | 
+Auditoría al eliminar Usuario
+ | La eliminación de un usuario genera la evidencia de auditoría correspondiente.
+ | WCF + BD
+ | ✅ Validado
+ | 
+Cobertura de auditoría del dominio de Seguridad
+ | Se verifica que las tablas contempladas dentro del dominio de Seguridad tengan habilitada la configuración requerida para generar auditoría.
+ | BD
+ | ✅ Validado
+ | 
+Validación de las 10 tablas de Seguridad
+ | Se comprueba individualmente que las 10 tablas incluidas en la cobertura de Seguridad estén contempladas por el mecanismo de auditoría.
+ | BD
+ | ✅ Validado
+ | 
+4.9 Catálogos administrativos de Site Admin
+Caso / escenario
+ | Qué valida
+ | Capa
+ | Estado
+ | 
+Acceso a catálogos administrativos
+ | Las pantallas incluidas en el smoke pueden abrirse correctamente desde Site Admin.
+ | UI
+ | ✅ Validado
+ | 
+Carga del listado de cada catálogo
+ | Cada pantalla carga el listado correspondiente sin presentar errores durante la navegación.
+ | UI
+ | ✅ Validado
+ | 
+Validación del título de pantalla
+ | Cada catálogo muestra correctamente la pantalla esperada al acceder a su ruta.
+ | UI
+ | ✅ Validado
+ | 
+Ausencia de errores HTTP 5xx
+ | La navegación por los catálogos incluidos en el smoke no genera respuestas HTTP 5xx.
+ | UI
+ | ✅ Validado
+ | 
+CRUD de Zonas
+ | Se valida la creación, modificación y eliminación de registros desde el catálogo de Zonas.
+ | UI
+ | ✅ Validado
+ | 
+CRUD de Transporte
+ | Se valida el mantenimiento de registros del catálogo de Transporte desde Site Admin.
+ | UI
+ | ✅ Validado
+ | 
+CRUD de Tipo de Entrada/Salida
+ | Se valida la creación, modificación y eliminación de Tipos de Entrada/Salida.
+ | HTTP + UI
+ | ✅ Validado
+ | 
+CRUD de Otra Forma de Pago
+ | Se valida la creación, modificación y eliminación de Otras Formas de Pago.
+ | HTTP + UI
+ | ✅ Validado
+ | 
+CRUD de Impuestos
+ | Se valida el mantenimiento de registros del catálogo de Impuestos.
+ | UI
+ | ✅ Validado
+ | 
+CRUD de Denominaciones
+ | Se valida el mantenimiento de registros del catálogo de Denominaciones.
+ | UI
+ | ✅ Validado
+ | 
+4.10 Cambios en facturación 
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | 
+Autoconsumo asigna el cliente del parámetro al elegir el subdocumento
+ | Elige el subdocumento de Autoconsumo y su centro de costo, y comprueba que el documento pasa al cliente del parámetro (QUESADA CASTRO RONALD GERARDO) y se rotula con el subdocumento.
+Requiere: Crea el subdocumento temporal 'QA Autoconsumo' con el parámetro de empresa Cliente_Autoconsumo (cliente 4001902) y lo elimina al terminar; requiere usuario y base de Testing configurados.
+ | UI escritorio
+ | 
+En Autoconsumo no se puede cambiar de cliente
+ | Dentro de Autoconsumo activa Cambiar Clientes y comprueba que aparece un aviso, que no se abre la busqueda de clientes y que el cliente de Autoconsumo sigue en el documento.
+Requiere: Crea el subdocumento temporal 'QA Autoconsumo' con el parámetro de empresa Cliente_Autoconsumo (cliente 4001902) y lo elimina al terminar; requiere usuario y base de Testing configurados.
+ | UI escritorio
+ | 
+Al salir de Autoconsumo vuelve el cliente por defecto de la caja
+ | Estando en Autoconsumo cambia al subdocumento Ticket Electrónico y comprueba que el cliente del parámetro se suelta y vuelve el cliente por defecto 10000001.
+Requiere: Crea el subdocumento temporal 'QA Autoconsumo' con el parámetro de empresa Cliente_Autoconsumo (cliente 4001902) y lo elimina al terminar; requiere usuario y base de Testing configurados.
+ | UI escritorio
+ | 
+Autoconsumo sin centro de costo vuelve al subdocumento por defecto
+ | Elige Autoconsumo, cancela la busqueda de centro de costo y comprueba que aparece un aviso y que el documento no queda como Autoconsumo ni con el cliente del parámetro.
+Requiere: Crea el subdocumento temporal 'QA Autoconsumo' con el parámetro de empresa Cliente_Autoconsumo (cliente 4001902) y lo elimina al terminar; requiere usuario y base de Testing configurados.
+ | UI escritorio
+ | 
+En Autoconsumo el descuento no esta permitido
+ | Dentro de Autoconsumo activa la función Descuento y comprueba que la aplicación lo bloquea con un aviso.
+Requiere: Crea el subdocumento temporal 'QA Autoconsumo' con el parámetro de empresa Cliente_Autoconsumo (cliente 4001902) y lo elimina al terminar; requiere usuario y base de Testing configurados.
+ | UI escritorio
+ | 
+En Autoconsumo los artículos entran con valor cero
+ | Dentro de Autoconsumo agrega el artículo 15000788 y comprueba que el total del documento es cero.
+ | UI escritorio
+ | 
+Autogestion: no se factura a un cliente con la cédula del cajero
+ | Iguala la cédula del cajero con la del cliente por defecto de la caja, agrega un artículo y pulsa Imprimir Documento: comprueba que se bloquea con un aviso y que no se abre la pantalla de pago.
+Requiere: Modifica temporalmente la cédula del cajero en la base de Testing y la restaura siempre al terminar.
+ | UI escritorio
+ | 
+Devolución dentro del plazo llega al detalle sin autorización y con fecha de solo lectura
+ | Fija un plazo mayor a la antiguedad de la factura, elige Nota de Crédito / Contado y la busca por número: comprueba que no se pide autorización, que se llega al detalle y que la fecha mostrada no es editable y coincide con la fecha de la factura original.
+Requiere: Lee de la base central una factura de contado de la sucursal 3 con la antiguedad requerida (si no hay, la prueba queda inconclusa); modifica el plazo máximo del subdocumento de Nota de Crédito y lo restaura siempre. No confirma la devolución, por lo que no genera notas de crédito. Requiere la variable FACTURACION_UI_SQL_CONNECTION.
+ | UI escritorio
+ | 
+Devolución fuera del plazo pide autorización y si no se da no continua
+ | Fija un plazo menor a la antiguedad de la factura y la selecciona: comprueba que se pide autorización, que al cancelarla aparece un aviso de exceso de plazo y que no se llega al detalle de la devolución.
+ | UI escritorio
+ | 
+Devolución fuera del plazo: un usuario sin permiso no puede autorizar
+ | Con la devolución fuera del plazo ingresa en la autorización las credenciales del usuario de prueba, que no tiene la opción 'Excede Plazo Devolución Anulación' (opción 162), y comprueba que no se llega al detalle.
+ | UI escritorio
+ | 
+Devolución fuera del plazo: un usuario con permiso autoriza y llega al detalle
+ | Con la devolución fuera del plazo ingresa en la autorización las credenciales de un usuario autorizador y comprueba que se llega al detalle de la devolución.
+ | UI escritorio
+ | 
+Factura de artículo con receta: la receta queda guardada
+ | Marca el artículo como solicita receta, lo factura, captura un número de receta, paga en efectivo y comprueba que hay una factura nueva en la base local y exactamente un registro con esa receta en Factura_Detalle_Receta.
+ | UI escritorio
+ | 
+Factura de artículo con serie: el VIN queda guardado
+ | Marca el artículo como guarda serie, lo factura, captura un VIN, paga en efectivo y comprueba que hay una factura nueva en la base local y exactamente un registro con ese VIN en Factura_Detalle_Serie.
+Requiere: Marca el indicador del artículo 15000788 en Testing y lo restaura siempre. Cada prueba deja una factura real en la base local de la caja y consume una unidad del artículo. Requiere la variable de conexión a la base local.
+ | UI escritorio
+ | 
+Factura de contado pagada en efectivo queda registrada
+ | Agrega el artículo 15000788, paga en efectivo hasta cerrar los totales y comprueba que Factura_Encabezado de la base local aumenta en exactamente una factura.
+Requiere: Requiere la variable de conexión a la base local. Deja una factura real en Testing que no se puede borrar, una por corrida; no limpia.
+ | UI escritorio
+ | 
+Transferencia por el monto exacto cubre la venta
+ | Agrega una transferencia (banco BAC colones, número QA0001) por 12,688.00 y comprueba que lo pagado es ese monto y que el cambio o faltante es cero.
+Requiere: Llega a la pantalla de pago y cierra la aplicación sin imprimir, por lo que no emite factura ni escribe en la base. El artículo 15000788 vale 12,688.94 y se cobran 12,688.00 por redondeo.
+ | UI escritorio
+ | 
+Transferencia mayor a la venta se acepta y el cambio es la diferencia
+ | Agrega una transferencia de 15,000.00 y comprueba que lo pagado es 15,000.00 y que el cambio es la diferencia contra la venta redondeada.
+Requiere: Llega a la pantalla de pago y cierra la aplicación sin imprimir, por lo que no emite factura ni escribe en la base. El artículo 15000788 vale 12,688.94 y se cobran 12,688.00 por redondeo.
+ | UI escritorio
+ | 
+Efectivo más transferencia con exceso: el cambio sale de la suma
+ | Agrega efectivo por 1,000 y una transferencia por 13,000 y comprueba que lo pagado es 14,000 y que el cambio es 14,000 menos la venta redondeada.
+ | UI escritorio
+ | 
+Transferencia sin número no se agrega
+ | Intenta agregar una transferencia de 5,000.00 sin número y comprueba que el POS muestra un aviso y que lo pagado sigue en cero.
+ | UI escritorio
+ | 
+Forma de pago de preventa de tipo no editable no se puede eliminar
+ | Carga una preventa con tarjeta cuyo Tipo de Preventa no es editable en Facturación, abre el pago, intenta eliminar la tarjeta y comprueba que la fila sigue en la lista.
+Requiere: Siembra su propia preventa en la sucursal 3 en Testing, la carga con Cargar Preventa y la borra al terminar. Requiere usuario, contrasena y conexión SQL de pruebas.
+ | UI escritorio
+ | 
+Forma de pago de preventa de tipo editable se puede eliminar
+ | Carga una preventa con tarjeta cuyo Tipo de Preventa es editable en Facturación, abre el pago, elimina la tarjeta y comprueba que la fila desaparece de la lista.
+Requiere: Siembra su propia preventa en la sucursal 3 en Testing, la carga con Cargar Preventa y la borra al terminar. Requiere usuario, contrasena y conexión SQL de pruebas.
+ | UI escritorio
+ | 
+Articulo restringido exige la receta antes de pagar
+ | Agrega el artículo restringido y pulsa Imprimir Documento: comprueba que se abre la captura de receta sin abrir el pago, que Aceptar sin número avisa y no cierra la captura, y que el pago sigue sin abrirse.
+ | UI escritorio
+ | 
+Articulo restringido sin receta se puede eliminar y continuar
+ | Abre la captura de receta, sale sin receta, comprueba que el artículo sigue en el documento, activa Eliminar Articulo y comprueba que el documento queda sin total.
+ | UI escritorio
+ | 
+Regalía con centro de costo se emite con total cero y guarda el CECO
+ | Elige el subdocumento 'QA Regalía CECO' y un centro de costo, agrega el artículo, emite sin pago y comprueba en la factura local el subdocumento 3, total cero, precio unitario cero, al menos una linea y Ceco_Id mayor a cero.
+ | UI escritorio
+ | 
+Reimpresión: buscar una factura por número la lista
+ | Con la caja sin linea (trabajar de forma local), abre Reimpresión > Reimprimir Contado, busca por número la última factura local y comprueba que la lista la muestra. No imprime.
+ | UI escritorio
+ | 
+Reimpresión: un número inexistente deja la lista vacía
+ | Con la caja sin linea busca el número 9999999 en Reimprimir Contado y comprueba que la lista queda con cero filas. No imprime.
+ | UI escritorio
+ | 
+Articulo con serie exige el VIN antes de pagar
+ | Agrega el artículo con serie y pulsa Imprimir Documento: comprueba que se abre la captura de serie sin abrir el pago, que Aceptar sin VIN avisa y no cierra la captura, y que el pago sigue sin abrirse.
+ | UI escritorio
+ | 
+Articulo con serie no pide el VIN hasta imprimir
+ | Agrega el artículo con serie y comprueba que la captura de VIN no se abre al agregarlo, y que si se abre al pulsar Imprimir Documento.
+ | UI escritorio
+ | 
+Tarifa reducida se quita al volver a Cliente Contado
+ | Agrega el artículo 15000788, cambia al cliente de tarifa reducida (BRENES RAMIREZ, grupo A1) y comprueba que el total baja, luego vuelve a CLIENTE CONTADO y comprueba que el total es exactamente el original.
+ | UI escritorio
+ | 
+Descuento de artículo bloqueado en linea de combo
+ | Llama FuncionNoPermiteModificarCombo con Descuento_Articulo y comprueba que devuelve verdadero (bloqueada).
+Requiere: Requiere el ensamblado de Facturación y crear el formulario Frm_Facturacion sin mostrarlo (acceso por reflexion con ExposedObject); no usa base de datos.
+ | Unitaria
+ | 
+Función por subdocumento sin sucursal inicializada no bloquea
+ | Llama Funcion_No_Permitida_Por_SubDocumento con Bonificaciones con la sucursal sin inicializar y comprueba que devuelve falso.
+ | Unitaria
+ | 
+Linea de combo con función bloqueada lanza excepción con el nombre del combo
+ | Pasa una linea con Combo_Id 42 y nombre Combo-Prueba y la función Descuento_Articulo, y comprueba que lanza una excepción cuyo mensaje contiene Combo-Prueba.
+ | Unitaria
+ | 
+Cambiar el tipo operativo del artículo a Bodega queda guardado
+ | Edita el artículo con TArticulo.Modify poniendo el tipo operativo en Bodega (2), luego lee con TArticulo.ListKey y comprueba que devuelve Bodega.
+ | Backend
+ | 
+Guardar el tipo operativo no cambia otras columnas del artículo
+ | Toma una foto de las filas del artículo en Articulo y Articulo_Info, cambia el tipo operativo a Bodega y compara columna por columna; solo puede diferir la columna editada, la fecha de actualización y el usuario que modifica.
+ | Backend
+ | 
+Activar Guardar serie (VIN) queda guardado sin tocar otras columnas
+ | Con Guardar serie desactivado, lo activa con TArticulo.Modify, verifica que Articulo_Guardar_Serie queda en verdadero en la base y en ListKey, y que ninguna otra columna cambió.
+ | Backend
+ | 
+ListKey devuelve el tipo operativo guardado del artículo
+ | Lee el tipo operativo directo de la tabla Articulo y comprueba que TArticulo.ListKey devuelve el mismo valor.
+ | Backend
+ | 
+El catálogo de tipo operativo ofrece Despacho y Bodega y ningún artículo queda huérfano
+ | Consulta el catálogo y exige que Despacho (1) y Bodega (2) estén activos; luego cuenta los artículos cuyo tipo operativo no existe en el catálogo y exige que sean cero.
+ | Backend
+ | 
+No debe haber más de una resolución activa por caja y tipo de documento
+ | Agrupa Caja_Resolucion con estado AC por empresa, sucursal, caja y tipo de consecutivo, y exige que ninguna combinación tenga más de una fila.
+ | Backend
+ | 
+Diagnóstico: una resolución activa vencida se devuelve como activa
+ | Crea por WCF una resolución en estado AC con vencimiento 30 días atrás (tipo de consecutivo ZZ), confirma en la base que está activa y vencida, llama CajaResolucionActiva_ListKey y exige que devuelva esa misma fila con estado AC.
+Requiere: WCF desplegado, cadena SQL y URL del catálogo. Crea una fila QA_AUTO_ en Caja_Resolucion y la borra por SQL al terminar (verifica que no quede nada).
+Nota: Es un diagnóstico del comportamiento actual, no una regla de negocio confirmada: la consulta no compara la fecha de vencimiento. Si algún día devuelve nulo, hay que revisar la prueba.
+ | Backend
+ | 
+El servicio de Facturación responde al eco
+ | Llama Facturacion_Eco y exige que devuelva verdadero.
+ | Backend
+ | 
+La fecha del servidor está a menos de un día de la fecha actual
+ | Llama Factura_Fecha_Server y exige que la diferencia con la fecha y hora de la máquina que corre la prueba sea menor a un día.
+ | Backend
+ | 
+El histórico del cliente en un rango devuelve las líneas de sus facturas
+ | Calcula con SQL directo las facturas del cliente 4001556 en la sucursal 16 entre el 1 y el 31 de agosto de 2026 (cantidad de líneas y monto) y compara con lo que devuelve Factura_List_Consumo.
+ | Backend
+ | 
+Un rango de un solo día excluye las facturas de otras fechas
+ | Toma el primer día con facturas del cliente ancla, consulta solo ese día y exige que coincida con el SQL directo y que tenga menos líneas que el mes completo.
+ | Backend
+ | 
+Un rango sin facturas no devuelve filas ni errores
+ | Verifica primero por SQL que el cliente no tiene facturas del 1 al 2 de enero de 2026 y exige que Factura_List_Consumo devuelva cero líneas sin tabla de errores.
+ | Backend
+ | 
+Un descuento manual de línea aparece como una fila más en el reporte
+ | Cuenta las filas del reporte Descuentos Manuales, siembra un descuento de origen 2 (línea) y exige que el reporte tenga exactamente una fila más.
+ | Backend
+ | 
+Un descuento manual por documento aparece como una fila más en el reporte
+ | Cuenta las filas del reporte, siembra un descuento de origen 3 (documento) y exige exactamente una fila más.
+ | Backend
+ | 
+Un descuento automático no aparece en el reporte de descuentos manuales
+ | Cuenta las filas del reporte, siembra un descuento de origen 1 (automático) y exige que el número de filas no cambie.
+ | Backend
+ | 
+Facturas por Tipo de Creación devuelve una fila por factura con sus columnas de auditoría
+ | Genera el reporte 448 sin filtro de sucursal (1 de julio al 30 de septiembre de 2026), compara el número de filas con el conteo de Factura_Encabezado y exige las columnas Id Sucursal, Sucursal, Contingencia, Número de Documento y Tipo de Documento.
+ | Backend
+ | 
+El filtro de sucursal deja solo las facturas de esa sucursal
+ | Genera el reporte 448 filtrado por la sucursal 16, compara con el conteo SQL y exige que todas las filas tengan Id Sucursal 16.
+ | Backend
+ | 
+La columna Contingencia refleja si la factura fue en línea
+ | Cuenta las filas con valor En Línea y exige que coincidan con las facturas con Factura_OnLine = 1; el resto debe decir Contingencia.
+ | Backend
+ | 
+Libro de Ventas devuelve una fila por línea de factura con el mismo total que el SQL
+ | Genera el reporte 447 sin filtros y compara el número de filas y la suma de la columna Total (con tolerancia de 0.01) contra un SQL directo sobre las mismas tablas.
+ | Backend
+ | 
+El tipo anulación y el plazo del subdocumento se guardan y se leen iguales
+ | Crea un subdocumento de Nota de Crédito con EsAnulacion verdadero y plazo 15 días, lo lee con ListKey y compara nombre, tipo y plazo.
+ | Backend
+ | 
+Cambiar el tipo no modifica el plazo y cambiar el plazo no modifica el tipo
+ | Crea el subdocumento (anulación, 15 días), cambia solo el tipo a devolución y verifica que el plazo sigue en 15; luego cambia solo el plazo a 30 y verifica que el tipo no cambió.
+ | Backend
+ | 
+Código de autorización con usuario inexistente no otorga permiso
+ | Llama a Seg_Usuario_Validar_OpcionSucursal por el servicio de Seguridad con un usuario y contraseña que no existen y exige que la respuesta sea nula, es decir, que nunca se otorgue permiso para exceder el plazo de devolución o anulación.
+ | Backend
+ | 
+4.11 Granel 
+Caso de uso
+ | Qué verifica
+ | Tipo
+ | Resultado
+ | 
+Crear un tipo de preventa guarda los indicadores y la sucursal que factura
+ | Crea un tipo de preventa con requiere confirmación, no editable en preventa, editable en facturación y requiere fecha de despacho. Lo lee de vuelta y compara nombre, activo, los cuatro indicadores y que la sucursal que factura sea 0 (usa la sucursal de la caja).
+ | UI web / HTTP
+ | Pasa
+ | 
+Editar un tipo de preventa cambia solo lo editado
+ | Crea un tipo, lo edita (nuevo nombre, inactivo, ya no editable en preventa) y exige respuesta vacía de éxito. Lo lee de vuelta y compara nombre, activo y editable en preventa, y que el indicador de editable en facturación, que no se tocó, siga igual.
+ | UI web / HTTP
+ | Pasa
+ | 
+Un tipo de preventa sin uso se puede eliminar
+ | Crea un tipo, lo elimina, exige respuesta vacía de éxito y comprueba que ya no aparece en la lista.
+Requiere: Sesión de QA activa. Crea tipos con prefijo QA_AUTO_TipoPreventa_ y al terminar borra los que queden con ese prefijo.
+ | UI web / HTTP
+ | Pasa
+ | 
+Un tipo de preventa solo puede restringirse a una categoría
+ | Intenta crear un tipo de preventa con dos categorías y exige que el servidor rechace el alta con un mensaje (la respuesta no debe ser un identificador numérico).
+ | UI web / HTTP
+ | Pasa
+ | 
+Eliminar desde la pantalla un tipo con permisos por rol no debe dejarlo sin su categoría
+ | Crea un tipo con una categoría, siembra por SQL un permiso por rol para ese tipo, lo intenta eliminar desde la pantalla con confirmación y exige que el tipo siga en la lista y conserve su categoría.
+ | UI web / HTTP
+ | Por corregir: bug #2414 resuelto
+ | 
+Los indicadores del tipo de preventa se guardan en el alta y vuelven iguales
+ | Inserta un tipo con Requiere_Confirmacion, Editable_Facturacion y Requiere_Fecha_Despacho en verdadero, Editable_Preventa en falso y Suc_Id_Factura 0, y con ListKey comprueba que vuelven iguales y que el tipo queda activo.
+ | Backend
+ | Pasa
+ | 
+Cambiar un indicador del tipo de preventa no modifica los demás
+ | Crea un tipo, cambia solo Editable_Preventa a falso con Modify y verifica que Editable_Facturacion, Activo y el nombre no cambian.
+ | Backend
+ | Pasa
+ | 
+Guardar dos categorías se rechaza y conserva la que ya estaba
+ | Crea un tipo con una categoría, intenta guardar dos categorías con Categorias_Guardar, exige que se rechace y que siga habiendo una sola categoría.
+ | Backend
+ | Pasa
+ | 
+Guardar una categoría sin subcategoría se rechaza y conserva la existente
+ | Crea un tipo con una categoría, intenta guardar una categoría con subcategoría 0, exige que se rechace y que la categoría original siga con su subcategoría 14.
+ | Backend
+ | Pasa
+ | 
+Eliminar un tipo de preventa sin uso borra el tipo y sus categorías
+ | Crea un tipo con una categoría, llama Remove y exige que ya no existan filas del tipo en Tipo_Preventa ni en Tipo_Preventa_Categoria.
+ | Backend
+ | Pasa
+ | 
+Eliminar un tipo con permisos por rol borra también sus permisos y categorías
+ | Crea un tipo con una categoría y le siembra un permiso por rol; Remove debe eliminar el tipo junto con su permiso por rol y su categoría.
+ | Backend
+ | Pasa: corregido (#2414)
+ | 
+Tipo sin sucursal que factura reserva sobre la sucursal de la preventa
+ | Resuelve la sucursal que factura de un tipo con Suc_Id_Factura 0, con la sucursal de la preventa en 3, y comprueba que devuelve 3. 
+ | Backend
+ | Pasa
+ | 
+Tipo con sucursal que factura reserva sobre ella
+ | Resuelve la sucursal que factura de un tipo con una sucursal configurada, con la sucursal de la preventa en 3, y comprueba que devuelve la configurada y no la 3.
+ | Backend
+ | Pasa
+ | 
+Preventa sin tipo conserva su sucursal
+ | Resuelve la sucursal que factura con TipoPreventa_Id 0 y la sucursal de la preventa en 3, y comprueba que devuelve 3.
+ | Backend
+ | Pasa
+ | 
+El SI de la sucursal gana sobre el de la empresa
+ | Con una fila de Parametro_Sucursal en SI para una sucursal libre, comprueba que DebeComprometerExistencia devuelve verdadero.
+ | Backend
+ | Pasa
+ | 
+El NO de la sucursal gana sobre el de la empresa
+ | Con una fila de Parametro_Sucursal en NO para una sucursal libre, comprueba que DebeComprometerExistencia devuelve falso aunque la empresa tenga SI.
+ | Backend
+ | Pasa
+ | 
+Sin fila propia la sucursal hereda el parámetro de empresa
+ | Con una sucursal libre sin fila de parámetro, lee Comprometer_Existencia_Express_Preventa de la empresa y comprueba que devuelve verdadero solo si ese valor es SI.
+ | Backend
+ | Pasa
+ | 
+Un tipo con preventas no se puede eliminar
+ | Intenta eliminar con Remove un tipo que tiene una preventa asociada y exige que devuelva falso, que el mensaje sugiera desactivarlo y que el tipo siga existiendo.
+ | Backend
+ | Pasa
+ | 
+Desactivar un tipo con preventas está permitido
+ | Desactiva un tipo que tiene preventas y comprueba que Modify devuelve verdadero, que queda inactivo con el mismo nombre, que no aparece en la lista de activos y que sí aparece en el listado completo de Site Admin.
+ | Backend
+ | Pasa
+ | 
+La lista de activos sigue el estado del tipo
+ | Crea un tipo, lo desactiva y lo vuelve a activar, consultando la lista de activos después de cada paso: aparece al crearlo, desaparece al desactivarlo y reaparece al reactivarlo.
+ | Backend
+ | Pasa
+ | 
+Una categoría queda en uso mientras un tipo la tenga
+ | Verifica que una categoría y subcategoría sin uso no están en uso, las asigna a un tipo con Categorias_Guardar y comprueba que ambas pasan a en uso; al quitar la asignación vuelven a no estarlo.
+ | Backend
+ | Pasa
+ | 
+Una sucursal queda en uso mientras un tipo la tenga como la que factura
+ | Verifica que una sucursal sin uso no está en uso, la asigna como Suc_Id_Factura de un tipo y comprueba que pasa a en uso; al volver Suc_Id_Factura a 0 deja de estarlo.
+ | Backend
+ | Pasa
+ | 
+Preventa pendiente con tipo que exige confirmación se reporta
+ | Con la preventa 90300 en estado 4 y su tipo con Requiere_Confirmacion, ListKey_Monitor_Preventa debe traer una fila en Confirmacion_Pendiente con ese número de preventa.
+ | Backend
+ | Pasa
+ | 
+Preventa confirmada con tipo que exige confirmación no se reporta
+ | Con la preventa en estado 0 y su tipo con Requiere_Confirmacion, Confirmacion_Pendiente debe venir con cero filas.
+ | Backend
+ | Pasa
+ | 
+Estado 4 con un tipo que no exige confirmación no bloquea
+ | Con la preventa en estado 4 y su tipo sin Requiere_Confirmacion, Confirmacion_Pendiente debe venir con cero filas.
+ | Backend
+ | Pasa
+ | 
+La lista del monitor conserva la preventa pendiente y la marca
+ | Con la preventa en estado 4 y tipo que exige confirmación, List_Monitor de la sucursal 3 debe traerla en la tabla Monitor y también en Confirmacion_Pendiente (para el reloj de arena).
+ | Backend
+ | Pasa
+ | 
+El tipo que exige fecha muestra el botón de captura
+ | Inicia LD Preventa eligiendo el tipo Preventa granel y comprueba que la ventana principal tiene el botón btnFechaDespacho.
+ | UI escritorio
+ | Pasa
+ | 
+Un tipo que no exige fecha no muestra el botón
+ | Inicia LD Preventa eligiendo el tipo General y comprueba que la ventana principal no tiene btnFechaDespacho.
+ | UI escritorio
+ | Pasa
+ | 
+Sin fecha avisa, abre la captura y cancelar no abre el pago
+ | Con el tipo Preventa granel agrega el artículo 15000788, pulsa Imprimir Documento, autoriza el rol y elige al vendedor. Exige el aviso "No se puede guardar sin la fecha de despacho", luego el modal de captura, y que tras Escape no exista la pantalla de pago.
+ | UI escritorio
+ | Pasa
+ | 
+Capturando la fecha se abre el pago
+ | Igual que el caso anterior, pero en el modal acepta con la fecha propuesta (hoy) y comprueba que se abre la pantalla de pago de preventa.
+ | UI escritorio
+ | Pasa
+ | 
+En Facturación la fecha de despacho guardada es de consulta
+ | Carga en el POS la preventa 90105 (tipo 5, con fecha de despacho hoy + 3 días) y comprueba que la etiqueta lbl_FechaDespacho muestra exactamente esa fecha en formato dd/MM/yyyy y que no existe el botón btnFechaDespacho.
+ | UI escritorio
+ | Pasa
+ | 
+La preventa se registra en la sucursal que factura y guarda el origen
+ | Con un tipo cuya sucursal que factura es la 11, guarda una preventa del artículo 15000788 desde la caja de la sucursal 3 y exige que quede con Suc_Id 11 y Suc_Id_Origen 3, y que no haya filas en Inv_Cola_Comprometido para ella.
+ | UI escritorio
+ | Pasa
+ | 
+Un artículo en kilos suma su cantidad
+ | Calcula los kilos de una línea del artículo 17000331 con cantidad 12.5 y comprueba que el resultado es 12.5.
+ | Backend
+ | Pasa
+ | 
+Un artículo que no es de peso no suma
+ | Calcula los kilos de una línea del artículo 19000771 (unidad UNITARIO) con cantidad 30 y comprueba que el resultado es 0.
+ | Backend
+ | Pasa
+ | 
+Sin líneas no hay kilos
+ | Calcula los kilos con una lista de líneas vacía y comprueba que el resultado es 0.
+ | Backend
+ | Pasa
+ | 
+Un artículo inexistente se ignora
+ | Calcula los kilos con una línea de un artículo que no existe (cantidad 99) y otra del 17000331 (cantidad 4) y comprueba que el resultado es 4.
+ | Backend
+ | Pasa
+ | 
+Los gramos con conversión se convierten por el factor
+ | Calcula los kilos de un artículo en gramos con cantidad 2500 y la conversión GRAMOS a KG de 0.001, y comprueba que el resultado es 2.5.
+ | Backend
+ | Pasa
+ | 
+Las líneas mezcladas suman solo las de peso, convertidas
+ | Calcula los kilos de tres líneas: 10 del 17000331, 500 gramos del artículo temporal y 7 del 19000771, y comprueba que el resultado es 10.5 (el artículo que no es de peso no cuenta).
+ | Backend
+ | Pasa
+ | 
+Los gramos sin fila de conversión no se cuentan
+ | Calcula los kilos de un artículo en gramos con cantidad 2500 y sin fila de conversión, y comprueba que el resultado es 0 (no se asume que los gramos son kilos).
+ | Backend
+ | Pasa
+ | 
+ListKey trae el precio por kilo del cliente
+ | Consulta con ListKey un cliente activo con Cliente_Precio_Kilo mayor a 0 y comprueba que devuelve verdadero y el mismo precio que hay en la base.
+ | Backend
+ | Pasa
+ | 
+ListKey sin precio por kilo devuelve cero
+ | Consulta con ListKey un cliente activo con precio por kilo 0 y comprueba que devuelve verdadero y el precio 0 (no nulo ni error).
+ | Backend
+ | Pasa
+ | 
+ListKeyMayoreo trae el precio por kilo del cliente
+ | Consulta con ListKeyMayoreo (la del cambio de cliente en Preventa) un cliente con precio mayor a 0 y comprueba que devuelve verdadero y el precio del cliente.
+ | Backend
+ | Pasa
+ | 
+ListKey_Identificacion trae el precio por kilo del cliente
+ | Consulta por cédula un cliente con precio mayor a 0 y cédula única, y comprueba que devuelve verdadero, el mismo Cliente_Id y su precio.
+ | Backend
+ | Pasa
+ | 
+El asociado de una finca sin precio trae el suyo
+ | Consulta el asociado de una finca activa con precio 0 y un solo dueño activo con precio mayor a 0 (hoy la finca 112 y su asociado 4001576, con 12) y comprueba que devuelve al dueño con su precio.
+ | Backend
+ | Pasa
+ | 
+Finca y asociado sin precio por kilo
+ | Consulta el asociado de una finca con precio 0 cuyo dueño también tiene 0 (hoy la finca 5600 y su asociado 4001639) y comprueba que devuelve al dueño con precio 0: ningún lado aporta precio.
+ | Backend
+ | Pasa
+ | 
+Cada lado trae su propio precio
+ | Con una finca con precio propio y un dueño con otro precio (hoy la finca 43 con 25 y su asociado 4001753 con 10), comprueba que ListKey de la finca trae 25 y la consulta del asociado trae 10, sin mezclarse.
+ | Backend
+ | Pasa
+ | 
+Flete de 1 kg con el precio propio de la finca
+ | En el POS cambia al cliente 43, agrega MELAZA 19000257 (total 139.18) y el flete 21000087, y exige que el total suba exactamente 25.25 (25 por kg por 1.01 de tarifa reducida), a 164.43.
+ | UI escritorio
+ | Pasa
+ | 
+El flete se recalcula al agregar kilos
+ | Con el cliente 43, agrega MELAZA, el flete (164.43) y otro kilo de MELAZA, y exige que el total sea exactamente el doble: 328.86.
+ | UI escritorio
+ | Pasa
+ | 
+La finca sin precio usa el del asociado
+ | Con el cliente 112 (finca sin precio, asociado con 12), agrega MELAZA y el flete, y exige que el total suba exactamente 12.12 (12 por kg por 1.01), a 151.30.
+ | UI escritorio
+ | Pasa
+ | 
+Cliente sin precio por kilo: alerta y no se agrega el flete
+ | Con CLIENTE CONTADO, agrega MELAZA (178.49 con 13%), intenta agregar el flete y exige el aviso "El Cliente No Tiene Precio por Kilogramo Configurado" y que el total siga en 178.49.
+ | UI escritorio
+ | Pasa
+ | 
+Al cambiar de cliente el flete usa el precio del nuevo
+ | Con el cliente 43, agrega MELAZA y el flete (164.43) y cambia al cliente 112: el total debe pasar a 151.30 (139.18 más 12.12).
+ | UI escritorio
+ | Pasa
+ | 
+Cambiar a un cliente sin precio conserva el cliente y el flete
+ | Con el cliente 43, agrega MELAZA y el flete (164.43) y cambia al cliente 5600 (sin precio): exige el aviso de precio por kilogramo y que el total siga en 164.43, con el cliente y el flete conservados.
+ | UI escritorio
+ | Pasa
+ | 
+Un flete sin existencia se agrega sin validar existencias
+ | Con el cliente 43, agrega MELAZA (139.18) y el flete 21000087, que tiene existencia 0, y exige que el total suba (164.43) sin el rechazo por existencias negativas.
+ | UI escritorio
+ | Pasa
+ | 
+La preventa de granel conserva el flete y lo recalcula
+ | Carga en el POS la preventa 90106 (cliente 43, MELAZA por 139.18 y flete por 25.25, total 164.43), exige que el total al cargar sea 164.43 y que al agregar otro kilo de MELAZA el total sea el doble.
+ | UI escritorio
+ | Pasa
+ | 
+Un artículo de otra categoría que la del tipo se rechaza
+ | Carga una preventa de un tipo restringido a la categoría 2 subcategoría 2 y agrega el artículo 19000257 (subcategoría 3): exige un aviso de que no pertenece a una categoría permitida para el tipo y que el total no cambie.
+ | UI escritorio
+ | Pasa
+ | 
+Un artículo de la categoría del tipo se agrega
+ | Con la misma preventa y tipo, agrega el artículo 19000771 (categoría 2, subcategoría 2) y exige que el total suba porque la línea queda agregada.
+ | UI escritorio
+ | Pasa
+ | 
+Modificar cantidad se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Modificar Cantidad": exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Cambiar cantidad de línea se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Cambiar Cantidad": exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Eliminar artículo se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Eliminar Artículo": exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Cambiar de cliente se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Cambiar Clientes": exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual. Además no se abre la búsqueda de clientes.
+ | UI escritorio
+ | Pasa
+ | 
+El descuento del documento se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Descuento", opción Descuento Doc: exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+El descuento de artículo se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Descuento", opción Descuento Artículo: exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+El descuento por forma de pago se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Descuento", opción Descuento Forma Pago: exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Agregar un servicio se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Servicio": exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Buscar artículo se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Buscar Artículo" (segunda barra de funciones): exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Cambiar el tipo de documento se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción "Tipo Documento" (tercera barra de funciones): exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Exonerar impuestos se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción del botón de impuestos del panel de subtotales: exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+El descuento global del panel de subtotales se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción del botón de descuento global del panel de subtotales: exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Agregar un servicio desde el panel de subtotales se bloquea con un tipo no editable
+ | Carga en el POS la preventa 90104 (tipo no editable en Facturación) y ejecuta la acción del botón de servicios del panel de subtotales: exige el aviso de bloqueo, que no se abra la validación de rol ni el diálogo de la acción, y que el total siga igual.
+ | UI escritorio
+ | Pasa
+ | 
+Con un tipo editable no se bloquea: pide validación de rol
+ | Carga la preventa 90104 pero de tipo 5 (editable en Facturación) y ejecuta "Modificar Cantidad": exige que se abra la validación de rol, que no aparezca el aviso de bloqueo y que el total no cambie.
+ | UI escritorio
+ | Pasa
+ | 
+Favoritos respeta el bloqueo de un tipo no editable
+ | Carga la preventa 90103 (tipo 4, no editable) y, en el panel Favoritos, elige la primera categoría y el primer artículo: exige un aviso, que no se abra el diálogo de cantidad y que el total no cambie.
+ | UI escritorio
+ | Pasa
+ | 
+Modificar cantidad se bloquea en una preventa no editable en Preventa
+ | Abre en LD Preventa la preventa 90108 con "Modificar Preventa" y ejecuta la acción "Modificar Cantidad": exige el aviso de bloqueo, sin validación de rol, sin el diálogo de la acción y con el total sin cambios.
+ | UI escritorio
+ | Pasa
+ | 
+Eliminar artículo se bloquea en una preventa no editable en Preventa
+ | Abre en LD Preventa la preventa 90108 con "Modificar Preventa" y ejecuta la acción "Eliminar Artículo": exige el aviso de bloqueo, sin validación de rol, sin el diálogo de la acción y con el total sin cambios
+ | UI escritorio
+ | Pasa
+ | 
+Cambiar de cliente se bloquea en una preventa no editable en Preventa
+ | Abre en LD Preventa la preventa 90108 con "Modificar Preventa" y ejecuta la acción "Cambiar Clientes": exige el aviso de bloqueo, sin validación de rol, sin el diálogo de la acción y con el total sin cambios. Además no se abre la búsqueda de clientes.
+ | UI escritorio
+ | Pasa
+ | 
+El reporte de preventas calcula el total por línea
+ | Corre el reporte de preventas por tipo de origen sobre la preventa 90400 y exige una fila con cantidad 3, precio 125.50 y total por línea 376.50.
+ | Backend
+ | Pasa
+ | 
+Una preventa general sin facturar sale pendiente y sin datos de factura
+ | Exige en el reporte el número de preventa 90400, tipo General, estado Pendiente, y cantidad facturada, diferencia y factura vacías.
+ | Backend
+ | Pasa
+ | 
+El detalle trae las columnas del criterio de aceptación
+ | Exige que la tabla del reporte tenga las columnas del criterio: número, fechas de creación y despacho, tipo, sucursales de origen y facturación, usuarios responsables, cliente, finca, autorizado, material, cantidades, unidad, precio, total por línea, estado, factura, nota de crédito y fecha de devolución.
+ | Backend
+ | Pasa
+ | 
+Las preventas anuladas salen en el reporte
+ | Con la preventa en estado 3 y sin filtro de estado, exige una fila con estado Anulado (trazabilidad de lo solicitado contra lo facturado).
+ | Backend
+ | Pasa
+ | 
+El filtro de estado incluye el estado pedido y excluye los demás
+ | Con el estado Pendiente sale una fila; con el estado Facturado salen cero.
+ | Backend
+ | Pasa
+ | 
+El filtro de tipo de preventa incluye General y excluye otro tipo
+ | Con el tipo General sale una fila; con el tipo 5 salen cero.
+ | Backend
+ | Pasa
+ | 
+El filtro de cliente incluye al cliente de la preventa y excluye a otro
+ | Con el cliente de la preventa (43) sale una fila; con un cliente inexistente salen cero.
+ | Backend
+ | Pasa
+ | 
+El filtro de material incluye el artículo de la línea y excluye otro
+ | Con el artículo de la línea (15000794) sale una fila; con el artículo 19000257 salen cero.
+ | Backend
+ | Pasa
+ | 
+El filtro de usuario responsable incluye al usuario de la preventa y excluye a otro
+ | Con el usuario que creó la preventa (3) sale una fila; con un usuario inexistente salen cero.
+ | Backend
+ | Pasa
+ | 
+Un tipo que nunca se usó se puede eliminar
+ | Crea un tipo sin preventas, llama Remove y exige que devuelva verdadero y que el tipo ya no esté en la base.
+ | Backend
+ | Pasa
+ | 
+Un tipo inactivo se puede seguir editando
+ | Crea un tipo, lo desactiva y le cambia el nombre y Requiere confirmación: Modify devuelve verdadero, los cambios quedan guardados y el tipo sigue inactivo.
+ | Backend
+ | Pasa
+ | 
+Los tipos están registrados para sincronizarse a las cajas
+ | Exige que PV_Sincroniza_Tablas tenga exactamente una fila para Tipo_Preventa y una para Tipo_Preventa_Categoria.
+ | Backend
+ | Pasa
+ | 
+Las cajas tienen el script para crear las tablas de tipos
+ | Exige que LDControlDBLocalAutomatico tenga al menos un script CREATE TABLE de Tipo_Preventa y otro de Tipo_Preventa_Categoria.
+ | Backend
+ | Pasa
+ | 
+Crear o editar un tipo deja bitácora
+ | Exige que Audit_Config tenga una fila para Tipo_Preventa, según el criterio de bitácora con usuario, fecha y hora, campo, valor anterior y valor nuevo.
+Requiere: Conexión SQL de Testing. Solo lectura.
+Nota: Hoy no hay ninguna fila: crear, editar o desactivar un tipo no deja registro. Historia 1381. Bug abierto #2485. Caso GR-080 de CO-696-0013.
+ | Backend
+ | Falla: bug abierto (#2485)
+ | 
+Una preventa de un tipo que exige confirmación queda pendiente
+ | Guarda en LD Preventa una preventa de un tipo con Requiere_Confirmacion y exige que quede con Estado 4 (Pendiente de Confirmación).
+ | UI escritorio
+ | Falla: bug abierto (#2405)
+ | 
+Con el parámetro de la sucursal en SI la preventa reserva existencias al crearse
+ | Con un tipo cuya sucursal que factura es la 11 y su parámetro en SI, guarda una preventa y exige Suc_Id 11, exactamente una fila en Inv_Cola_Comprometido para la sucursal 11 y ninguna para la 3 (la caja).
+ | UI escritorio
+ | Pasa
+ | 
+El catálogo e inventario son los de la sucursal que factura
+ | Con un tipo cuya sucursal que factura es la 4 (sin existencia del artículo 15000788, mientras la caja tiene 1097), agrega el artículo y exige el aviso de existencias negativas y que no quede en el documento.
+ | UI escritorio
+ | Pasa
+ | 
+La fecha de despacho no se puede editar en una preventa no editable en Preventa
+ | Abre en LD Preventa la preventa 90108 (tipo 4, no editable en Preventa, con fecha de despacho) y exige que no exista el botón btnFechaDespacho.
+ | UI escritorio
+ |  bug #2410 resuelto
+ | 
+El filtro por sucursal de origen incluye una preventa real creada allí
+ | Corre el reporte filtrando por la sucursal 3 (origen) y exige que aparezca la preventa real creada en esa sucursal, comparando por fecha de creación porque el número se repite entre sucursales.
+ | Backend
+ | Bug abierto 
+ | 
+Un filtro de sucursales ajeno no trae la preventa
+ | Con el filtro de sucursales en 999 (no existe) el reporte devuelve cero filas.
+Requiere: Conexión SQL de Testing. Siembra la preventa 90400 en la sucursal 11 con origen en la 3, cliente 43 y una línea del artículo 15000794 (cantidad 3, precio 125.50); la borra al terminar.
+Nota: Historia 1394. Caso GR-087 de CO-696-0013.
+ | Backend
+ | Pasa
+ | 

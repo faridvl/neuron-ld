@@ -1,0 +1,54 @@
+ M INTERFACE/ADMIN_LDCOM/ADMIN_LDCOM/ADMIN_LDCOM.csproj
+ M INTERFACE/ADMIN_LDCOM/ADMIN_LDCOM/packages.config
+ M INTERFACE/ADMIN_LDCOM/MetodosEnLinea/MetodosEnLinea.csproj
+ M INTERFACE/ADMIN_LDCOM/MetodosEnLinea/packages.config
+ M "INTERFACE/FACTURACION/AccesoDatosEnLinea/Service References/WCFCatalogoAux/Reference.vb"
+ M INTERFACE/FACTURACION/AccesoDatosEnLinea/TCatalogoOnLine.vb
+ M INTERFACE/FACTURACION/Facturacion.Tests/Facturacion.Tests.vbproj
+ M INTERFACE/FACTURACION/Facturacion.Tests/FacturacionOBJ/Bonificaciones/TParticionExoneracionBonificadosTests.vb
+ M INTERFACE/FACTURACION/Facturacion.Tests/FacturacionOBJ/Financiamiento/TDecisionValidacionCreditoSFATests.vb
+ M INTERFACE/FACTURACION/Facturacion/Frm_Facturacion.vb
+ M INTERFACE/FACTURACION/FacturacionLOCAL/FacturacionLOCAL.vbproj
+ M INTERFACE/FACTURACION/FacturacionLOCAL/TFacturacionLocal.vb
+ M INTERFACE/FACTURACION/FacturacionLOCAL/TSincronizacionLocal.vb
+ M INTERFACE/FACTURACION/FacturacionOBJ/Bonificaciones/TParticionExoneracionBonificados.vb
+ M INTERFACE/FACTURACION/FacturacionOBJ/FacturacionOBJ.vbproj
+ M INTERFACE/FACTURACION/FacturacionOBJ/Financiamiento/TDecisionValidacionCreditoSFA.vb
+ M INTERFACE/FACTURACION/FacturacionOBJ/TCatalogo.vb
+ M INTERFACE/FACTURACION/FacturacionOBJ/TFacturacion.vb
+ M INTERFACE/FACTURACION/FacturacionOBJ/TSucursal.vb
+ M NEGOCIO/CATALOGOS.Tests/CATALOGOS.Tests.vbproj
+ M NEGOCIO/CATALOGOS.Tests/TSistemaFinanciamientoSFATests.vb
+ M NEGOCIO/CATALOGOS/Catalogos.vbproj
+ M NEGOCIO/CATALOGOS/TSistemaFinanciamientoSFA.vb
+ M NEGOCIO/CATALOGOS/packages.config
+ M "NEGOCIO/CONTROL NEGOCIO/ControlBusiness.vbproj"
+ M "NEGOCIO/CONTROL NEGOCIO/TCatalogo.vb"
+ M "NEGOCIO/CONTROL NEGOCIO/packages.config"
+ M NEGOCIO/Database/GENERAL/routines/procedures/caja/PV_Cerrar_Caja.sql
+ M NEGOCIO/FACTURACION/TFactura.vb
+ M "NEGOCIO/OBJETOS COMUNES/Catalogo/TRegRespuestaValidacionCreditoSFA.vb"
+ M "NEGOCIO/OBJETOS COMUNES/Facturacion/TRegFactura.vb"
+ M NEGOCIO/ServiciosWCF/IWCFCatalogoAux.vb
+ M NEGOCIO/ServiciosWCF/WCFCatalogoAux.svc.vb
+ M NEGOCIO/ServiciosWCF/Web.config
+ M pipelines/releases/cd-staging-rc.yml
+ M pipelines/releases/cd-staging.yml
+ M pipelines/releases/cd-testing.yml
+ M pipelines/releases/cd-uat-production.yml
+ M pipelines/scripts/releases/sync-integration-settings.ps1
+?? INTERFACE/FACTURACION/Facturacion.Tests/FacturacionLOCAL/TDisponibilidadColumnasLocalTests.vb
+?? INTERFACE/FACTURACION/Facturacion.Tests/FacturacionOBJ/Financiamiento/TCreditoSFADocumentoTests.vb
+?? INTERFACE/FACTURACION/Facturacion.Tests/FacturacionOBJ/Financiamiento/TFlujoValidacionCreditoSFATests.vb
+?? INTERFACE/FACTURACION/Facturacion.Tests/FacturacionOBJ/Financiamiento/TGeneradorReferenciaCreditoSFATests.vb
+?? INTERFACE/FACTURACION/Facturacion.Tests/FacturacionOBJ/Financiamiento/THuellaCreditoSFATests.vb
+?? INTERFACE/FACTURACION/FacturacionLOCAL/TDisponibilidadColumnasLocal.vb
+?? INTERFACE/FACTURACION/FacturacionOBJ/Financiamiento/TCreditoSFADocumento.vb
+?? INTERFACE/FACTURACION/FacturacionOBJ/Financiamiento/TFlujoValidacionCreditoSFA.vb
+?? INTERFACE/FACTURACION/FacturacionOBJ/Financiamiento/TGeneradorReferenciaCreditoSFA.vb
+?? INTERFACE/FACTURACION/FacturacionOBJ/Financiamiento/THuellaCreditoSFA.vb
+?? NEGOCIO/CATALOGOS.Tests/TArmadorSolicitudCreditoSFATests.vb
+?? NEGOCIO/CATALOGOS/TArmadorSolicitudCreditoSFA.vb
+?? NEGOCIO/CATALOGOS/TTraductorRespuestaCreditoSFA.vb
+?? NEGOCIO/CATALOGOS/TValidadorPlanFinanciamientoIntegracion.vb
+?? NEGOCIO/Database/GENERAL/migrations/20261029130000__3700_CreditoSFA_Solicitud_Credito_Referencia/

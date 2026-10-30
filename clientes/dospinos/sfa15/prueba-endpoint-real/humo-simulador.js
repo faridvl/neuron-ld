@@ -1,0 +1,4 @@
+const U='http://localhost:7390/active-bpel/rt/p_SFA15_Autorizacion_Venta_Final';
+const body=(cli,monto,clave='sim-sfa15-clave')=>JSON.stringify({Datos_Entrada:{codEmpresa:'001',codAgencia:'001',codCliente:cli,fecSolicitud:'2026-10-28',nomAutorizado:'X',indUsaLinea:'S',numLinea:0,codUnidadCosto:'2563',plazoCredito:24,tipCredito:201,monSolicitud:monto,codUsuario:'INTEGRACIONSFA'},Usuario:'sim-sfa15','Contraseña':clave});
+(async()=>{for(const [n,c,m,k] of [['sin cliente','',5000],['exito','4000010',5000],['rechazo funcional','4000010',12000],['timeout','4000010',17000],['conectividad','4000010',25000],['clave mala','4000010',5000,'mala']]){
+ const t=Date.now();const r=await fetch(U,{method:'POST',headers:{'Content-Type':'application/json'},body:body(c,m,k)});const x=await r.text();console.log(n.padEnd(18),'HTTP',r.status,(Date.now()-t)+'ms',x.slice(0,150));}})();

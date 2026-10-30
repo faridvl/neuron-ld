@@ -1,0 +1,84 @@
+QA SFA15 -> http://localhost:7390/active-bpel/rt/p_SFA15_Autorizacion_Venta_Final  (41 casos)
+S01 HTTP 500 79ms  Sin cliente ni identificacion, con finca del ejemplo
+     -> {"error":{"code":500,"detail":{"reason":"Debe indicar la identificación o el código del cliente.","code":"","details":"Validación de datos de entrada"},"message":"Debe indicar la identificación o el código del cliente."}
+S02 HTTP 500 7ms  Sin cliente ni identificacion y sin finca
+     -> {"error":{"code":500,"detail":{"reason":"Debe indicar la identificación o el código del cliente.","code":"","details":"Validación de datos de entrada"},"message":"Debe indicar la identificación o el código del cliente."}
+S03 HTTP 200 5ms  Identificacion inexistente, finca inexistente
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+!!! EXITO INESPERADO S04 HTTP 200 5ms  Cliente inexistente 9999999 con finca
+     -> Crédito insertado y aplicado satisfactoriamente.
+S05 HTTP 200 5ms  Identificacion inexistente CEDPF 000000000 (caso base)
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+A01 HTTP 200 4ms  Agencia = sucursal SAP 1501
+     -> SFA15-F01 | Funcional | La agencia 1501 no existe en el sistema, para la empresa 001.
+A02 HTTP 200 6ms  Agencia = almacen SAP 5100
+     -> SFA15-F01 | Funcional | La agencia 5100 no existe en el sistema, para la empresa 001.
+A03 HTTP 200 5ms  Agencia = 001 (ejemplo PDF)
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+A04 HTTP 200 6ms  Agencia con 11 caracteres (AV-GUAYABO), mas de 5
+     -> SFA15-F01 | Funcional | La agencia AV-GUAYABO no existe en el sistema, para la empresa 001.
+A05 HTTP 200 5ms  Agencia vacia
+     -> SFA15-F01 | Funcional | El campo codAgencia es requerido.
+A06 HTTP 200 6ms  Agencia inexistente 99999
+     -> SFA15-F01 | Funcional | La agencia 99999 no existe en el sistema, para la empresa 001.
+E01 HTTP 200 5ms  Empresa CR01 (xlsx)
+     -> SFA15-F01 | Funcional | La empresa CR01 no existe en el sistema.
+E02 HTTP 200 5ms  Empresa vacia
+     -> SFA15-F01 | Funcional | El campo codEmpresa es requerido.
+E03 HTTP 200 6ms  Empresa inexistente 999
+     -> SFA15-F01 | Funcional | La empresa 999 no existe en el sistema.
+P01 HTTP 200 7ms  Plazo 0
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+P02 HTTP 200 8ms  Plazo negativo
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+P03 HTTP 200 8ms  Plazo 99999 (maximo de 5 digitos)
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+P04 HTTP 200 5ms  Plazo 100000 (excede longitud 5)
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+P05 HTTP 200 5ms  Plazo decimal 3.5
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+T01 HTTP 200 4ms  Tipo de credito inexistente 999
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+T02 HTTP 200 5ms  Tipo de credito 0
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+T03 HTTP 200 7ms  Tipo de credito como texto
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+M01 HTTP 200 5ms  Monto 0
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+M02 HTTP 200 5ms  Monto negativo
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+M03 HTTP 200 6ms  Monto enorme 99999999999999.99
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+M04 HTTP 200 5ms  Monto con 3 decimales
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+F01 HTTP 200 5ms  Fecha con formato dd/mm/aaaa
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+F02 HTTP 200 5ms  Fecha vacia
+     -> SFA15-F01 | Funcional | El campo fecSolicitud es requerido.
+F03 HTTP 200 5ms  Sin el campo codUsuario
+     -> SFA15-F01 | Funcional | El campo codUsuario es requerido.
+F04 HTTP 200 7ms  Sin el campo codUnidadCosto
+     -> SFA15-F01 | Funcional | El campo codUnidadCosto es requerido.
+F05 HTTP 200 8ms  idExterno de 16 caracteres (maximo 15)
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+F06 HTTP 200 5ms  codUnidadCosto de 26 caracteres (maximo 25)
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+F07 HTTP 200 6ms  nomAutorizado vacio (requerido)
+     -> SFA15-F01 | Funcional | El campo nomAutorizado es requerido.
+F08 HTTP 200 4ms  Texto con tildes y enie en observaciones
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+F09 HTTP 200 4ms  indUsaLinea = N con numLinea 0
+     -> SFA15-F01 | Funcional | El código de tipo de identificación CEDPF no existe en el sistema.
+R01 HTTP 500 4ms  Cuerpo vacio
+     -> HTTP_400 | Técnico | El cuerpo de la solicitud es requerido.
+R02 HTTP 500 6ms  Cuerpo que no es JSON
+     -> HTTP_400 | Técnico | El cuerpo de la solicitud es requerido.
+R03 HTTP 500 4ms  JSON sin Datos_Entrada
+     -> HTTP_400 | Técnico | El cuerpo de la solicitud es requerido.
+R04 HTTP 500 5ms  Datos_Entrada vacio {}
+     -> {"error":{"code":500,"detail":{"reason":"Debe indicar la identificación o el código del cliente.","code":"","details":"Validación de datos de entrada"},"message":"Debe indicar la identificación o el código del cliente."}
+U01 HTTP 500 3ms  Usuario invalido (1 llamada)
+     -> {"error":{"code":500,"detail":{"reason":"Error técnico en la autenticación en el servicio externo.","code":"HTTP_400","details":"Usuario o contraseña incorrectos."},"message":"Error técnico en la autenticación en el serv
+U02 HTTP 500 4ms  Clave invalida (1 llamada)
+     -> {"error":{"code":500,"detail":{"reason":"Error técnico en la autenticación en el servicio externo.","code":"HTTP_400","details":"Usuario o contraseña incorrectos."},"message":"Error técnico en la autenticación en el serv
+Resultados guardados en C:\Users\fvillacis\ClaudeLocalSession\sfa15\prueba-endpoint-real\resultados-2026-10-28T08-45-32-587Z.json

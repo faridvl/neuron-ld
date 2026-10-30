@@ -1,0 +1,5 @@
+No abrio 'Cambiar Cliente'
+[]
+agregar: (0, '0x20940', 'LDCOM - Punto de Venta', [], [])
+t=1.5 0x1a1710 'Pago de factura' ['¢ 2,596.18', 'Venta', 'Pagado', '¢ 0.00', 'Redondeo', '¢ 0.18'] ['Encuesta', '', '', '', 'Nombre Cliente', 'Imprimir', 'Salir', 'Otra', 'Moneda Extranjera', 'Cupones', 'Cheque', 'Tarjeta', 'Efectivo', 'Transferencia']
+fin t=40.1; desde Confirmar: n/a

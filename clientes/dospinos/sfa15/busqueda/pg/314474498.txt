@@ -1,0 +1,222 @@
+Flujos de integración
+Objetivo
+Mantener trazabilidad entre los flujos definidos en el contrato y las interfaces técnicas implementadas.
+Interfaces por flujo
+Código de flujo
+ | Nombre
+ | Grupo
+ | Tipo
+ | Trigger
+ | Código Dos Pinos
+ | 
+F-01
+ | Documentos de ventas y devoluciones
+ | Ventas
+ | Webhook (Endpoint de DP)
+ | LDCOM: En el momento del cierre de caja
+LDCOM: Cada ventas y devolución de crédito para distribuidores, en tiempo real
+ | POS-12 Ventas y devoluciones
+POS-11 Notas de crédito de ventas financiadas
+ | 
+F-02 
+ | Preventas de granel & sacos
+ | Preventas 
+ | Webhook (Endpoint de DP) / Callback (Endpoint de LDCOM)
+ | LDCOM: Creación de preventas de granel y de sacos
+DP: Edición de cantidades/fecha de una preventa en SAP  
+ | POS-14 Pedidos Graneles
+POS-07 Traslados del CEDI Ciruelas
+POS-15 Confirmación de despacho para facturación de sacos para venta
+ | 
+F-03
+ | Preventas de romanas
+ | Preventas 
+ | Webhook (Endpoint de DP) / Callback (Endpoint de LDCOM)
+ | LDCOM: Creación de preventas de romanas
+DP: Confirmación de cantidades de la preventa desde Romana
+ | POS-24 Pedidos Romana
+POS-25 Confirmación de pedido
+ | 
+F-04
+ | Preventas de SUMA Pets
+ | Preventas 
+ | Webhook (Endpoint de DP) / Callback (Endpoint de LDCOM)
+ | LDCOM: Creación de preventas de SUMA Pets
+DP: Confirmación de cantidades de la preventa desde SAP
+ | Sin código de interfaz
+ | 
+F-05
+ | Preventas de silos & ordeño
+ | Preventas 
+ | Webhook (Endpoint de DP) / Callback (Endpoint de LDCOM)
+ | LDCOM: Creación de preventas de silos/ordeño
+DP: Confirmación de cantidades de la preventa desde SAP
+ | Sin código de interfaz
+ | 
+F-06 
+ | Creación de preventas
+ | Preventas 
+ | Callback (Endpoint de LDCOM) 
+ | DP: Pedido desde apps de B2C (ecommerce)
+DP: Cobro de intereses creado desde SFA
+ | POS-13 Integración de pedidos B2C
+ | 
+F-07
+ | Autorización de crédito de asociados
+ | Crédito 
+ | Síncrono 
+ | LDCOM: Venta a crédito para asociados con planes de financiamiento
+ | POS-28 Autorización de la venta financiada
+ | 
+F-08
+ | Ajuste de saldos de crédito
+ | Crédito 
+ | Callback (Endpoints de LDCOM) 
+ | DP: Ajuste de saldos de crédito de distribuidores (en SAP)
+DP: Ajuste de saldos de crédito de asociados (en SFA)
+ | POS-09 Saldos (antiguo “Límites de créditos”)
+POS-34 Disponibles de asociados (antiguo “Plan alterno”)
+ | 
+F-09
+ | Operaciones de movimientos de caja
+ | Cajas
+ | Webhook (Endpoint de DP)
+ | LDCOM: Consolidado de movimientos durante el cierre de ventas
+LDCOM: En tiempo real para movimientos de caja que afectan crédito
+ | POS-19 Operaciones de caja
+ | 
+F-10
+ | Traslados entre CEDI y sucursales
+ | Inventario
+ | Callback (Endpoint de LDCOM)
+ | DP: Confirmación de traslado del CEDI en WMS
+ | POS-05 Traslados del CEDI Coyol - Avs
+ | 
+F-11
+ | Traslados de melaza entre sucursales
+ | Inventario
+ | Webhook (Endpoint de DP) / Callback (Endpoint de LDCOM)
+ | LDCOM: Creación de traslado de melaza entre sucursales
+DP: Confirmación de cantidades del traslado desde el API de la romana
+ | POS-26 Traslado Romana
+POS-27 Confirmación traslados romana
+ | 
+F-12
+ | Movimientos de inventario
+ | Inventario
+ | Callback (Endpoint de LDCOM)
+ | DP: Cada día un job programado desde Dos Pinos va a solicitar todos los movimientos de inventario que sucedieron en todas las sucursales, como traslados entre sucursales, entradas de proveedores, ajustes de toma física, etc.
+ | POS-06 Movimientos de inventario
+ | 
+F-13
+ | Ordenes de compra
+ | Inventario
+ | Callback (Endpoint de LDCOM) / Webhook (Endpoint de DP)
+ | DP: Creación de una orden de compra directa de proveedores en SAP
+LDCOM: Aplicación de la boleta de entrada de mercadería
+ | POS-08 Entradas compras directas de almacén SAP
+ | 
+F-14
+ | Catálogos de precios e inventario
+ | Datos maestros
+ | Pull (Endpoint de LDCOM) 
+ | DP: Consulta de catálogos actualizados
+ | POS-29 Lista de precios para el B2C
+POS-30 Inventarios para el B2C
+ | 
+F-15
+ | Catálogo de tipos de crédito
+ | Datos maestros
+ | Pull (Endpoint de DP)
+ | LDCOM: Job programados
+ | Sin código de interfaz
+ | 
+Endpoints
+Endpoints de LDCOM
+Endpoint
+ | Entidad
+ | Flujos relacionados
+ | Ruta de ejemplo
+ | 
+Catálogo de precios
+ | Artículos por sucursal
+ |  | GET /api/items/prices?updatedSince=20250401T1200
+ | 
+Catálogo de inventario
+ | Artículos por sucursal
+ |  | GET /api/items/stock?updatedSince=20250401T1200
+ | 
+Crear preventa
+ | Preventa
+ |  | POST /api/{storeId}/preorders
+ | 
+Editar preventa
+ | Preventa
+ |  | PUT /api/{storeId}/preorders/{preorderId}
+ | 
+Ajustar saldo de cliente
+ | Cliente
+ |  | POST /api/customers/{customerId}/account-balance
+ | 
+Crear traslado
+ | Traslado
+ |  | POST /api/inventory/transfer
+ | 
+Modificar traslado
+ | Traslado
+ |  | PUT /api/inventory/transfer/{transferId}
+ | 
+Crear orden de compra
+ | Orden de compra
+ |  | POST /api/purchase-orders
+ | 
+Lista de movimientos de caja
+ | Ajustes de inventario
+ | Asíncrono (unas consolidadas y otras en tiempo real)
+ | GET /api/stock/adjustments?updatedSince=20250401T1200&storeId=12
+ | 
+Endpoints de Dos Pinos
+Endpoint
+ | Descripción
+ | Tipo
+ | Flujos relacionados
+ | 
+Catálogo de tipos de crédito
+ | Catálogo de datos maestros con los tipos de crédito 
+ | Job programado
+ |  | 
+Notificación de nuevo documento
+ | Cada documento (venta/devolución) se enviará por este medio, tanto los consolidados como los individuales en tiempo real
+ | Asíncrono (unas consolidadas y otras en tiempo real)
+ |  | 
+Notificación de nueva preventa
+ | Las preventas especiales se notificarán por este endpoint. Las de granel/saco/romana/SUMAPets/Silos.
+ | Asíncrono
+ |  | 
+Autorización de venta para asociados
+ | Por cada venta de asociado con tipo de crédito (cc. planes de financiamiento) se solicita su autorización a esta interface 
+ | Síncrono
+ |  | 
+Notificación de nuevo movimiento de caja
+ | Cada movimiento de caja (entradas/salidas) se enviará por este medio, tanto los consolidados como los individuales en tiempo real
+ | Asíncrono (unas consolidadas y otras en tiempo real)
+ |  | 
+Nuevo traslado
+ | Cuando se crea un traslado de tipo melaza se notifica a Dos Pinos para que se solicite al proveedor.
+ | Asíncrono
+ |  | 
+Notificación de movimientos de inventario
+ | Cada día se envían los movimientos de inventario de todos los artículos
+ | Job programado
+ |  | 
+Notificación de entrada de orden de compra
+ | Cuando se aplica una entrada de mercadería de un proveedor se notifica a este endpoint con las cantidades recibidas.
+ | Asíncrono
+ |  | 
+Notas de interpretación
+Varios flujos pueden compartir una misma interfaz técnica
+
+Las diferencias entre flujos pueden representarse como variantes dentro del payload
+
+La relación flujo ↔ interfaz no siempre es 1 a 1
+

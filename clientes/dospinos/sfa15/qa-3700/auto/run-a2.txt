@@ -1,0 +1,9 @@
+Cliente seleccionado: 4000010
+["['', 'Credito General']"]
+agregar: (0, '0x20940', 'LDCOM - Punto de Venta', [], [])
+t=1.4 0x1d09d8 'Seleccionar Tipo De Crédito' [] ['Continuar', 'Salir']
+   -> pulsado Continuar
+t=2.5 0x14188a 'Simulador De Cuotas' ['Simulación De Cuotas :', '¢ 5.46', 'Interés Total :', 'Plazo :', '3.5%', 'Tasa De Interés :'] ['Confirmar', 'Cambiar plan', 'Salir']
+   -> pulsado Confirmar
+t=7.4 0x15188a 'LDCOM - Punto de Venta' ['LDCOM - Punto de Venta'] ['']
+fin t=50.1; desde Confirmar: 47.5 s

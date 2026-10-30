@@ -1,0 +1,32 @@
+98. Interfaces
+Fecha de última revisión: Según lista enviada por correo el 29 de agosto, que detallaba la siguiente imagen:
+Tal lista se pasó a la siguiente tabla:
+https://logicaldata.atlassian.net/wiki/spaces/DP/database/19922945?savedViewId=ccb7282f-f415-4cfa-90af-ee469cbab393Diagrama de interfaces
+Diagrama según lista
+Incluye cada sistema detallado en la lista
+Diagrama simplificado
+Aunque en la lista se detallan los sistemas a integrar con LDCOM, realmente solo se trabajan 2 capas; el API de LDCOM y el API de Dos Pinos (y no LDCOM conectado a cada sistema directamente). 
+Diagrama de arquitectura
+Financiamiento
+Proyecto 
+Al bloquear un usuario por crédito, se manda el estado “Bloqueado” por interfaz a LDCOM.
+
+Datos Maestros
+Ellos envían
+Tipos de cliente
+
+Grupos de precio
+
+Estados de cliente
+
+Estados
+Dos Pinos podría tener N estados que se asocien a un ID en Dos Pinos. Ejemplo:
+Ellos tienen tipos de estado en un cliente:
+Bloqueo general
+
+Todo gratis
+
+Bloqueo test
+
+Cada uno puede tener su propio ID de estado. Nosotros solo tenemos el estado “Inactivo”. Debe existir algún mantenimiento para identificar que todos esos estados se asocian a “inactivo”. Y podtdría incluirse un estado “default” para asociarlo a nuestro ID.
+Lo mismo debe pensarse viceversa; estados que tengamos nosotros que deban asociarse al de ellos (quizás es mas facil esto porque ya ellos controlarian desde ldcom a cual ID enviar)

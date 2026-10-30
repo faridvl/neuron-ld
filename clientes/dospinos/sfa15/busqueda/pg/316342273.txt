@@ -1,0 +1,41 @@
+LDCOM: Interfaces
+API Logical Data
+Lista de endpoints accesibles en el API de LDCOM para integraciones desde el cliente. 
+Cada endpoint puede ser utilizado en múltiples interfaces detalladas en ___.
+Todas las rutas finales de cada endpoint queda pendientes de definir durante el desarrollo del proyecto.
+Catálogo básico de errores
+Los errores se pueden identificar por:
+Tipo: Hace referencia al código de error en estándar HTTP. En LDCOM usamos los 5 principales. Ej., 404 NOT_FOUND
+
+Código: Es un código estático con el error específico. Este campo permite tomar decisiones en el cliente según el código de error que sucedió en el request. Este código no cambia en el tiempo. Ej., INVALID_AMOUNT_CALCULATION
+
+Mensaje: Descripción en texto del error. Este texto permite de una forma sencilla y legible describir el problema, y puede cambiar en el tiempo. Ej., Los montos de los artículos tienen un cálculo erróneo
+
+Los códigos y mensajes varían según cada endpoint. Los tipos son estándar y se usan estos:
+Código HTTP
+ | Tipo
+ | Descripción
+ | 
+400 
+ | VALIDATION_ERROR 
+ | Algún dato fue inválido 
+ | 
+404 
+ | NOT_FOUND 
+ | La entidad consultada no existe (ej.,  el cliente no existe en LDCOM) 
+ | 
+409 
+ | DUPLICATE 
+ | El identificador principal ya está registrado en LDCOM 
+ | 
+422 
+ | UNPROCESSABLE_CONTENT 
+ | Alguna regla de negocio es inválida y no se puede procesar 
+ | 
+500 
+ | INTERNAL_ERROR 
+ | Cualquier otro error interno desconocido 
+ | 
+Idempotencia
+Por convención, solo los requests con método POST no son idempotentes por definitición. Sin embargo, se puede realizar una idempotencia mediante un campo en el header llamado  Idempotency-Key que recibe un UUID v4. Cuando se envía un request con un key que ya existe en LDCOM, tal request no se vuelve a procesar y se retorna el mismo valor utilizado previamente de ser posible.
+Los keys de idempotencia tienen un TTL (tiempo de vida) de 24 horas.

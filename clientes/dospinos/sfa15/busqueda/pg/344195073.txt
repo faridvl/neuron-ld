@@ -1,0 +1,611 @@
+LD-01 Crear preventas
+POST /api/preorders
+Estado del documento: Borrador
+Historial de cambios
+Fecha
+ | Descripción
+ | Autor
+ | 
+30/Abril/2026
+ | Primer borrador y base del endpoint.
+ | haraya@ld.co.cr
+ | 
+7/Mayo/2026
+ | Cambio de IDs internos por IDs externos.
+ | haraya@ld.co.cr
+ | 
+27/Mayo/2026
+ | Actualización de catálogos que deben estar configurados en LDCOM
+ | haraya@ld.co.cr
+ | 
+Descripción
+Crea una nueva preventa en LDCOM. El identificador del documento es generado por LDCOM y retornado en el response.
+La preventa queda en estado PENDING y disponible para ser facturada desde el módulo de Facturación de LDCOM. El cajero no puede editarla — solo facturarla o anularla.
+Contexto de uso
+Flujos relacionados
+Flujo
+ | Descripción
+ | Notas
+ | 
+F-06
+ | Creación de preventas B2C / SFA
+ | Caso principal: Uber Eats, ecommerce
+ | 
+Interfaces Dos Pinos relacionadas
+Flujo
+ | Descripción
+ | 
+POS-13
+ | Integración de pedidos B2C
+ | 
+Triggers
+B2C: Nuevo pedido recibido en apps externas (Uber Eats, ecommerce, etc.). La preventa se crea automáticamente y se despacha desde la sucursal correspondiente usando el módulo de Facturación.
+
+SAP / Asociados: Preventas con factura para cobro de comisiones (código 6000), originadas en SAP.
+
+Reglas y validaciones
+Reglas de negocio
+El preorderId es generado por LDCOM. No se acepta desde el request.
+
+Estado inicial: PENDING.
+
+isEditable por defecto: false. En preventas B2C el cajero solo puede facturar, no editar.
+
+Los artículos deben existir en LDCOM (itemExternalId).
+
+El cliente, autorizados y finca deben existir en LDCOM por su externalId.
+
+No se validan saldos de crédito al crear la preventa (esa validación ocurre en la facturación).
+
+Validación de montos (por artículo)
+LDCOM valida que los montos enviados sean consistentes. El cliente es responsable de calcularlos correctamente. LDCOM no recalcula ni sobrescribe los montos recibidos — los persiste tal cual si pasan la validación.
+Fórmulas validadas:
+wide760Nota sobre impuestos: El caller envía unitTaxPercentage como número (ej. 13). LDCOM resuelve internamente el ID de impuesto correspondiente. Si el porcentaje no coincide con ningún impuesto configurado, se retorna INVALID_TAX_PERCENTAGE.
+Nota sobre redondeo: Se acepta una diferencia de hasta ±0.01 por ítem para absorber diferencias de redondeo entre sistemas. Diferencias mayores retornan INVALID_AMOUNT_CALCULATION.
+Catálogos que deben estar configurados en LDCOM
+Los siguientes catálogos se parametrizan en LDCOM y deben tener su mapeo configurado en el Catálogo de Interfaces antes de usar este endpoint:
+Catálogo
+ | Campo en request
+ | Descripción
+ | 
+Sucursales
+ | originStoreExternalId, billableStoreExternalId
+ | El originStoreExternalId es la sucursal de ventas de origen (conocida en DP como "Oficina de venta"). El billableStoreExternalId es la sucursal donde se habilita la preventa para su facturación.
+ | 
+Tipos de documento
+ | documentTypeExternalId
+ | Ej. Venta de Contado, Venta de crédito, Devolución, Consignación
+ | 
+Subtipos de documento
+ | documentSubTypeExternalId
+ | Ej. tiquete electrónico, factura electrónica
+ | 
+Tipos de preventa
+ | preorderTypeExternalId
+ | Ej. Granel, Saco, Romana, Silos
+ | 
+Tipos de identificación
+ | customer.documentTypeExternalId, electronicInvoice.documentTypeExternalId
+ | Ej. Cédula, pasaporte. Recibe un ID del catálogo de Tipos de Documento.
+ | 
+Métodos de pago
+ | payments[].typeExternalId
+ | Ej. Efectivo, tarjeta. Recibe un ID del catálogo de tipos de pago.
+ | 
+Tipos de documento de exoneración
+ | items[].exemptionDocuments[].documentTypeExternalId
+ | Código del tipo de documento de exoneración. Es igual al código que recibe el Ministerio de Hacienda. Ej. Autorizado por Ley Especial (ID 03), Exoneración a Zona Franca (ID 08), Otros (ID 99).
+ | 
+Instituciones de documento de exoneración
+ | items[].exemptionDocuments[].issuerExternalId
+ | Código de la institución que genera los documentos de exoneración. Es igual al código que recibe el Ministerio de Hacienda. Ej. Cruz Roja Costarricense (ID 05), Ministerio de Hacienda (ID 01), Otros (ID 99).
+ | 
+Idempotencia
+Si se recibe un request con un ecommerceReferenceNumber que ya existe en LDCOM, no se crea un duplicado. Se retorna el registro existente con HTTP 200.
+Efectos secundarios
+Crear una preventa para un asociado con un documento de crédito (o de financiamiento) incrementa su saldo acumulado de preventas en LDCOM.
+
+Campos excluidos
+Las siguientes campos existen en una preventa de LDCOM pero no se exponen en este endpoint por estar fuera del scope de integración actual:
+Bodega y caja específica: Se obtienen automáticamente.
+
+Estado manual de la preventa: Toda preventa se crea en estado PENDING.
+
+Descuentos desde catálogo: Los descuentos son creados en LDCOM, pero en el API no se necesita especificar el ID desde el catálogo, sino solo el monto calculado en el request.
+
+Impuesto desde catálogo: Los impuestos son creados en LDCOM, pero en el API no se necesita especificar el ID desde el catálogo, sino solo el porcentaje. Si el impuesto con ese porcentaje no está configurado en LDCOM se retornará un error.
+
+Cierre de caja: Toda preventa y factura deben asociarse a un ID de cierre. Las preventas creadas desde el API se asocian a un cierre creado automáticamente cada día.
+
+Usuario / Vendedor: Las preventas creadas desde el API se asocian a un usuario de sistema.
+
+Funcionalidades excluidas
+Las siguientes funcionalidades relacionadas a preventas existen en LDCOM pero no se exponen en este endpoint para simplificar el alcance del API, al ser más relevantes del módulo de facturación:
+Promociones / "item groups": Son promociones que se activan al escanear artículos.
+
+Gasto unitario / venta extraordinaria: Son funcionalidades relacionadas a las compras de proveedores.
+
+Servicios: Es un catálogo de servicios asociados a la factura.
+
+Venta cruzada: Son artículos sugeridos desde el módulo de facturación.
+
+Plan lealtad: Las relaciones de clientes con su plan de lealtad es una funcionalidad del módulo de facturación.
+
+Pendiente de entrega: Es un campo relacionado al módulo de rutas de LDCOM.
+
+Afiliado / Ubicación / Operación: Son campos relacionados a otros módulos y procesos internos de LDCOM.
+
+Factor unitario: Se utiliza para describir artículos "sueltos" (ej. una caja de pastillas de 12 tiene un factor unitario de 12).
+
+Códigos de error
+Código
+ | HTTP
+ | Descripción
+ | 
+INVALID_AMOUNT_CALCULATION
+ | 422
+ | Los montos de uno o más ítems no son matemáticamente consistentes (diferencia > 0.01)
+ | 
+INVALID_TAX_PERCENTAGE
+ | 422
+ | unitTaxPercentage no coincide con ningún impuesto configurado en LDCOM. Valores válidos: 0, 0.5, 1, 2, 4, 8, 13
+ | 
+ITEM_NOT_FOUND
+ | 422
+ | Uno o más itemExternalId no existen en LDCOM
+ | 
+CUSTOMER_NOT_FOUND
+ | 422
+ | El customer.externalId no existe en LDCOM
+ | 
+STORE_NOT_FOUND
+ | 404
+ | originStoreExternalId o billableStoreExternalId no existe o no está configurado
+ | 
+Request
+Body
+jsonwide760Descripción de campos
+Encabezado del documento
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+originStoreExternalId
+ | string
+ | 100
+ | ✅
+ | Sucursal donde se origina la preventa. (Conocido en DP como "Oficina de venta"). Catálogo: Sucursales.
+ | 
+billableStoreExternalId
+ | string
+ | 100
+ | ✅
+ | Sucursal que puede facturar la preventa. Catálogo: Sucursales.
+ | 
+documentTypeExternalId
+ | string
+ | 100
+ | ✅
+ | Tipo de documento. (Ej. Venta de Contado, Venta de crédito, Devolución, Consignación). Catálogo: Tipos de documento.
+ | 
+documentSubTypeExternalId
+ | string
+ | 100
+ | ✅
+ | Subtipo de documento. (Ej. tiquete electrónico, factura electrónica). Catálogo: Subtipos de documento.
+ | 
+preorderTypeExternalId
+ | string
+ | 100
+ | ✅
+ | Variante de preventa. (Ej. Granel, Saco, Romana, Silos). Catálogo: Tipos de preventa.
+ | 
+date
+ | string (ISO 8601)
+ | 33
+ | ✅
+ | Fecha y hora del pedido en UTC.
+ | 
+headerNote
+ | string
+ | 500
+ | ❌
+ | Nota visible en el encabezado del documento impreso.
+ | 
+footerNote
+ | string
+ | 500
+ | ❌
+ | Nota visible en el pie del documento impreso.
+ | 
+isEditable
+ | boolean
+ | N/A
+ | ❌
+ | Si el cajero puede editar la preventa antes de facturar. Default: false. En preventas B2C debe enviarse false.
+ | 
+discountPercentage
+ | number
+ | 19,4
+ | ❌
+ | Descuento general a nivel de documento (%). Es un valor informativo, ya que los cálculos reales van por artículo. Default: 0.
+ | 
+currencyExchangeAmount
+ | number
+ | 19,4
+ | ❌
+ | Tipo de cambio aplicado si la transacción es en moneda extranjera. Omitir si es en moneda local.
+ | 
+customer
+Datos del cliente en LDCOM. Si el cliente ya existe por externalId, los campos opcionales son ignorados. Si no existe, retorna CUSTOMER_NOT_FOUND.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+externalId
+ | string
+ | 100
+ | ✅
+ | Código del cliente externo. (Ej. el código del cliente en Dos Pinos).
+ | 
+documentTypeExternalId
+ | string
+ | 100
+ | ❌
+ | Tipo de documento de identidad. Catálogo: Tipos de documento cliente.
+ | 
+documentNumber
+ | string
+ | 20
+ | ❌
+ | Número de documento de identidad.
+ | 
+fullname
+ | string
+ | 120
+ | ❌
+ | Nombre completo del cliente.
+ | 
+electronicInvoice
+Requerido cuando el pedido debe generar comprobante electrónico.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+documentTypeExternalId
+ | string
+ | 100
+ | ✅
+ | Tipo de documento del receptor. Catálogo: Tipos de documento electrónico.
+ | 
+documentNumber
+ | string
+ | 25
+ | ✅
+ | Número de identificación del receptor.
+ | 
+fullname
+ | string
+ | 120
+ | ✅
+ | Nombre del receptor en la factura.
+ | 
+email
+ | string
+ | 100
+ | ✅
+ | Email para envío del XML de factura electrónica.
+ | 
+phoneNumber
+ | string
+ | 15
+ | ❌
+ | Número de teléfono.
+ | 
+economicActivityCode
+ | string
+ | 10
+ | ❌
+ | Código de actividad económica del receptor.
+ | 
+hasReducedTaxRate
+ | boolean
+ | N/A
+ | ❌
+ | Indica si el cliente aplica para tarifa reducida. Default: false.
+ | 
+customAttributes
+Atributos específicos de la implementación con Dos Pinos. Todos opcionales; se incluyen según el flujo.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+farmExternalId
+ | string
+ | 100
+ | ❌
+ | Código externo de la finca asociada.
+ | 
+authorizedCustomerExternalId
+ | string
+ | 150
+ | ❌
+ | Código externo del autorizado del cliente.
+ | 
+deliveryProviderExternalId
+ | string
+ | 100
+ | ❌
+ | Código externo del transportista.
+ | 
+deliveryDate
+ | string (ISO 8601)
+ | 33
+ | ❌
+ | Fecha de despacho en UTC.
+ | 
+ecommerceReferenceNumber
+ | string
+ | 100
+ | ❌
+ | Referencia externa del pedido (ej. ID de orden en Uber Eats). Usado para idempotencia. Recomendado para todos los flujos B2C.
+ | 
+items[]
+Al menos un ítem es requerido.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+itemExternalId
+ | string
+ | 100
+ | ✅
+ | Código del artículo externo. Debe existir en LDCOM.
+ | 
+quantity
+ | number
+ | 12,3
+ | ✅
+ | Cantidad del artículo.
+ | 
+unitPrice
+ | number
+ | 18,6
+ | ✅
+ | Precio unitario bruto (antes de descuento).
+ | 
+unitDiscountAmount
+ | number
+ | 18,6
+ | ✅
+ | Descuento en monto absoluto por unidad. Usar 0 si no aplica.
+ | 
+unitNetAmount
+ | number
+ | 18,6
+ | ✅
+ | Precio neto por unidad: unitPrice - unitDiscountAmount. Validado con tolerancia ±0.01.
+ | 
+unitTaxPercentage
+ | number
+ | 19,4
+ | ✅
+ | Porcentaje de impuesto aplicado. Valores válidos: 0, 0.5, 1, 2, 4, 8, 13. LDCOM resuelve el ID internamente.
+ | 
+unitTaxAmount
+ | number
+ | 18,6
+ | ✅
+ | Monto de impuesto por unidad: unitNetAmount × (unitTaxPercentage / 100). Validado con tolerancia ±0.01.
+ | 
+totalAmount
+ | number
+ | 19,4
+ | ✅
+ | Total del ítem: (unitNetAmount + unitTaxAmount) × quantity.
+ | 
+items[].batches[] (opcional)
+Para artículos con control de lote.
+Campo
+ | Tipo
+ | Longitud
+ | Descripción
+ | 
+batchNumber
+ | string
+ | 60
+ | Número de lote.
+ | 
+batchQuantity
+ | number
+ | 12,3
+ | Cantidad asociada a este lote.
+ | 
+batchExpirationDate
+ | string (ISO 8601)
+ | 33
+ | Fecha de vencimiento del lote.
+ | 
+items[].serials[] (opcional)
+Para artículos con control de número de serie.
+Campo
+ | Tipo
+ | Longitud
+ | Descripción
+ | 
+serialNumber
+ | string
+ | 100
+ | Número de serie.
+ | 
+quantity
+ | number
+ | N/A
+ | Cantidad (usualmente 1 por serial).
+ | 
+warrantyDays
+ | integer
+ | N/A
+ | Días de garantía desde la fecha del documento.
+ | 
+items[].exemptionDocuments[] (opcional)
+Documentos de exoneración asociados al artículo. Requerido cuando unitTaxPercentage = 0 por exoneración (no por tarifa cero). Puede haber más de un documento por artículo.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+documentNumber
+ | string
+ | 17
+ | ✅
+ | Número del documento de exoneración. Comienza por AL-.
+ | 
+documentTypeExternalId
+ | string
+ | 100
+ | ✅
+ | ID del tipo de documento de exoneración. Catálogo: Tipos de documento de exoneración.
+ | 
+otherDocumentTypeName
+ | string
+ | 100
+ | ✅
+ | Nombre del tipo de exoneración cuando se usa documentTypeExternalId = 99.
+ | 
+lawArticleNumber
+ | string
+ | N/A
+ | ❌
+ | Número de artículo específico de la ley.
+ | 
+lawSectionNumber
+ | string
+ | N/A
+ | ❌
+ | Número de inciso específico del artículo.
+ | 
+issuerExternalId
+ | string
+ | 100
+ | ❌
+ | ID del ente emisor del documento. Catálogo: Tipos de emisores de exoneración.
+ | 
+otherIssuerName
+ | string
+ | 100
+ | ❌
+ | Nombre del ente emisor cuando se usa issuerExternalId = 99.
+ | 
+issuedAt
+ | string (ISO 8601)
+ | 33
+ | ❌
+ | Fecha de emisión del documento de exoneración.
+ | 
+payments[]
+Al menos un pago es requerido. Registra el método de pago esperado o ya procesado.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+typeExternalId
+ | string
+ | 100
+ | ✅
+ | Tipo de pago. Catálogo: Tipos de pago.
+ | 
+status
+ | enum
+ | N/A
+ | ✅
+ | Estado del pago: PENDING (por cobrar al facturar) o PAID (ya cobrado, ej. Uber Eats).
+ | 
+totalPayableAmount
+ | number
+ | 19,4
+ | ✅
+ | Monto total a pagar con este método.
+ | 
+paidAmount
+ | number
+ | 19,4
+ | ✅
+ | Monto ya pagado. 0 si status = PENDING.
+ | 
+cashRoundingAmount
+ | number
+ | 19,4
+ | ❌
+ | Ajuste de redondeo en efectivo. Default: 0.
+ | 
+authorizerExternalId
+ | string
+ | 100
+ | ❌
+ | ID externo del autorizador (ej. proveedor de pago).
+ | 
+reference
+ | string
+ | 50
+ | ❌
+ | Referencia de la transacción de pago (ej. ID de transacción de Uber Pay).
+ | 
+Response
+200 OK — Preventa creada
+jsonwide760Campos del response
+Campo
+ | Descripción
+ | 
+preorderId
+ | ID generado por LDCOM. Usar para referencias posteriores (facturación, consulta).
+ | 
+status
+ | Estado de la preventa. Siempre PENDING en la creación.
+ | 
+items[].itemId
+ | ID interno del artículo en LDCOM.
+ | 
+summary.subtotalAmount
+ | Suma de unitNetAmount × quantity de todos los ítems.
+ | 
+summary.totalDiscountAmount
+ | Suma de unitDiscountAmount × quantity de todos los ítems.
+ | 
+summary.totalTaxAmount
+ | Suma de unitTaxAmount × quantity de todos los ítems.
+ | 
+summary.totalAmount
+ | Total general del documento (suma de todos los item.totalAmount).
+ | 
+Notas de implementación
+Todos los montos son number con precisión de 2 decimales. No usar string.
+
+Fechas siempre en ISO 8601 con timezone UTC (Z).
+
+Los catálogos deben coordinarse con el equipo de LDCOM durante la configuración inicial en el Catálogo de Interfaces.
+
+Para flujos B2C, siempre incluir customAttributes.ecommerceReferenceNumber para garantizar idempotencia ante reintentos de red.
+
+Si se envían múltiples métodos de pago, la suma de payments[].totalPayableAmount debe igualar summary.totalAmount.
+
+Evidencias
+Ambiente
+ | http://testing-iis/BETA/DOS_PINOS_STAGING/INTEGRATIONS
+ | 
+Fecha
+ | 11/Agosto/2026
+ | 

@@ -1,0 +1,6 @@
+sin cliente        HTTP 500 276ms {"error":{"code":500,"detail":{"reason":"Debe indicar la identificación o el código del cliente.","code":"","details":"Validación de datos de entrada"
+exito              HTTP 200 25ms {"Respuesta":{"numSolicitud":153,"numCredito":"25099","indEstado":"A","inconsistencia":null,"monDisponible":170120083.62},"Mensaje":"Crédito insertado
+rechazo funcional  HTTP 200 7ms {"Respuesta":{"numSolicitud":null,"numCredito":null,"indEstado":null,"inconsistencia":null,"monDisponible":null},"CodigoError":"SFA15-F01","TipoError"
+timeout            HTTP 500 40003ms {"error":{"code":500,"detail":{"reason":"Error por tiempo de espera en Token","code":"HTTP_408","details":"Timeout al obtener el token de SFA15."},"me
+conectividad       HTTP 500 8ms {"error":{"code":500,"detail":{"reason":"No se pudo establecer conexión con el sistema de créditos.","code":"HTTP_503","details":"Conectividad con SFA
+clave mala         HTTP 500 4ms {"error":{"code":500,"detail":{"reason":"Error técnico en la autenticación en el servicio externo.","code":"HTTP_400","details":"Usuario o contraseña 

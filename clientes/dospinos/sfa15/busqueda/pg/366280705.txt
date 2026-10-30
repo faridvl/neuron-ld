@@ -1,0 +1,161 @@
+LD-03 Ajustar saldos
+POST /api/customers/account-balance
+Estado del documento: Borrador
+Historial de cambios
+Fecha
+ | Descripción
+ | Autor
+ | 
+14/Mayo/2026
+ | Primer borrador y base del endpoint.
+ | haraya@ld.co.cr
+ | 
+27/Mayo/2026
+ | Actualización de catálogos que deben estar configurados en LDCOM
+ | haraya@ld.co.cr
+ | 
+Descripción
+Actualiza el saldo de crédito disponible y/o la configuración de crédito de uno o múltiples clientes en LDCOM. El saldo recibido reemplaza el valor actual.
+Contexto de uso
+Flujos relacionados
+Flujo
+ | Descripción
+ | 
+F-08
+ | Ajuste de saldos de crédito
+ | 
+Interfaces Dos Pinos relacionadas
+Interfaz
+ | Descripción
+ | 
+POS-09
+ | Dispinibles de crédito distribuidores 
+ | 
+POS-28
+ | Disponibles de asociados (antiguo "Plan alterno de límites de asociados")
+ | 
+Triggers
+SAP: Ajuste de saldo de crédito de distribuidores.
+
+SFA: Ajuste de saldo de crédito de asociados.
+
+Reglas y validaciones
+Reglas de negocio
+El saldo recibido reemplaza completamente el saldo actual del cliente en LDCOM.
+
+Se pueden enviar uno o múltiples clientes en el mismo request.
+
+Todos los clientes deben existir en LDCOM por su externalId.
+
+El transactionExternalId es solo para trazabilidad en logs — no se persiste en LDCOM.
+
+Si uno o más clientes no existen, LDCOM retorna error y no aplica ningún ajuste del batch.
+
+creditEnabled y financingEnabled son opcionales — si no se envían, conservan su valor actual en LDCOM.
+
+availableBalance es requerido y acepta valores negativos (sobregiro).
+
+Enviar creditEnabled: true y financingEnabled: true simultáneamente es técnicamente aceptado, aunque en la práctica un cliente no debería tener ambos habilitados. creditEnabled corresponde al crédito estándar de distribuidores; financingEnabled al financiamiento de asociados. Ambos comparten el mismo campo de saldo en LDCOM.
+
+Idempotencia
+No aplica — un mismo request enviado dos veces reemplaza el saldo dos veces con el mismo valor, lo que resulta en el mismo estado final. Es seguro reintentar.
+Catálogos que deben estar configurados en LDCOM
+Ninguno.
+Códigos de error
+Código
+ | HTTP
+ | Descripción
+ | 
+CUSTOMER_NOT_FOUND
+ | 422
+ | Uno o más externalId no existen en LDCOM. Se indica cuáles en el detalle del error.
+ | 
+Request
+Body
+jsonwide760Descripción de campos
+Encabezado
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+transactionExternalId
+ | string
+ | N/A
+ | ❌
+ | ID de la transacción en el sistema origen (SAP o SFA). Solo para trazabilidad en logs — no se persiste en LDCOM.
+ | 
+customers[]
+Al menos un cliente requerido.
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+externalId
+ | string
+ | 30
+ | ✅
+ | Código externo del cliente en LDCOM. Debe existir.
+ | 
+availableBalance
+ | number
+ | 19,4
+ | ✅
+ | Nuevo saldo de crédito disponible. Reemplaza el valor actual. Acepta valores negativos (sobregiro).
+ | 
+creditEnabled
+ | boolean
+ | N/A
+ | ❌
+ | Habilita o deshabilita el crédito estándar del cliente (distribuidores). Si no se envía, conserva el valor actual.
+ | 
+financingEnabled
+ | boolean
+ | N/A
+ | ❌
+ | Habilita o deshabilita el financiamiento del cliente (asociados). Si no se envía, conserva el valor actual.
+ | 
+Response
+200 OK
+jsonwide760Campos del response
+Campo
+ | Descripción
+ | 
+updatedCount
+ | Cantidad de clientes actualizados exitosamente.
+ | 
+customers[].externalId
+ | Código externo del cliente actualizado.
+ | 
+customers[].availableBalance
+ | Saldo aplicado en LDCOM.
+ | 
+customers[].creditEnabled
+ | Estado actual del crédito estándar del cliente tras la operación.
+ | 
+customers[].financingEnabled
+ | Estado actual del financiamiento del cliente tras la operación.
+ | 
+Notas de implementación
+El saldo es un reemplazo, no un delta. Enviar el saldo incorrecto lo sobreescribe sin posibilidad de revertir automáticamente.
+
+creditEnabled y financingEnabled son independientes del saldo — se pueden actualizar sin cambiar el saldo y viceversa.
+
+Si algún externalId no existe, LDCOM rechaza todo el batch — ningún cliente se actualiza.
+
+transactionExternalId se incluye en los logs de LDCOM para facilitar la trazabilidad ante discrepancias, pero no queda almacenado en la base de datos.
+
+Montos con precisión de 2 decimales.
+
+En la práctica, un cliente no debería tener creditEnabled y financingEnabled ambos en true simultáneamente, ya que comparten el mismo campo de saldo en LDCOM. LDCOM acepta esta combinación pero puede generar comportamiento inesperado.
+
+Evidencias
+Ambiente
+ | http://testing-iis/BETA/DOS_PINOS_STAGING/INTEGRATIONS
+ | 
+Fecha
+ | 11/Agosto/2026
+ | 

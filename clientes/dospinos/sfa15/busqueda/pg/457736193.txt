@@ -1,0 +1,898 @@
+CO-696-0012 Cambios en Facturación + CO-696-0029 Ajustes sobre Facturación — Informe QA
+1. Proyecto
+Código
+ | CO-696-0012 + CO-696-0029
+ | 
+Nombre
+ | Cambios en Facturación + Ajustes sobre Facturación
+ | 
+Presentado en
+ | Review 4
+ | 
+Feature(s) en DevOps
+ | Feature 227 · Feature 1756
+ | 
+Módulos alcanzados
+ | Site Admin, POS en línea, POS local (sin conexión), Preventa, flujos integrales
+ | 
+Test plan manual
+ | DP - Test - Cambios en Facturación (2626)
+ | 
+Nota sobre CO-696-0029
+ | Sus dos historias quedaron marcadas como obsoletas en DevOps; los cambios de facturación de esta entrega se prueban en el plan 2626.
+ | 
+Historias de usuario del alcance (10)ID
+ | Historia
+ | 
+382
+ | 12 Facturación | US-7 - Formas de Pago en Preventa
+ | 
+1275
+ | 12 Facturación | US-2 - Bloqueo de Autogestión (cajero = cliente)
+ | 
+1276
+ | 12 Facturación | US-1 - Notas de Crédito - Motivos y Plazos
+ | 
+1281
+ | 12 Facturación | US-6 - Captura Obligatoria por Artículo - Receta y VIN
+ | 
+1284
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+1294
+ | 12 Facturación | US-5 - Factura desde Histórico de Ventas y Reimpresión
+ | 
+1298
+ | 12 Facturación | US-8 - Orden de Impresión del Ticket, Lote/Vencimiento y Datos de Encabezado
+ | 
+1304
+ | 12 Facturación | US-9 - Reportes de Facturación
+ | 
+1754
+ | 12 Facturacion - Reporte de Grandes Contribuyentes (Pasar a Facturación)
+ | 
+1814
+ | 12 Facturación | US-10 - Partición de Factura por Exoneración con Artículo Bonificado
+ | 
+notepanel_c1🤖 Pruebas automatizadas: este proyecto tiene además 60 pruebas automatizadas (test plan 2651). Se presentan en su propia página, 🤖 Pruebas automatizadas — Review 4, y no se mezclan con los casos manuales de esta página.
+
+🤖 Pruebas automatizadas: este proyecto tiene además 60 pruebas automatizadas (test plan 2651). Se presentan en su propia página, 🤖 Pruebas automatizadas — Review 4, y no se mezclan con los casos manuales de esta página.
+
+2. Pruebas manuales planteadas
+141 casos de prueba, organizados por módulo. Varios casos se plantean en más de un escenario (por ejemplo, POS en línea y POS local) para cubrir el mismo cambio en cada punto donde aplica.
+Módulo › escenario
+ | Casos planteados
+ | 
+01 - Site Admin › US-1 Notas de Crédito - Plazo Máximo y Permiso
+ | 8
+ | 
+01 - Site Admin › US-2 Bloqueo de Autogestión - Datos de Prueba
+ | 1
+ | 
+01 - Site Admin › US-3 Autoconsumo y Regalía - Parámetros de Empresa
+ | 5
+ | 
+01 - Site Admin › US-5 Consumos - Parámetro de Reglas Originales
+ | 3
+ | 
+01 - Site Admin › US-6 Artículo - Solicita Receta y VIN
+ | 4
+ | 
+01 - Site Admin › US-8 Artículo - Tipo Operativo Despacho o Bodega
+ | 4
+ | 
+01 - Site Admin › US-9 Reportes de Facturación
+ | 9
+ | 
+02 - Punto de Venta en Línea › US-1 Notas de Crédito - Plazos y Permisos
+ | 7
+ | 
+02 - Punto de Venta en Línea › US-10 Partición por Exoneración y Bonificado
+ | 7
+ | 
+02 - Punto de Venta en Línea › US-2 Bloqueo de Autogestión
+ | 11
+ | 
+02 - Punto de Venta en Línea › US-3 Autoconsumo y Regalía
+ | 19
+ | 
+02 - Punto de Venta en Línea › US-5 Factura desde Histórico (Consumos)
+ | 7
+ | 
+02 - Punto de Venta en Línea › US-6 Captura de Receta y VIN
+ | 9
+ | 
+02 - Punto de Venta en Línea › US-7 Formas de Pago que Vienen de Preventa
+ | 7
+ | 
+02 - Punto de Venta en Línea › US-8 Orden de Impresión y Ticket de Despacho
+ | 5
+ | 
+03 - Punto de Venta Local (sin conexión) › Sincronización hacia la Caja Local
+ | 6
+ | 
+03 - Punto de Venta Local (sin conexión) › US-1 Notas de Crédito - Plazos y Permisos
+ | 7
+ | 
+03 - Punto de Venta Local (sin conexión) › US-10 Partición por Exoneración y Bonificado
+ | 7
+ | 
+03 - Punto de Venta Local (sin conexión) › US-2 Bloqueo de Autogestión
+ | 11
+ | 
+03 - Punto de Venta Local (sin conexión) › US-3 Autoconsumo y Regalía
+ | 19
+ | 
+03 - Punto de Venta Local (sin conexión) › US-5 Factura desde Histórico (Consumos)
+ | 7
+ | 
+03 - Punto de Venta Local (sin conexión) › US-6 Captura de Receta y VIN
+ | 9
+ | 
+03 - Punto de Venta Local (sin conexión) › US-7 Formas de Pago que Vienen de Preventa
+ | 6
+ | 
+03 - Punto de Venta Local (sin conexión) › US-8 Orden de Impresión y Ticket de Despacho
+ | 5
+ | 
+04 - Preventa › US-2 Bloqueo de Autogestión
+ | 2
+ | 
+04 - Preventa › US-3 Autoconsumo y Regalía
+ | 4
+ | 
+04 - Preventa › US-6 Captura de Receta y VIN
+ | 2
+ | 
+04 - Preventa › US-7 Formas de Pago en Preventa
+ | 8
+ | 
+04 - Preventa › US-8 Orden de Impresión del Ticket
+ | 1
+ | 
+05 - Flujos Integrales › Cierre de Caja y Reportes
+ | 2
+ | 
+05 - Flujos Integrales › De Preventa a Facturación
+ | 5
+ | 
+05 - Flujos Integrales › Reimpresiones
+ | 5
+ | 
+3. Bugs corregidos
+panel_c1Se incluyen los bugs reportados durante las pruebas que ya fueron corregidos. Los que el equipo de desarrollo atiende en este momento se incorporarán al informe cuando queden corregidos.
+Bugs corregidos
+ | 31
+ | 
+Por severidad
+ | Alta: 1 · Media: 27 · Baja: 3
+ | 
+Anexo A · Detalle de los 31 bugs corregidosID
+ | Título
+ | Severidad
+ | Historia asociada
+ | 
+2342
+ | Migración: Presenta un error de ID repetidos
+ | Media
+ | 12 Facturación | US-9 - Reportes de Facturación
+ | 
+2372
+ | Mant de Subdocumentos, Plazo Máximo (días): Este parametro no posee ciertas validaciones
+ | Media
+ | 12 Facturación | US-1 - Notas de Crédito - Motivos y Plazos
+ | 
+2375
+ | Site Seguridad. Nueva opción de seguridad con falta ortografíca
+ | Baja
+ | 12 Facturación | US-1 - Notas de Crédito - Motivos y Plazos
+ | 
+2379
+ | Mant de Subdocumentos: Plazo Máximo (días): Cuando se ingresa una cantidad de días máximos, se guarda correctamente pero al salir y volver a ingresar a ese mismo, el dato no quedó guardado
+ | Media
+ | 12 Facturación | US-1 - Notas de Crédito - Motivos y Plazos
+ | 
+2392
+ | Parámetros de autoconsuomo y regalía: Permite guardar sin datos
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2397
+ | Faltas Ortograficas / Uso de mayúscula y minúscula: Varias
+ | Media
+ | 12 Facturación | US-1 - Notas de Crédito - Motivos y Plazos
+ | 
+2404
+ | PV Local: Cuando hago una devolución de una factura que ya pasó los días máximos de devolución se muestra un mensaje  de error y no permite continuar. Debería mosrar la pantalla para colocar los credenciales
+ | Media
+ | 12 Facturación | US-1 - Notas de Crédito - Motivos y Plazos
+ | 
+2437
+ | Mant Empresa: Cliente por Defecto en Documentos de Autoconsumo: permite agregar un cliente inactivo o bloqueado
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2438
+ | PV Local, Cuando seleccino subdocumento: regalía o autoconsumo, no me solicita el CECO, y cuando es autoconsumo no se carga el cliente por defecto, además no coloca los artículos en 0.
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2439
+ | PV Local, Línea/ Preventa: Cuando coloco en caja subdocumento por defecto Autoconsumo, cuando cargo de nuevo en los módulos no me solicita el CECO ni el cliente por defecto
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2442
+ | **PV línea, local/ Preventa: Cuando consulto precios desde la opción de FX Artículos / Consultar precios no muestra los datos del artículos, ni nombre, ni precios (aunque sea 0) no muestra nada
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2443
+ | PV Local, Línea // Preventa: Cuando coloco servicio se muestra el monto en los totales, además esto pasa con los impuestos sale el monto y no debería
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2456
+ | Preventa / PV. Cuando hago una preventa con subdocumento Regalía y la cargo en PV, cambio el cliente me muestra el mensaje que el artículo no permite venta bajo costo
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2459
+ | PV Local. Me permite aplicar dinamicas comerciales en esta modalidad, sin ninguna restricción
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2460
+ | PV local línea / Preventa, Se parametriza el cliente por defecto en autoconsumo, y luego se inactiva ese cliente, cuando se trata de cargar en los módulos no muestra ninguna validación
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2462
+ | Reimpresiones. Cuando una factura fue por autoconsumo o regalía y se cambia los subdocumentos en empresa y se realiza una reimpresión toma los valores nuevos, es decir, las reimpresiones de esas facturas se muestran con precios <> 0
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2467
+ | PV local, línea / Preventa Cuando se presiona ESC a la pantalla de CECO, igual se carga el subdocumento y me permite imprimir con ese subdocumento de autoconsumo o regalía
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2468
+ | PV La NC o devolución de una factura de Autoconsumo/Regalía devuelve el IVA en efectivo.
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2469
+ | PV /Preventa // No hay ninguna validación de CECO al emitir. El CECO solo se pide al elegir el subdocumento o al recuperar un documento en espera. Por eso cualquier otro camino factura con Ceco_Id = 0:
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2476
+ | Preventa / PV | Autoconsumo - Si el subdocumento cambia despues de hacer la preventa, al facturarla sale con el cliente y el centro de costo equivocados
+ | Media
+ | 12 Facturación | US-3 - Autoconsumo y Regalías
+ | 
+2489
+ | PV | Cierre de caja - Si la caja hizo una devolucion, el cierre nunca llega a la central y los reportes salen vacios
+ | Alta
+ | 12 Facturación | US-9 - Reportes de Facturación
+ | 
+2492
+ | POS // Cuando trato de cargar una preventa que tiene un cliente con el mismo número de cédula que el cajero en PV, no se muestra ninguna advertencia. Hago la búsqueda por fecha o por ID de la preventa y no me muestra nada...
+ | Media
+ | 12 Facturación | US-2 - Bloqueo de Autogestión (cajero = cliente)
+ | 
+2495
+ | PV línea, local / Preventa, cuando un asociado tiene la misma cedula que el cajero y este cliente posee fincas, cuando se le factura a una de estas fincas, el mensaje de validación se muestra cuando se presiona imprimir...
+ | Media
+ | 12 Facturación | US-2 - Bloqueo de Autogestión (cajero = cliente)
+ | 
+2506
+ | POS local, línea // Preventa: Mensaje con falta ortográfica // Varios bugs
+ | Media
+ | 12 Facturación | US-6 - Captura Obligatoria por Artículo - Receta y VIN
+ | 
+2507
+ | POS local, línea // Preventa cuando se ingresa un número en la pantalla de WIN y se intenta borrar, no lo hace la única manera es colocando otra cantidad no borrado el número para dejar el campo en blanco
+ | Media
+ | 12 Facturación | US-6 - Captura Obligatoria por Artículo - Receta y VIN
+ | 
+2511
+ | POS local, línea // Cuando se coloca el máximo de caracteres permitidos en VIN y Receta al imprimir la factura se muestra un error
+ | Media
+ | 12 Facturación | US-6 - Captura Obligatoria por Artículo - Receta y VIN
+ | 
+2518
+ | Site Admin // Los artículos posee por defecto despacho y por defecto debe ser Bodega
+ | Media
+ | 12 Facturación | US-8 - Orden de Impresión del Ticket, Lote/Vencimiento y Datos de Encabezado
+ | 
+2519
+ | POS línea, local // Preventa. Ticket de despacho no se muestra la finca ni los autorizados
+ | Media
+ | 12 Facturación | US-8 - Orden de Impresión del Ticket, Lote/Vencimiento y Datos de Encabezado
+ | 
+2523
+ | Preventa // POS mensaje no posee las mayúsculas correctas en el título
+ | Baja
+ | 12 Facturación | US-2 - Bloqueo de Autogestión (cajero = cliente)
+ | 
+3044
+ | Reimpresiones. En POS, las reimpresiones desde FX no traer los datos del WIN - Revisar línea y local
+ | Media
+ | 12 Facturación | US-6 - Captura Obligatoria por Artículo - Receta y VIN
+ | 
+3063
+ | Facturación | Reimpresión de ticket de despacho - La palabra COPIA creció poco (de 9 a 11 puntos, sin negrita)
+ | Baja
+ | 12 Facturación | US-9 - Reportes de Facturación
+ | 
+4. Anexo · Casos de prueba planteados
+Anexo B · Los 141 casos de prueba del planCaso
+ | Qué se prueba
+ | Dónde se plantea
+ | 
+2903
+ | Site Admin | US-1 - El mantenimiento de Subdocumentos muestra el campo Plazo Máximo (días)
+ | Site Admin
+ | 
+2904
+ | Site Admin | US-1 - Guardar un plazo válido y que se conserve al volver a entrar
+ | Site Admin
+ | 
+2905
+ | Site Admin | US-1 - El plazo es opcional y no tiene valor por defecto
+ | Site Admin
+ | 
+2906
+ | Site Admin | US-1 - Validaciones del Plazo Máximo: cero, negativos, decimales, texto y largo
+ | Site Admin
+ | 
+2907
+ | Site Admin | US-1 - Solo un usuario con permiso puede modificar el plazo
+ | Site Admin
+ | 
+2908
+ | Site Admin | US-1 - Seguridad: existe la opción de permiso por exceso de plazo, bien escrita
+ | Site Admin
+ | 
+2909
+ | Site Admin | US-1 - Asignar y quitar el permiso de exceso de plazo a un rol
+ | Site Admin
+ | 
+2910
+ | Site Admin | US-1 - No se crean subdocumentos ni tipos de documento nuevos
+ | Site Admin
+ | 
+2911
+ | Site Admin | US-2 - Preparar datos: cajero con cédula y clientes con la misma cédula
+ | Site Admin
+ | 
+2912
+ | Site Admin | US-3 - Empresa muestra los parámetros de Autoconsumo, Regalía y cliente por defecto
+ | Site Admin
+ | 
+2913
+ | Site Admin | US-3 - Guardar los tres parámetros y que se conserven
+ | Site Admin
+ | 
+2914
+ | Site Admin | US-3 - No permite guardar los parámetros vacíos
+ | Site Admin
+ | 
+2915
+ | Site Admin | US-3 - El cliente por defecto no puede ser inactivo ni bloqueado
+ | Site Admin
+ | 
+2916
+ | Site Admin | US-3 - Catálogo de centros de costo con código de interfaz y nombre
+ | Site Admin
+ | 
+2917
+ | Site Admin | US-5 - Parámetro de reglas originales en consumo visible y apagado por defecto
+ | Site Admin
+ | 
+2918
+ | Site Admin | US-5 - Activar y desactivar el parámetro de reglas originales
+ | Site Admin
+ | 
+2919
+ | Site Admin | US-5 - El parámetro es único por empresa
+ | Site Admin
+ | 
+2920
+ | Site Admin | US-6 - Activar Solicita Receta en un artículo
+ | Site Admin
+ | 
+2921
+ | Site Admin | US-6 - El artículo muestra VIN donde antes decía Serie
+ | Site Admin
+ | 
+2922
+ | Site Admin | US-6 - Parámetro de empresa para capturar VIN en Punto de Venta
+ | Site Admin
+ | 
+2923
+ | Site Admin | US-6 - Un artículo puede pedir receta y VIN a la vez
+ | Site Admin
+ | 
+2924
+ | Site Admin | US-8 - Un artículo nuevo queda en Bodega por defecto
+ | Site Admin
+ | 
+2925
+ | Site Admin | US-8 - Cambiar el Tipo Operativo a Despacho
+ | Site Admin
+ | 
+2926
+ | Site Admin | US-8 - Al crear un artículo se respeta el Tipo Operativo elegido
+ | Site Admin
+ | 
+2927
+ | Site Admin | US-8 - Tipo Operativo recibido por la interfaz de artículos
+ | Site Admin
+ | 
+2928
+ | Site Admin | US-9 - Libro de Ventas: acceso desde el menú y generación sin filtros
+ | Site Admin
+ | 
+2929
+ | Site Admin | US-9 - Libro de Ventas: cada filtro devuelve solo lo que corresponde
+ | Site Admin
+ | 
+2930
+ | Site Admin | US-9 - Libro de Ventas: validaciones de filtros
+ | Site Admin
+ | 
+2931
+ | Site Admin | US-9 - Libro de Ventas: los totales cuadran con las facturas
+ | Site Admin
+ | 
+2932
+ | Site Admin | US-9 - Facturas por Tipo de Creación: acceso, filtros y generación
+ | Site Admin
+ | 
+2933
+ | Site Admin | US-9 - Facturas por Tipo de Creación: columnas e indicador de contingencia
+ | Site Admin
+ | 
+2934
+ | Site Admin | US-9 - Descuentos Manuales: una fila por artículo con descuento manual
+ | Site Admin
+ | 
+2935
+ | Site Admin | US-9 - Descuentos Manuales: columnas, descuento de documento y descuentos automáticos
+ | Site Admin
+ | 
+2936
+ | Site Admin | US-9 - Ventas por Cliente por Artículo: columnas VIN y Número de Receta
+ | Site Admin
+ | 
+2937
+ | Punto de Venta | US-1 - Nota de crédito dentro del plazo pide solo el permiso base
+ | POS en línea y POS local
+ | 
+2938
+ | Punto de Venta | US-1 - Nota de crédito fuera del plazo pide el permiso base y luego el permiso adicional
+ | POS en línea y POS local
+ | 
+2939
+ | Punto de Venta | US-1 - Fuera del plazo, un usuario sin el permiso adicional no puede continuar
+ | POS en línea y POS local
+ | 
+2940
+ | Punto de Venta | US-1 - Subdocumento sin plazo nunca pide permiso adicional
+ | POS en línea y POS local
+ | 
+2941
+ | Punto de Venta | US-1 - Límite exacto del plazo: el día del plazo y el día siguiente
+ | POS en línea y POS local
+ | 
+2942
+ | Punto de Venta | US-1 - Anulación y devolución parcial fuera del plazo
+ | POS en línea y POS local
+ | 
+2943
+ | Punto de Venta | US-1 - La nota de crédito viaja a Hacienda
+ | POS en línea y POS local
+ | 
+3001
+ | Punto de Venta | US-10 - Exonerado más bonificado parte la factura en dos documentos
+ | POS en línea y POS local
+ | 
+3002
+ | Punto de Venta | US-10 - Basta un exonerado en la factura aunque el bonificado no lo sea
+ | POS en línea y POS local
+ | 
+3003
+ | Punto de Venta | US-10 - Sin exonerados, o sin bonificados, no se parte
+ | POS en línea y POS local
+ | 
+3004
+ | Punto de Venta | US-10 - La tarifa reducida nunca parte la factura
+ | POS en línea y POS local
+ | 
+3005
+ | Punto de Venta | US-10 - Tarifa reducida más exoneración al 0%: gana la exoneración y se parte
+ | POS en línea y POS local
+ | 
+3006
+ | Punto de Venta | US-10 - Exoneración total del cliente también dispara la partición
+ | POS en línea y POS local
+ | 
+3007
+ | Punto de Venta | US-10 - Varios bonificados van juntos en un solo segundo documento y quedan relacionados
+ | POS en línea y POS local
+ | 
+2944
+ | Punto de Venta | US-2 - Asociar un cliente con la cédula del cajero se bloquea al seleccionarlo
+ | POS en línea y POS local
+ | 
+2945
+ | Punto de Venta | US-2 - Cambiar el cliente a uno con la cédula del cajero se bloquea
+ | POS en línea y POS local
+ | 
+2946
+ | Punto de Venta | US-2 - Cliente con fincas: el bloqueo sale al elegir la finca, no al imprimir
+ | POS en línea y POS local
+ | 
+2947
+ | Punto de Venta | US-2 - Devolución y anulación de una factura de un cliente con la cédula del cajero
+ | POS en línea y POS local
+ | 
+2948
+ | Punto de Venta | US-2 - Facturar a cliente general sí está permitido
+ | POS en línea y POS local
+ | 
+2949
+ | Punto de Venta | US-2 - Cliente general con datos tributarios usando la cédula del cajero
+ | POS en línea y POS local
+ | 
+2950
+ | Punto de Venta | US-2 - Cargar una preventa de un cliente con la cédula del cajero
+ | POS en línea y POS local
+ | 
+2951
+ | Punto de Venta | US-2 - No se muestra la alerta si todavía no hay cliente seleccionado
+ | POS en línea y POS local
+ | 
+2952
+ | Punto de Venta | US-2 - La comparación es por cédula, no por nombre
+ | POS en línea y POS local
+ | 
+2953
+ | Punto de Venta | US-2 - Apartado a un cliente con la cédula del cajero
+ | POS en línea y POS local
+ | 
+2954
+ | Punto de Venta | US-2 - Ortografía y formato de los mensajes de bloqueo
+ | POS en línea y POS local
+ | 
+2955
+ | Punto de Venta | US-3 - Autoconsumo: pide centro de costo, carga el cliente por defecto y los artículos en cero
+ | POS en línea y POS local
+ | 
+2956
+ | Punto de Venta | US-3 - Regalía: pide centro de costo y se emite al cliente de la operación
+ | POS en línea y POS local
+ | 
+2957
+ | Punto de Venta | US-3 - El selector de centro de costo busca por código de interfaz y por nombre
+ | POS en línea y POS local
+ | 
+2958
+ | Punto de Venta | US-3 - Cerrar el selector de centro de costo con Esc no deja el subdocumento puesto
+ | POS en línea y POS local
+ | 
+2959
+ | Punto de Venta | US-3 - Ningún camino permite emitir Autoconsumo o Regalía sin centro de costo
+ | POS en línea y POS local
+ | 
+2960
+ | Punto de Venta | US-3 - El ticket no muestra impuesto y el impuesto queda guardado
+ | POS en línea y POS local
+ | 
+2961
+ | Punto de Venta | US-3 - Servicios dentro de Autoconsumo o Regalía no muestran monto
+ | POS en línea y POS local
+ | 
+2962
+ | Punto de Venta | US-3 - En Autoconsumo no se puede cambiar el cliente por defecto
+ | POS en línea y POS local
+ | 
+2963
+ | Punto de Venta | US-3 - No aplican dinámicas comerciales: premios, bonificaciones, combos y escalonados
+ | POS en línea y POS local
+ | 
+2964
+ | Punto de Venta | US-3 - No aplican descuentos manuales, automáticos ni por cliente
+ | POS en línea y POS local
+ | 
+2965
+ | Punto de Venta | US-3 - No aplican promociones, promociones en grupo, sorteos ni listas de precios
+ | POS en línea y POS local
+ | 
+2966
+ | Punto de Venta | US-3 - No aplican tarifa reducida ni exoneración
+ | POS en línea y POS local
+ | 
+2967
+ | Punto de Venta | US-3 - Acciones bloqueadas y artículos sugeridos en Autoconsumo
+ | POS en línea y POS local
+ | 
+2968
+ | Punto de Venta | US-3 - Consultar precios desde Artículos en Autoconsumo
+ | POS en línea y POS local
+ | 
+2969
+ | Punto de Venta | US-3 - Caja con Autoconsumo como subdocumento por defecto
+ | POS en línea y POS local
+ | 
+2970
+ | Punto de Venta | US-3 - Cliente por defecto inactivado después de configurarlo
+ | POS en línea y POS local
+ | 
+2971
+ | Punto de Venta | US-3 - Devolución de una factura de Autoconsumo o Regalía no devuelve dinero
+ | POS en línea y POS local
+ | 
+2972
+ | Punto de Venta | US-3 - Volver de Autoconsumo a una factura normal
+ | POS en línea y POS local
+ | 
+3045
+ | Punto de Venta | US-3 - Cambiar a Autoconsumo con un cupón aplicado
+ | POS en línea y POS local
+ | 
+2973
+ | Punto de Venta | US-5 - Consumos: buscar el histórico por cliente y rango de fechas
+ | POS en línea y POS local
+ | 
+2974
+ | Punto de Venta | US-5 - Parámetro apagado: las líneas se recalculan con el precio de hoy
+ | POS en línea y POS local
+ | 
+2975
+ | Punto de Venta | US-5 - Parámetro apagado: se aplica la lista de precios del cliente
+ | POS en línea y POS local
+ | 
+2976
+ | Punto de Venta | US-5 - Parámetro encendido: se conservan precio, descuento e impuesto originales
+ | POS en línea y POS local
+ | 
+2977
+ | Punto de Venta | US-5 - Parámetro encendido: lista de precios distinta respeta el precio original
+ | POS en línea y POS local
+ | 
+2978
+ | Punto de Venta | US-5 - Parámetro encendido: lo que se agrega a mano usa condiciones de hoy sin tocar lo traído
+ | POS en línea y POS local
+ | 
+2979
+ | Punto de Venta | US-5 - Parámetro encendido: artículo que en la factura original fue en cero
+ | POS en línea y POS local
+ | 
+2980
+ | Punto de Venta | US-6 - Al imprimir se pide el número de receta
+ | POS en línea y POS local
+ | 
+2981
+ | Punto de Venta | US-6 - Sin número de receta no se puede imprimir
+ | POS en línea y POS local
+ | 
+2982
+ | Punto de Venta | US-6 - Receta por cada artículo, aunque se repita el número, mezclado con artículos sin receta
+ | POS en línea y POS local
+ | 
+2983
+ | Punto de Venta | US-6 - El VIN es obligatorio al imprimir
+ | POS en línea y POS local
+ | 
+2984
+ | Punto de Venta | US-6 - Receta y VIN en la misma factura
+ | POS en línea y POS local
+ | 
+2985
+ | Punto de Venta | US-6 - Edición, borrado, largo máximo y pegado en VIN y receta
+ | POS en línea y POS local
+ | 
+2986
+ | Punto de Venta | US-6 - Los datos de la factura anterior no se arrastran
+ | POS en línea y POS local
+ | 
+2987
+ | Punto de Venta | US-6 - Regalía y Autoconsumo también piden receta y VIN
+ | POS en línea y POS local
+ | 
+2988
+ | Punto de Venta | US-6 - Ortografía de mensajes y edición de precio de la línea con VIN
+ | POS en línea y POS local
+ | 
+2989
+ | Punto de Venta | US-7 - Las formas de pago de la preventa se cargan completas al facturar
+ | POS en línea y POS local
+ | 
+2990
+ | Punto de Venta | US-7 - Editar o eliminar una forma de pago editable que viene de preventa
+ | POS en línea y POS local
+ | 
+2991
+ | Punto de Venta | US-7 - Cambiar la tarjeta manual de la preventa por pago integrado con Credomatic
+ | POS en línea
+ | 
+2992
+ | Punto de Venta | US-7 - Un pago no editable no se puede editar ni eliminar
+ | POS en línea y POS local
+ | 
+2993
+ | Punto de Venta | US-7 - Pagos que superan el total al abrir la preventa
+ | POS en línea y POS local
+ | 
+2994
+ | Punto de Venta | US-7 - Formas de pago no habilitadas en la caja
+ | POS en línea y POS local
+ | 
+2995
+ | Punto de Venta | US-7 - Se ve la opción Otras Formas de Pago
+ | POS en línea y POS local
+ | 
+2996
+ | Punto de Venta | US-8 - El ticket imprime primero Despacho y después Bodega
+ | POS en línea y POS local
+ | 
+2997
+ | Punto de Venta | US-8 - Ticket solo con Bodega, solo con Despacho y con artículos sugeridos
+ | POS en línea y POS local
+ | 
+2998
+ | Punto de Venta | US-8 - El ticket de despacho muestra lote y vencimiento por artículo
+ | POS en línea y POS local
+ | 
+2999
+ | Punto de Venta | US-8 - El encabezado del ticket de despacho muestra Finca y Autorizado
+ | POS en línea y POS local
+ | 
+3000
+ | Punto de Venta | US-8 - La palabra COPIA del ticket de despacho sale más grande
+ | POS en línea y POS local
+ | 
+3008
+ | Caja Local | US-1 - El plazo máximo del subdocumento y el permiso por exceso llegan a la caja
+ | POS local › Sincronización hacia la caja
+ | 
+3009
+ | Caja Local | US-2 - La cédula del cajero llega a la caja y el bloqueo funciona sin conexión
+ | POS local › Sincronización hacia la caja
+ | 
+3010
+ | Caja Local | US-3 - Parámetros de Autoconsumo y Regalía y centros de costo llegan a la caja
+ | POS local › Sincronización hacia la caja
+ | 
+3011
+ | Caja Local | US-6 y US-8 - Solicita Receta, VIN y Tipo Operativo del artículo llegan a la caja
+ | POS local › Sincronización hacia la caja
+ | 
+3012
+ | Caja Local | US-5 - El parámetro de reglas originales llega a la caja
+ | POS local › Sincronización hacia la caja
+ | 
+3013
+ | Caja Local | Los documentos emitidos sin conexión suben a la central con todos sus datos
+ | POS local › Sincronización hacia la caja
+ | 
+3014
+ | Preventa | US-2 - Asociar un cliente con la cédula del vendedor se bloquea
+ | Preventa
+ | 
+3015
+ | Preventa | US-2 - Finca y datos tributarios con la cédula del usuario
+ | Preventa
+ | 
+3016
+ | Preventa | US-3 - Preventa de Autoconsumo: centro de costo, cliente por defecto y artículos en cero
+ | Preventa
+ | 
+3017
+ | Preventa | US-3 - Preventa de Regalía al cliente de la operación
+ | Preventa
+ | 
+3018
+ | Preventa | US-3 - Esc en el centro de costo, dinámicas y descuentos bloqueados
+ | Preventa
+ | 
+3019
+ | Preventa | US-3 - Modificar una preventa de Autoconsumo conserva el centro de costo
+ | Preventa
+ | 
+3020
+ | Preventa | US-6 - Receta y VIN obligatorios al imprimir la preventa
+ | Preventa
+ | 
+3021
+ | Preventa | US-6 - Borrar, largo máximo, pegado y datos de la preventa anterior
+ | Preventa
+ | 
+3022
+ | Preventa | US-7 - Imprimir documento abre la pantalla de Formas de Pago con las de la sucursal
+ | Preventa
+ | 
+3023
+ | Preventa | US-7 - Registrar varias formas de pago con monto parcial
+ | Preventa
+ | 
+3024
+ | Preventa | US-7 - Omitir las formas de pago
+ | Preventa
+ | 
+3025
+ | Preventa | US-7 - Monto mayor al total se trata como vuelto
+ | Preventa
+ | 
+3026
+ | Preventa | US-7 - Tarjeta manual sin datáfono
+ | Preventa
+ | 
+3027
+ | Preventa | US-7 - Modificar la preventa muestra los pagos guardados
+ | Preventa
+ | 
+3028
+ | Preventa | US-7 - Proformas no piden formas de pago y pasar a proforma borra los pagos
+ | Preventa
+ | 
+3029
+ | Preventa | US-7 - Preventa recibida por interfaz con tarjeta registrada
+ | Preventa
+ | 
+3030
+ | Preventa | US-8 - El ticket de preventa imprime primero Despacho y después Bodega
+ | Preventa
+ | 
+3040
+ | Cierre y Reportes | Día completo de ventas cuadrado en los cuatro reportes
+ | Flujos integrales › Cierre de caja y reportes
+ | 
+3041
+ | Cierre y Reportes | El cierre de una caja que hizo una devolución llega a la central
+ | Flujos integrales › Cierre de caja y reportes
+ | 
+3031
+ | Flujo Integral | Preventa de Autoconsumo facturada en caja conserva centro de costo, cliente y ceros
+ | Flujos integrales › De preventa a facturación
+ | 
+3032
+ | Flujo Integral | Cambian los subdocumentos de Autoconsumo después de hacer la preventa
+ | Flujos integrales › De preventa a facturación
+ | 
+3033
+ | Flujo Integral | Preventa de Regalía cargada en caja: cambiar el cliente no pide venta bajo costo
+ | Flujos integrales › De preventa a facturación
+ | 
+3034
+ | Flujo Integral | Preventa con pago parcial se completa en facturación
+ | Flujos integrales › De preventa a facturación
+ | 
+3035
+ | Flujo Integral | Preventa con receta y VIN facturada en caja
+ | Flujos integrales › De preventa a facturación
+ | 
+3036
+ | Reimpresión | Factura de Autoconsumo o Regalía sigue en cero después de cambiar los parámetros
+ | Flujos integrales › Reimpresiones
+ | 
+3037
+ | Reimpresión | Factura, preventa y ticket de despacho conservan orden y datos nuevos
+ | Flujos integrales › Reimpresiones
+ | 
+3038
+ | Reimpresión | Documento generado desde Consumos
+ | Flujos integrales › Reimpresiones
+ | 
+3039
+ | Reimpresión | Los dos documentos de una factura partida
+ | Flujos integrales › Reimpresiones
+ | 
+3046
+ | Reimpresión | La reimpresión conserva el VIN y el número de receta
+ | Flujos integrales › Reimpresiones
+ | 

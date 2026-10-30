@@ -1,0 +1,13 @@
+E2E SFA15 (2026-10-27). Runner real por stdin y SDK net462 real contra el simulador local; Docker local de Integrations.
+Detalle completo: resultados-e2e-runner.jsonl. Evento CREDIT_VALIDATION devuelto a IsActive=0, URL CHANGE_ME, credencial NULL.
+monto 1        -> Authorized (solicitud 147, credito 25093, disponible 170125082.62)      1 llamada al simulador
+monto 10000    -> Authorized (limite)                                                    1
+monto 10000.01 -> Rejected "La identificacion no se encuentra relacionada..."           1
+monto 15000    -> Rejected (limite)                                                      1
+monto 15000.01 -> Unavailable/Timeout, posiblemente aplicado, 35.9 s (sim 40 s > 35 s)  1 (un solo intento)
+monto 20000.01 -> Unavailable/Connectivity, posiblemente aplicado                         1
+idExterno 16 car., sin identificacion, monto 0 -> Unavailable/InvalidRequest             0 llamadas
+credenciales malas -> Unavailable/Security                                                1
+evento inactivo, URL CHANGE_ME, http a host no local -> Unavailable/NotConfigured         0 llamadas
+nadie escuchando -> Unavailable/Connectivity (5 s)
+SDK: 1 -> Authorized; 12000 -> Rejected; 20000.01 -> Unavailable/Connectivity; 15000.01 -> Unavailable/Timeout (36 s); sin Runner -> Unavailable/Technical

@@ -1,0 +1,1126 @@
+🤖 Pruebas automatizadas — Review 4 — Informe QA
+notepanel_c1🤖 Esta página reúne solo pruebas automatizadas. Las diseñó e implementó el equipo de QA y las ejecuta una máquina en el pipeline de regresión en cada liberación a Testing, sin intervención manual. Se presentan aparte de los casos manuales de cada proyecto.
+
+🤖 Esta página reúne solo pruebas automatizadas. Las diseñó e implementó el equipo de QA y las ejecuta una máquina en el pipeline de regresión en cada liberación a Testing, sin intervención manual. Se presentan aparte de los casos manuales de cada proyecto.
+
+1. Resumen
+Pruebas automatizadas
+ | 206
+ | 
+Proyectos cubiertos
+ | 3 (las tres entregas del Review 4)
+ | 
+Test plans
+ | 2651 Cambios en Facturación · 2717 Facturación a Granel · 2629 Ajustes de Precios
+ | 
+Responsable
+ | Equipo de QA
+ | 
+2. Capas de automatización
+Capa
+ | Qué cubre
+ | Pruebas
+ | 
+Unitarias
+ | Reglas de cálculo aisladas, sin base de datos
+ | 18
+ | 
+Backend (servicios WCF)
+ | Servicios y reglas de negocio contra la base de Testing
+ | 94
+ | 
+UI web / HTTP (Site Admin)
+ | Pantallas de Site Admin en el navegador (Playwright)
+ | 21
+ | 
+UI escritorio (FlaUI)
+ | POS y Preventa de escritorio manejados por la máquina (FlaUI)
+ | 66
+ | 
+Preventa
+ | LD Preventa de escritorio (FlaUI)
+ | 7
+ | 
+3. Pruebas por proyecto
+Proyecto
+ | Unitarias
+ | Backend (WCF)
+ | UI web
+ | UI escritorio
+ | Total
+ | 
+CO-696-0012 + CO-696-0029 Cambios en Facturación
+ | 3
+ | 22
+ | 0
+ | 35
+ | 60
+ | 
+CO-696-0013 Facturación a Granel
+ | 0
+ | 50
+ | 5
+ | 38
+ | 93
+ | 
+CO-696-0014 Ajustes de Precios
+ | 15
+ | 22
+ | 16
+ | 0
+ | 53
+ | 
+TOTAL
+ | 18
+ | 94
+ | 21
+ | 73
+ | 206
+ | 
+En Cambios en Facturación, la columna UI escritorio incluye las 7 pruebas de LD Preventa.
+4. Anexo · Detalle prueba por prueba
+Anexo A · Las 60 pruebas automatizadas de Cambios en FacturaciónCaso
+ | Qué verifica
+ | Capa
+ | Trazabilidad
+ | 
+2685
+ | Facturación - Descuento de artículo bloqueado en linea de combo
+ | Unitarias
+ | —
+ | 
+2686
+ | Facturación - Función por subdocumento sin sucursal inicializada no bloquea
+ | Unitarias
+ | —
+ | 
+2687
+ | Facturación - Linea de combo con función bloqueada lanza excepción con el nombre del combo
+ | Unitarias
+ | —
+ | 
+2688
+ | Facturación - Cambiar el tipo operativo del artículo a Bodega queda guardado
+ | Backend (servicios WCF)
+ | Caso 23 y 38 del plan CO-696-0012.
+ | 
+2689
+ | Facturación - Guardar el tipo operativo no cambia otras columnas del artículo
+ | Backend (servicios WCF)
+ | Caso 23 y 38 del plan CO-696-0012.
+ | 
+2690
+ | Facturación - Activar Guardar serie (VIN) queda guardado sin tocar otras columnas
+ | Backend (servicios WCF)
+ | Caso 23 y 38 del plan CO-696-0012.
+ | 
+2691
+ | Facturación - ListKey devuelve el tipo operativo guardado del artículo
+ | Backend (servicios WCF)
+ | Caso 38 del plan CO-696-0012.
+ | 
+2692
+ | Facturación - El catálogo de tipo operativo ofrece Despacho y Bodega y ningún artículo queda huérfano
+ | Backend (servicios WCF)
+ | Caso 38 del plan CO-696-0012.
+ | 
+2693
+ | Facturación - No debe haber más de una resolución activa por caja y tipo de documento
+ | Backend (servicios WCF)
+ | —
+ | 
+2694
+ | Facturación - Diagnóstico: una resolución activa vencida se devuelve como activa
+ | Backend (servicios WCF)
+ | Es un diagnóstico del comportamiento actual, no una regla de negocio confirmada: la consulta no compara la fecha de vencimiento. Si algún día devuelve nulo, hay que revisar la prueba.
+ | 
+2695
+ | Facturación - El servicio de Facturación responde al eco
+ | Backend (servicios WCF)
+ | Prueba de humo del servicio ya desplegado.
+ | 
+2696
+ | Facturación - La fecha del servidor está a menos de un día de la fecha actual
+ | Backend (servicios WCF)
+ | El margen de un día tolera diferencias de huso horario.
+ | 
+2697
+ | Facturación - El histórico del cliente en un rango devuelve las líneas de sus facturas
+ | Backend (servicios WCF)
+ | Si el cliente ya no tiene facturas en el rango, la prueba queda inconclusa.
+ | 
+2698
+ | Facturación - Un rango de un solo día excluye las facturas de otras fechas
+ | Backend (servicios WCF)
+ | Queda inconclusa si el cliente no tiene al menos dos fechas con facturas.
+ | 
+2699
+ | Facturación - Un rango sin facturas no devuelve filas ni errores
+ | Backend (servicios WCF)
+ | —
+ | 
+2700
+ | Facturación - Un descuento manual de línea aparece como una fila más en el reporte
+ | Backend (servicios WCF)
+ | Tarea 1849 (US 1304). Un descuento automático (origen 1) no entra al reporte.
+ | 
+2701
+ | Facturación - Un descuento manual por documento aparece como una fila más en el reporte
+ | Backend (servicios WCF)
+ | Tarea 1849 (US 1304).
+ | 
+2702
+ | Facturación - Un descuento automático no aparece en el reporte de descuentos manuales
+ | Backend (servicios WCF)
+ | Tarea 1849 (US 1304).
+ | 
+2703
+ | Facturación - Facturas por Tipo de Creación devuelve una fila por factura con sus columnas de auditoría
+ | Backend (servicios WCF)
+ | Caso 41 del plan CO-696-0012.
+ | 
+2704
+ | Facturación - El filtro de sucursal deja solo las facturas de esa sucursal
+ | Backend (servicios WCF)
+ | Caso 41 del plan CO-696-0012.
+ | 
+2705
+ | Facturación - La columna Contingencia refleja si la factura fue en línea
+ | Backend (servicios WCF)
+ | Caso 41 del plan CO-696-0012.
+ | 
+2706
+ | Facturación - Libro de Ventas devuelve una fila por línea de factura con el mismo total que el SQL
+ | Backend (servicios WCF)
+ | No verifica el juego de columnas: su detalle está pendiente de confirmar con el PO.
+ | 
+2707
+ | Facturación - El tipo anulación y el plazo del subdocumento se guardan y se leen iguales
+ | Backend (servicios WCF)
+ | Casos 11 y 13 del plan CO-696-0012 (US-1).
+ | 
+2708
+ | Facturación - Cambiar el tipo no modifica el plazo y cambiar el plazo no modifica el tipo
+ | Backend (servicios WCF)
+ | Casos 11 y 13 del plan CO-696-0012 (US-1).
+ | 
+2709
+ | Facturación - Código de autorización con usuario inexistente no otorga permiso
+ | Backend (servicios WCF)
+ | CO-696-0012, work item 1276 (Notas de Crédito, Motivos y Plazos). No cubre el camino positivo con un usuario real con permiso.
+ | 
+2657
+ | Facturación - Autoconsumo asigna el cliente del parámetro al elegir el subdocumento
+ | UI escritorio (FlaUI)
+ | Caso 27 del plan CO-696-0012.
+ | 
+2658
+ | Facturación - En Autoconsumo no se puede cambiar de cliente
+ | UI escritorio (FlaUI)
+ | Caso 27 del plan CO-696-0012.
+ | 
+2659
+ | Facturación - Al salir de Autoconsumo vuelve el cliente por defecto de la caja
+ | UI escritorio (FlaUI)
+ | Caso 27 del plan CO-696-0012.
+ | 
+2660
+ | Facturación - Autoconsumo sin centro de costo vuelve al subdocumento por defecto
+ | UI escritorio (FlaUI)
+ | Caso 29 del plan CO-696-0012.
+ | 
+2661
+ | Facturación - En Autoconsumo el descuento no esta permitido
+ | UI escritorio (FlaUI)
+ | PRD US-9 (Emision). Corresponde al plan CO-696-0012, Autoconsumo.
+ | 
+2662
+ | Facturación - En Autoconsumo los artículos entran con valor cero
+ | UI escritorio (FlaUI)
+ | PRD US-9 (Emision). Corresponde al plan CO-696-0012, Autoconsumo.
+ | 
+2663
+ | Facturación - Autogestion: no se factura a un cliente con la cédula del cajero
+ | UI escritorio (FlaUI)
+ | Plan CO-696-0012, Cambio 8-9 (Historia 1275 US-2). La última validación esta en Imprimir_Documento, mensaje 'No puede seleccionarse como cliente'.
+ | 
+2664
+ | Facturación - Devolución dentro del plazo llega al detalle sin autorización y con fecha de solo lectura
+ | UI escritorio (FlaUI)
+ | Casos 14 y 15 del plan CO-696-0012.
+ | 
+2665
+ | Facturación - Devolución fuera del plazo pide autorización y si no se da no continua
+ | UI escritorio (FlaUI)
+ | Caso 14 del plan CO-696-0012.
+ | 
+2666
+ | Facturación - Devolución fuera del plazo: un usuario sin permiso no puede autorizar
+ | UI escritorio (FlaUI)
+ | Caso 16 del plan CO-696-0012.
+ | 
+2667
+ | Facturación - Devolución fuera del plazo: un usuario con permiso autoriza y llega al detalle
+ | UI escritorio (FlaUI)
+ | Caso 16 del plan CO-696-0012.
+ | 
+2668
+ | Facturación - Factura de artículo con receta: la receta queda guardada
+ | UI escritorio (FlaUI)
+ | Caso 22 del plan CO-696-0012. Deja una factura real en la base local.
+ | 
+2669
+ | Facturación - Factura de artículo con serie: el VIN queda guardado
+ | UI escritorio (FlaUI)
+ | Caso 24 del plan CO-696-0012. Deja una factura real en la base local.
+ | 
+2670
+ | Facturación - Factura de contado pagada en efectivo queda registrada
+ | UI escritorio (FlaUI)
+ | Flujo completo de facturación. Las pruebas de Reimpresión dependen de que exista una factura local de esta prueba.
+ | 
+2671
+ | Facturación - Transferencia por el monto exacto cubre la venta
+ | UI escritorio (FlaUI)
+ | Issues 2128, 2242 y 2335 (pagos con transferencia).
+ | 
+2672
+ | Facturación - Transferencia mayor a la venta se acepta y el cambio es la diferencia
+ | UI escritorio (FlaUI)
+ | Issue 2242: documenta el comportamiento actual (el POS acepta el exceso). Si negocio decide bloquearlo, la prueba se debe invertir.
+ | 
+2673
+ | Facturación - Efectivo más transferencia con exceso: el cambio sale de la suma
+ | UI escritorio (FlaUI)
+ | Issue 2128.
+ | 
+2674
+ | Facturación - Transferencia sin número no se agrega
+ | UI escritorio (FlaUI)
+ | Issues 2128, 2242 y 2335 (pagos con transferencia).
+ | 
+2675
+ | Facturación - Forma de pago de preventa de tipo no editable no se puede eliminar
+ | UI escritorio (FlaUI)
+ | Caso 5 del plan CO-696-0012, Cambio 1 (Historia 382 US-7).
+ | 
+2676
+ | Facturación - Forma de pago de preventa de tipo editable se puede eliminar
+ | UI escritorio (FlaUI)
+ | Caso 5 del plan CO-696-0012, Cambio 1 (Historia 382 US-7).
+ | 
+2677
+ | Facturación - Articulo restringido exige la receta antes de pagar
+ | UI escritorio (FlaUI)
+ | Caso 20 del plan CO-696-0012, Cambio 10 (Historia 1834/1835).
+ | 
+2678
+ | Facturación - Articulo restringido sin receta se puede eliminar y continuar
+ | UI escritorio (FlaUI)
+ | Caso 21 del plan CO-696-0012, Cambio 10 (Historia 1834/1835).
+ | 
+2679
+ | Facturación - Regalía con centro de costo se emite con total cero y guarda el CECO
+ | UI escritorio (FlaUI)
+ | Casos 26 y 29 del plan CO-696-0012. Deja una factura real en la base local.
+ | 
+2680
+ | Facturación - Reimpresión: buscar una factura por número la lista
+ | UI escritorio (FlaUI)
+ | Caso 40 del plan CO-696-0012.
+ | 
+2681
+ | Facturación - Reimpresión: un número inexistente deja la lista vacía
+ | UI escritorio (FlaUI)
+ | Caso 40 del plan CO-696-0012.
+ | 
+2682
+ | Facturación - Articulo con serie exige el VIN antes de pagar
+ | UI escritorio (FlaUI)
+ | Caso 24 del plan CO-696-0012, Cambio 11 y 12 (VIN / Serie).
+ | 
+2683
+ | Facturación - Articulo con serie no pide el VIN hasta imprimir
+ | UI escritorio (FlaUI)
+ | Caso 25 del plan CO-696-0012.
+ | 
+2684
+ | Facturación - Tarifa reducida se quita al volver a Cliente Contado
+ | UI escritorio (FlaUI)
+ | Issue 2369.
+ | 
+2710
+ | Preventa - Preventa sin formas de pago se guarda sin validar montos
+ | Preventa
+ | Caso 3 del plan CO-696-0012, Cambio 1.
+ | 
+2711
+ | Preventa - Preventa con pago parcial se guarda sin exigir cubrir el total
+ | Preventa
+ | Caso 2 del plan CO-696-0012. El código documenta que el pago de preventa es parcial o total y opcional (Frm_Factura_Pago.vb).
+ | 
+2712
+ | Preventa - Preventa con pago que suma el monto se guarda con su forma de pago
+ | Preventa
+ | Caso 2 del plan CO-696-0012, Cambio 1.
+ | 
+2713
+ | Preventa - Pantalla de pago de preventa muestra monto, pagado, redondeo y faltante
+ | Preventa
+ | Caso 1 del plan CO-696-0012, Cambio 1.
+ | 
+2714
+ | Preventa - Pago parcial actualiza lo pagado y el faltante
+ | Preventa
+ | Caso 1 del plan CO-696-0012, Cambio 1.
+ | 
+2715
+ | Preventa - Pago que cubre la venta no deja faltante
+ | Preventa
+ | Caso 1 del plan CO-696-0012, Cambio 1.
+ | 
+2716
+ | Preventa - Pago con tarjeta en preventa guarda número, referencia y monto sin invocar Credomatic
+ | Preventa
+ | Caso 4 del plan CO-696-0012.
+ | 
+Anexo B · Las 93 pruebas automatizadas de Facturación a GranelCaso
+ | Qué verifica
+ | Capa
+ | Trazabilidad
+ | 
+2727
+ | Granel - Los indicadores del tipo de preventa se guardan en el alta y vuelven iguales
+ | Backend (servicios WCF)
+ | Historia 1381 de la épica 13 Granel. Suc_Id_Factura 0 significa usar la sucursal de la caja.
+ | 
+2728
+ | Granel - Cambiar un indicador del tipo de preventa no modifica los demás
+ | Backend (servicios WCF)
+ | Historia 1381.
+ | 
+2729
+ | Granel - Guardar dos categorías se rechaza y conserva la que ya estaba
+ | Backend (servicios WCF)
+ | Historia 1381. Un tipo solo puede restringirse a una categoría.
+ | 
+2730
+ | Granel - Guardar una categoría sin subcategoría se rechaza y conserva la existente
+ | Backend (servicios WCF)
+ | Historia 1381. Con restricción de categoría la subcategoría es obligatoria.
+ | 
+2731
+ | Granel - Eliminar un tipo de preventa sin uso borra el tipo y sus categorías
+ | Backend (servicios WCF)
+ | Historia 1381.
+ | 
+2732
+ | Granel - Eliminar un tipo con permisos por rol borra también sus permisos y categorías
+ | Backend (servicios WCF)
+ | —
+ | 
+2733
+ | Granel - Tipo sin sucursal que factura reserva sobre la sucursal de la preventa
+ | Backend (servicios WCF)
+ | Cambios 1 y 4, historias 1380 y 1383. Caso GR-001 de CO-696-0013.
+ | 
+2734
+ | Granel - Tipo con sucursal que factura reserva sobre ella
+ | Backend (servicios WCF)
+ | Historia 1383. Caso GR-002 de CO-696-0013.
+ | 
+2735
+ | Granel - Preventa sin tipo conserva su sucursal
+ | Backend (servicios WCF)
+ | Historias 1384 y 1386. Caso GR-003 de CO-696-0013.
+ | 
+2736
+ | Granel - El SI de la sucursal gana sobre el de la empresa
+ | Backend (servicios WCF)
+ | Historia 1380. Invoca el método de TPreventa por reflexión porque guardar una preventa completa exige el DataSet entero del cliente. Caso GR-004 de CO-696-0013.
+ | 
+2737
+ | Granel - El NO de la sucursal gana sobre el de la empresa
+ | Backend (servicios WCF)
+ | Historia 1380. Caso GR-005 de CO-696-0013.
+ | 
+2738
+ | Granel - Sin fila propia la sucursal hereda el parámetro de empresa
+ | Backend (servicios WCF)
+ | Historias 1380 y 1383. Caso GR-006 de CO-696-0013.
+ | 
+2739
+ | Granel - Un tipo con preventas no se puede eliminar
+ | Backend (servicios WCF)
+ | Cambios 2 y 5, historia 1381. Caso GR-007 de CO-696-0013.
+ | 
+2740
+ | Granel - Desactivar un tipo con preventas está permitido
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-008 de CO-696-0013.
+ | 
+2741
+ | Granel - La lista de activos sigue el estado del tipo
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-009 de CO-696-0013.
+ | 
+2742
+ | Granel - Una categoría queda en uso mientras un tipo la tenga
+ | Backend (servicios WCF)
+ | Historia 1381. Prueba el estado en uso, no el borrado con su mensaje. Caso GR-010 de CO-696-0013.
+ | 
+2743
+ | Granel - Una sucursal queda en uso mientras un tipo la tenga como la que factura
+ | Backend (servicios WCF)
+ | Historia 1381. Prueba el estado en uso, no el borrado con su mensaje. Caso GR-011 de CO-696-0013.
+ | 
+2744
+ | Granel - Preventa pendiente con tipo que exige confirmación se reporta
+ | Backend (servicios WCF)
+ | Cambio 9, historia 1388. El estado 4 se siembra en la preventa; el monitor solo admite 0 a 3. Caso GR-012 de CO-696-0013.
+ | 
+2745
+ | Granel - Preventa confirmada con tipo que exige confirmación no se reporta
+ | Backend (servicios WCF)
+ | Historia 1388. Caso GR-013 de CO-696-0013.
+ | 
+2746
+ | Granel - Estado 4 con un tipo que no exige confirmación no bloquea
+ | Backend (servicios WCF)
+ | Historia 1388. Caso GR-014 de CO-696-0013.
+ | 
+2747
+ | Granel - La lista del monitor conserva la preventa pendiente y la marca
+ | Backend (servicios WCF)
+ | Historia 1388. Caso GR-015 de CO-696-0013.
+ | 
+2748
+ | Granel - Un artículo en kilos suma su cantidad
+ | Backend (servicios WCF)
+ | Cambios 3, 8 y 11, historia 1387. Llama a Calcular_Kg_Peso_Granel. Caso GR-022 de CO-696-0013.
+ | 
+2749
+ | Granel - Un artículo que no es de peso no suma
+ | Backend (servicios WCF)
+ | Historia 1387. Caso GR-023 de CO-696-0013.
+ | 
+2750
+ | Granel - Sin líneas no hay kilos
+ | Backend (servicios WCF)
+ | Historia 1387. Caso GR-024 de CO-696-0013.
+ | 
+2751
+ | Granel - Un artículo inexistente se ignora
+ | Backend (servicios WCF)
+ | Historia 1387. Caso GR-025 de CO-696-0013.
+ | 
+2752
+ | Granel - Los gramos con conversión se convierten por el factor
+ | Backend (servicios WCF)
+ | Historia 1387. Caso GR-026 de CO-696-0013.
+ | 
+2753
+ | Granel - Las líneas mezcladas suman solo las de peso, convertidas
+ | Backend (servicios WCF)
+ | Historia 1387. Caso GR-027 de CO-696-0013.
+ | 
+2754
+ | Granel - Los gramos sin fila de conversión no se cuentan
+ | Backend (servicios WCF)
+ | Historia 1387. Caso GR-028 de CO-696-0013.
+ | 
+2755
+ | Granel - ListKey trae el precio por kilo del cliente
+ | Backend (servicios WCF)
+ | Historia 1382. Solo lectura. Caso GR-029 de CO-696-0013.
+ | 
+2756
+ | Granel - ListKey sin precio por kilo devuelve cero
+ | Backend (servicios WCF)
+ | Historia 1382. Solo lectura. Caso GR-030 de CO-696-0013.
+ | 
+2757
+ | Granel - ListKeyMayoreo trae el precio por kilo del cliente
+ | Backend (servicios WCF)
+ | Historia 1382. Caso GR-031 de CO-696-0013.
+ | 
+2758
+ | Granel - ListKey_Identificacion trae el precio por kilo del cliente
+ | Backend (servicios WCF)
+ | Historia 1382. Solo lectura. Caso GR-032 de CO-696-0013.
+ | 
+2759
+ | Granel - El asociado de una finca sin precio trae el suyo
+ | Backend (servicios WCF)
+ | Historia 1382. Prioridad: manda el precio de la finca; si es 0, el del asociado. Caso GR-033 de CO-696-0013.
+ | 
+2760
+ | Granel - Finca y asociado sin precio por kilo
+ | Backend (servicios WCF)
+ | Historia 1382. Caso GR-034 de CO-696-0013.
+ | 
+2761
+ | Granel - Cada lado trae su propio precio
+ | Backend (servicios WCF)
+ | Historia 1382. Caso GR-035 de CO-696-0013.
+ | 
+2762
+ | Granel - El reporte de preventas calcula el total por línea
+ | Backend (servicios WCF)
+ | Cambio 13, historia 1686, reporte 446. Caso GR-064 de CO-696-0013.
+ | 
+2763
+ | Granel - Una preventa general sin facturar sale pendiente y sin datos de factura
+ | Backend (servicios WCF)
+ | Historia 1686. Caso GR-065 de CO-696-0013.
+ | 
+2765
+ | Granel - El detalle trae las columnas del criterio de aceptación
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-067 de CO-696-0013.
+ | 
+2766
+ | Granel - Las preventas anuladas salen en el reporte
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-069 de CO-696-0013.
+ | 
+2767
+ | Granel - El filtro de estado incluye el estado pedido y excluye los demás
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-070 de CO-696-0013.
+ | 
+2768
+ | Granel - El filtro de tipo de preventa incluye General y excluye otro tipo
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-071 de CO-696-0013.
+ | 
+2769
+ | Granel - El filtro de cliente incluye al cliente de la preventa y excluye a otro
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-072 de CO-696-0013.
+ | 
+2770
+ | Granel - El filtro de material incluye el artículo de la línea y excluye otro
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-073 de CO-696-0013.
+ | 
+2771
+ | Granel - El filtro de usuario responsable incluye al usuario de la preventa y excluye a otro
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-074 de CO-696-0013.
+ | 
+2772
+ | Granel - Un tipo que nunca se usó se puede eliminar
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-076 de CO-696-0013.
+ | 
+2773
+ | Granel - Un tipo inactivo se puede seguir editando
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-077 de CO-696-0013.
+ | 
+2774
+ | Granel - Los tipos están registrados para sincronizarse a las cajas
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-078 de CO-696-0013.
+ | 
+2775
+ | Granel - Las cajas tienen el script para crear las tablas de tipos
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-079 de CO-696-0013.
+ | 
+2776
+ | Granel - Crear o editar un tipo deja bitácora
+ | Backend (servicios WCF)
+ | Historia 1381. Caso GR-080 de CO-696-0013.
+ | 
+2779
+ | Granel - Un filtro de sucursales ajeno no trae la preventa
+ | Backend (servicios WCF)
+ | Historia 1394. Caso GR-087 de CO-696-0013.
+ | 
+2722
+ | Granel - Crear un tipo de preventa guarda los indicadores y la sucursal que factura
+ | UI web / HTTP (Site Admin)
+ | Épica 13 Granel, historias 1381, 1886 y 1939.
+ | 
+2723
+ | Granel - Editar un tipo de preventa cambia solo lo editado
+ | UI web / HTTP (Site Admin)
+ | Épica 13 Granel, historias 1381, 1886 y 1939.
+ | 
+2724
+ | Granel - Un tipo de preventa sin uso se puede eliminar
+ | UI web / HTTP (Site Admin)
+ | Épica 13 Granel, historias 1381, 1886 y 1939.
+ | 
+2725
+ | Granel - Un tipo de preventa solo puede restringirse a una categoría
+ | UI web / HTTP (Site Admin)
+ | Épica 13 Granel, historias 1381, 1886 y 1939.
+ | 
+2726
+ | Granel - Eliminar desde la pantalla un tipo con permisos por rol no debe dejarlo sin su categoría
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2780
+ | Granel - El tipo que exige fecha muestra el botón de captura
+ | UI escritorio (FlaUI)
+ | Cambios 6 y 12, historia 1385. Caso GR-016 de CO-696-0013.
+ | 
+2781
+ | Granel - Un tipo que no exige fecha no muestra el botón
+ | UI escritorio (FlaUI)
+ | Historia 1385. Caso GR-017 de CO-696-0013.
+ | 
+2782
+ | Granel - Sin fecha avisa, abre la captura y cancelar no abre el pago
+ | UI escritorio (FlaUI)
+ | Historia 1385. Caso GR-018 de CO-696-0013.
+ | 
+2783
+ | Granel - Capturando la fecha se abre el pago
+ | UI escritorio (FlaUI)
+ | Historia 1385. Caso GR-019 de CO-696-0013.
+ | 
+2784
+ | Granel - En Facturación la fecha de despacho guardada es de consulta
+ | UI escritorio (FlaUI)
+ | Cambios 6 y 12, historia 1385. Caso GR-020 de CO-696-0013.
+ | 
+2785
+ | Granel - La preventa se registra en la sucursal que factura y guarda el origen
+ | UI escritorio (FlaUI)
+ | Cambios 7 y 10, historias 1386 y 1683. Caso GR-021 de CO-696-0013.
+ | 
+2786
+ | Granel - Flete de 1 kg con el precio propio de la finca
+ | UI escritorio (FlaUI)
+ | Cambios 3, 8 y 11, historia 1387. Caso GR-036 de CO-696-0013.
+ | 
+2787
+ | Granel - El flete se recalcula al agregar kilos
+ | UI escritorio (FlaUI)
+ | Historia 1387. Caso GR-037 de CO-696-0013.
+ | 
+2788
+ | Granel - La finca sin precio usa el del asociado
+ | UI escritorio (FlaUI)
+ | Historia 1387. Caso GR-038 de CO-696-0013.
+ | 
+2789
+ | Granel - Cliente sin precio por kilo: alerta y no se agrega el flete
+ | UI escritorio (FlaUI)
+ | Historia 1387. Verifica el título exacto de la alerta. Caso GR-039 de CO-696-0013.
+ | 
+2790
+ | Granel - Al cambiar de cliente el flete usa el precio del nuevo
+ | UI escritorio (FlaUI)
+ | Historia 1387. Caso GR-040 de CO-696-0013.
+ | 
+2791
+ | Granel - Cambiar a un cliente sin precio conserva el cliente y el flete
+ | UI escritorio (FlaUI)
+ | Historia 1387. Caso GR-041 de CO-696-0013.
+ | 
+2792
+ | Granel - Un flete sin existencia se agrega sin validar existencias
+ | UI escritorio (FlaUI)
+ | Historia 1387. Caso GR-042 de CO-696-0013.
+ | 
+2793
+ | Granel - La preventa de granel conserva el flete y lo recalcula
+ | UI escritorio (FlaUI)
+ | Cambio 11, historia 1387. Caso GR-043 de CO-696-0013.
+ | 
+2794
+ | Granel - Un artículo de otra categoría que la del tipo se rechaza
+ | UI escritorio (FlaUI)
+ | Cambios 5 y 10, historia 1384. La categoría se valida al confirmar la cantidad, no antes. Caso GR-044 de CO-696-0013.
+ | 
+2795
+ | Granel - Un artículo de la categoría del tipo se agrega
+ | UI escritorio (FlaUI)
+ | Historia 1384. Caso GR-045 de CO-696-0013.
+ | 
+2796
+ | Granel - Modificar cantidad se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-046 de CO-696-0013.
+ | 
+2797
+ | Granel - Cambiar cantidad de línea se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-047 de CO-696-0013.
+ | 
+2798
+ | Granel - Eliminar artículo se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-048 de CO-696-0013.
+ | 
+2799
+ | Granel - Cambiar de cliente se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-049 de CO-696-0013.
+ | 
+2800
+ | Granel - El descuento del documento se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-050 de CO-696-0013.
+ | 
+2801
+ | Granel - El descuento de artículo se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-051 de CO-696-0013.
+ | 
+2802
+ | Granel - El descuento por forma de pago se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-052 de CO-696-0013.
+ | 
+2803
+ | Granel - Agregar un servicio se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-053 de CO-696-0013.
+ | 
+2804
+ | Granel - Buscar artículo se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-054 de CO-696-0013.
+ | 
+2805
+ | Granel - Cambiar el tipo de documento se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-055 de CO-696-0013.
+ | 
+2806
+ | Granel - Exonerar impuestos se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-056 de CO-696-0013.
+ | 
+2807
+ | Granel - El descuento global del panel de subtotales se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-057 de CO-696-0013.
+ | 
+2808
+ | Granel - Agregar un servicio desde el panel de subtotales se bloquea con un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-058 de CO-696-0013.
+ | 
+2809
+ | Granel - Con un tipo editable no se bloquea: pide validación de rol
+ | UI escritorio (FlaUI)
+ | Historia 1653. Es la contraparte de los casos de bloqueo. Caso GR-059 de CO-696-0013.
+ | 
+2810
+ | Granel - Favoritos respeta el bloqueo de un tipo no editable
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-060 de CO-696-0013.
+ | 
+2811
+ | Granel - Modificar cantidad se bloquea en una preventa no editable en Preventa
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-061 de CO-696-0013.
+ | 
+2812
+ | Granel - Eliminar artículo se bloquea en una preventa no editable en Preventa
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-062 de CO-696-0013.
+ | 
+2813
+ | Granel - Cambiar de cliente se bloquea en una preventa no editable en Preventa
+ | UI escritorio (FlaUI)
+ | Historia 1653. Caso GR-063 de CO-696-0013.
+ | 
+2814
+ | Granel - Una preventa de un tipo que exige confirmación queda pendiente
+ | UI escritorio (FlaUI)
+ | Historia 1388. Caso GR-081 de CO-696-0013.
+ | 
+2815
+ | Granel - Con el parámetro de la sucursal en SI la preventa reserva existencias al crearse
+ | UI escritorio (FlaUI)
+ | Historias 1383 y 1386. Caso GR-082 de CO-696-0013.
+ | 
+2816
+ | Granel - El catálogo e inventario son los de la sucursal que factura
+ | UI escritorio (FlaUI)
+ | Historia 1384. Caso GR-083 de CO-696-0013.
+ | 
+2817
+ | Granel - La fecha de despacho no se puede editar en una preventa no editable en Preventa
+ | UI escritorio (FlaUI)
+ | Historia 1385. Caso GR-084 de CO-696-0013.
+ | 
+Anexo C · Las 53 pruebas automatizadas de Ajustes de PreciosCaso
+ | Qué verifica
+ | Capa
+ | Trazabilidad
+ | 
+2636
+ | Ajustes de Precios - Ajuste de flete: la fila de trabajo copia cada campo a su propiedad
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674). Riesgo de copiar y pegar entre las dos sobrecargas.
+ | 
+2637
+ | Ajustes de Precios - Ajuste de flete: un flete nuevo nulo se conserva nulo
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674). Distingue mantener el flete actual de ponerlo en cero.
+ | 
+2638
+ | Ajustes de Precios - Ajuste de flete: la tabla definitiva deja en blanco lo que no guarda
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674). Esa tabla no tiene esos campos.
+ | 
+2639
+ | Ajustes de Precios - Ajuste de flete: una lista nula da lista vacía
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2640
+ | Ajustes de Precios - Ajuste de flete: el mapeo de listas conserva el orden
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2641
+ | Ajustes de Precios - Ajuste de flete: el artículo arrastra sus sucursales
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2642
+ | Ajustes de Precios - Ajuste de flete: un artículo recién creado trae la lista vacía
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2643
+ | Ajustes de Precios - Ajuste de flete: el mapeo inverso no lleva las sucursales
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674). Comportamiento deliberado, documentado por la prueba.
+ | 
+2644
+ | Ajustes de Precios - Ajuste de flete: un TrabajoId inválido cae en Guid vacío
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2645
+ | Ajustes de Precios - Precio final sin flete nuevo usa el flete actual
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674). Fórmula de negocio Precio_Final_Sin_IVA.
+ | 
+2646
+ | Ajustes de Precios - Precio final con flete nuevo usa el nuevo y no el actual
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2647
+ | Ajustes de Precios - Precio final con flete nuevo en cero pone el flete en cero
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2648
+ | Ajustes de Precios - Precio final con flete nuevo negativo resta del precio base
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674). No hay validación de signo.
+ | 
+2649
+ | Ajustes de Precios - Precio final con decimales no pierde precisión
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2650
+ | Ajustes de Precios - Un DTO de ajuste recién creado arranca en cero
+ | Unitarias
+ | Proyecto ADMIN_LDCOMTests (PR #674).
+ | 
+2633
+ | Ajustes de Precios - La pantalla Artículo por Sucursal devuelve el precio de flete real
+ | Backend (servicios WCF)
+ | CO-696-0014, Cambio 2 de la oferta v4.
+ | 
+2634
+ | Ajustes de Precios - Los habladores devuelven el precio de flete real
+ | Backend (servicios WCF)
+ | CO-696-0014, Cambio 5 de la oferta v4.
+ | 
+2635
+ | Ajustes de Precios - El precio de Punto de Venta suma el flete al precio base
+ | Backend (servicios WCF)
+ | CO-696-0014, Cambio 8 de la oferta v4 (Task 1505).
+ | 
+2819
+ | Ajustes de Precios - Etiquetas de habladores: el servicio entrega código, nombre, ABC y los seis precios con el flete
+ | Backend (servicios WCF)
+ | El dibujo de la etiqueta (texto, símbolo, medidas) se hace en Frm_HabladorPrint al imprimir y no se ve por servicio.
+ | 
+2820
+ | Ajustes de Precios - Lista por tipo de cliente: un cliente cuyo tipo está asociado a una lista vigente paga el precio de la lista
+ | Backend (servicios WCF)
+ | —
+ | 
+2821
+ | Ajustes de Precios - Lista por tipo de cliente: un cliente de otro tipo no recibe el precio de la lista
+ | Backend (servicios WCF)
+ | —
+ | 
+2822
+ | Ajustes de Precios - Lista por tipo de cliente: una lista inactiva no da precio
+ | Backend (servicios WCF)
+ | —
+ | 
+2823
+ | Ajustes de Precios - Lista por tipo de cliente: una lista vencida no da precio
+ | Backend (servicios WCF)
+ | —
+ | 
+2824
+ | Ajustes de Precios - Lista por tipo de cliente: las reglas de precio del artículo traen la lista con alcance de tipo
+ | Backend (servicios WCF)
+ | —
+ | 
+2825
+ | Ajustes de Precios - Precio futuro: un precio con fecha válida queda pendiente y no cambia el precio vigente
+ | Backend (servicios WCF)
+ | —
+ | 
+2826
+ | Ajustes de Precios - Precio futuro: antes de su fecha el proceso diario mantiene el precio anterior
+ | Backend (servicios WCF)
+ | —
+ | 
+2827
+ | Ajustes de Precios - Precio futuro: en la fecha de aplicación el proceso diario aplica el precio nuevo
+ | Backend (servicios WCF)
+ | —
+ | 
+2828
+ | Ajustes de Precios - Precio futuro: un precio en 0 significa sin cambio y se conserva el precio vigente
+ | Backend (servicios WCF)
+ | —
+ | 
+2830
+ | Ajustes de Precios - Precio futuro: con fecha vencida el proceso diario no lo aplica
+ | Backend (servicios WCF)
+ | —
+ | 
+2831
+ | Ajustes de Precios - Precio futuro: al aplicarse deja trazabilidad en la bitácora de cambios de precio
+ | Backend (servicios WCF)
+ | —
+ | 
+2832
+ | Ajustes de Precios - Reporte de bitácora de precios: muestra precio anterior, precio nuevo, fecha y usuario del precio futuro aplicado
+ | Backend (servicios WCF)
+ | —
+ | 
+2833
+ | Ajustes de Precios - Reporte de bitácora de precios: un artículo sin cambios no trae filas
+ | Backend (servicios WCF)
+ | —
+ | 
+2834
+ | Ajustes de Precios - Precio vigente: la línea que se agrega durante la edición sale con el precio vigente
+ | Backend (servicios WCF)
+ | —
+ | 
+2835
+ | Ajustes de Precios - Precio vigente: la factura referencia de la nota de crédito conserva el precio facturado
+ | Backend (servicios WCF)
+ | —
+ | 
+2836
+ | Ajustes de Precios - Reporte Lista de Precios (87): una lista por tipo de cliente trae el tipo de cliente
+ | Backend (servicios WCF)
+ | —
+ | 
+2837
+ | Ajustes de Precios - Reporte Artículos en Lista de Precios (88): una lista por tipo de cliente trae tipo, artículo y precio
+ | Backend (servicios WCF)
+ | —
+ | 
+2838
+ | Ajustes de Precios - Reporte Lista de Precios (87): una lista sin tipo ni cliente no aparece
+ | Backend (servicios WCF)
+ | —
+ | 
+2840
+ | Ajustes de Precios - Sin rol autorizado: la pantalla de Precio Futuro deniega el acceso
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2841
+ | Ajustes de Precios - Sin rol autorizado: la pantalla de Lista de Precios deniega el acceso
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2844
+ | Ajustes de Precios - Carga masiva: la carga de una lista de precios concilia las cifras del archivo
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2845
+ | Ajustes de Precios - Carga masiva: la carga de un precio futuro concilia las cifras del archivo
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2846
+ | Ajustes de Precios - Carga masiva: dos cargas de la misma lista para el mismo producto sobrescriben el precio
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2847
+ | Ajustes de Precios - Carga masiva: dos cargas del mismo precio futuro para el mismo producto sobrescriben el precio
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2852
+ | Ajustes de Precios - Carga masiva de lista de precios: un artículo inexistente se rechaza con un mensaje claro
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2853
+ | Ajustes de Precios - Carga masiva de lista de precios: un archivo con la hoja equivocada se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2854
+ | Ajustes de Precios - Carga masiva de lista de precios: un archivo al que le falta una columna se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2855
+ | Ajustes de Precios - Carga masiva de lista de precios: un archivo con una columna ajena a la plantilla se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2857
+ | Ajustes de Precios - Carga masiva de fletes: un archivo válido concilia las cifras y deja el flete actual de cada artículo y sucursal
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2858
+ | Ajustes de Precios - Carga masiva de fletes: un artículo inexistente se rechaza con un mensaje claro
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2859
+ | Ajustes de Precios - Carga masiva de fletes: una sucursal inexistente se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2860
+ | Ajustes de Precios - Carga masiva de fletes: un archivo con la hoja equivocada se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2861
+ | Ajustes de Precios - Carga masiva de fletes: un archivo al que le falta una columna se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 
+2862
+ | Ajustes de Precios - Carga masiva de fletes: un flete nuevo negativo se rechaza
+ | UI web / HTTP (Site Admin)
+ | —
+ | 

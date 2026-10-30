@@ -1,0 +1,72 @@
+Cronograma Interfaces
+Evento
+ | Fecha
+ | Horario
+ | Estado
+ | Responsable
+ | 
+Sesión definición flujos de datos maestros
+ |  
+ | 14:00 - 17:00
+ | CompletadoGreen 
+ | Equipo DP
+ | 
+Envío Oferta “Datos Maestros”
+CO-696-0021 Integración Datos Maestros
+
+ |  
+ | 08:00 - 17:00
+ | CompletadoGreen 
+ | Equipo LD
+ | 
+Sesión consultas sobre oferta “Datos Maestros”
+Según necesidad de equipo Dos Pinos
+
+ |   
+ | 08:00 - 11:00
+ | CompletadoGreen 
+ |  Equipo DP
+ | 
+Sesión #1 priorización y definición flujos de interfaces 
+ |  
+ | 11:00 - 12:00
+ | CompletadoGreen 
+ | Equipo DP
+ | 
+Sesión #2 priorización y definición flujos de interfaces
+ |  
+ | 13:00 - 17:00
+ | AgendadoBlue 
+ | Equipo DP
+ | 
+Envío de oferta “flujos de interfaces” 
+Tentativo considerando que se completó el entendimiento de la definición de flujos de interfaces (Ventas, Inventario, Financiamiento)
+
+ |  
+ | 08:00 - 17:00
+ | pendienteYellow 
+ | Equipo LD
+ | 
+Sesión de consultas sobre oferta “flujos de interfaces”
+Según necesidad de equipo Dos Pinos
+
+ | -
+ | -
+ | sin definirRed 
+ | Equipo DP
+ | 
+Sesiones de seguimiento 
+Requiere aprobación previa de Oferta Datos Maestros.
+
+Una sesión por semana a partir del 22/Abril. 
+
+Sesiones opcionales según necesidad de equipos.
+
+ |   
+  
+ …
+ | 1 hora
+ | sin definirRed 
+ | Equipo DP
+ | 
+ |  |  |  |  | 

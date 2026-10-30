@@ -1,0 +1,7 @@
+["['', 'Credito General']"]
+agregar: (0, '0x20940', 'LDCOM - Punto de Venta', [], [])
+t=1.4 0x250d1a 'Seleccionar Tipo De Crédito' [] ['Continuar', 'Salir']
+   -> pulsado Continuar
+t=2.5 0x201040 'Simulador De Cuotas' ['Simulación De Cuotas :', '¢ 10.92', 'Interés Total :', 'Plazo :', '3.5%', 'Tasa De Interés :'] ['Confirmar', 'Cambiar plan', 'Salir']
+   -> pulsado Confirmar
+fin t=45.0; desde Confirmar: 42.5 s

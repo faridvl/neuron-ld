@@ -1,0 +1,328 @@
+99. Interfaces: Externos
+Objetivo general: Detallar escenarios con integraciones externas de LDCOM
+11falsenonelisttrue🧾 Factura Electrónica (AVD)
+Ambiente
+La conexión a AVD se hace mediante un API
+ | Pruebas
+ | Producción
+ | 
+API 
+ |  |  | 
+Usuario/Password
+ | Secreto. Solicitar a  o  
+ | Secreto. Solicitar a  o  
+ | 
+ |  |  | 
+Impacto con otros proyectos
+Proyecto
+ | Transacciones involucradas
+ | 
+2. Tipos de Clientes 
+ | Nombre en factura según cliente, finca o autorizado
+
+ | 
+1. Formas de Pago 
+ | Cada forma de pago se asocia a un código de FE
+
+Apartados 
+
+Documentos de crédito
+
+Notas de crédito
+
+ | 
+3. Tributario 
+ | Fincas REA
+
+Clientes en MAG con tarifa reducida
+
+Exoneraciones parciales y totales
+
+ | 
+5. Cajas 
+ | Algún movimiento en particular debe ir a hacienda?
+ | 
+6. Dinámicas Comerciales 
+ | Articulos con bonificación
+
+Combos explosionados
+
+Descuentos parciales o totales
+
+Premios: Debe ir algo?
+
+ | 
+11. Ajustes de Precio 
+ |  | 
+X. Vales 
+ | Debe ir algo?
+
+ | 
+1. Tipos de cliente
+Detaller ejemplos de facturas cuando es un asociado vs una finca o un autorizado
+
+2. Formas de pago
+Asociación en hacienda por forma de pago (véase más detalles en 1. Formas de Pago )
+Nombre
+ | Nativa de LDCOM
+ | Código Dos Pinos
+ | Forma de pago en Hacienda
+ | 
+Efectivo
+ | ✅
+ | EFEC
+ | Efectivo: 01
+ | 
+Tarjeta
+ | ✅
+ | THOT (Otras tarjetas)
+ | Tarjeta: 02
+ | 
+SINPE
+ | ✅
+ | SIN1
+ | SINPE MOVIL: 06
+ | 
+Depósito o transferencia
+ | ✅
+ | DEPT
+ | Transferencia - depósito bancario: 04
+ | 
+Cheque
+ | ✅
+ | CHEQ
+ | Cheque: 03
+ | 
+Nota de Crédito
+ | ✅
+ |  | Otros: 99
+ | 
+Cupón
+ | ✅
+ |  | Otros: 99
+ | 
+Moneda Extranjera
+ | ✅
+ |  | Efectivo: 01 (ya que se convierte a colones)
+ | 
+Monedero
+ | ✅
+ |  | Otros: 99
+ | 
+Giftcard
+ | ✅
+ |  | Otros: 99
+ | 
+Apartados
+ | ✅
+ |  | No es una forma de pago sino Condición de venta: 04
+ | 
+Crédito Asociado / Distribuidor
+ | ✅
+ | CRÉDITO
+ | No es una forma de pago sino Condición de venta: 02
+ | 
+Combinación de pagos (sin crédito)
+ | ✅
+ | MIXTO
+ | Se envían las formas de pago por separado
+ | 
+Certificado de Regalo ATS/AV
+ | ❌
+ | CERT
+ | Otros: 99
+ | 
+Tarjeta Express (E-commerce / Televentas)
+ | ❌
+ | TEXP
+ | Plataforma digital: 07
+ | 
+Tarjeta Pago en Línea
+ | ❌
+ |  | Plataforma digital: 07
+ | 
+Bonos Asamblea DP
+ | ❌
+ | BO01
+ | Otros: 99
+ | 
+Crédito
+Obtener ejemplos de la factura de crédito
+
+Ver ejemplos de facturas de crédito en LDCOM
+
+Notas de crédito
+Especificar reglas para notas de crédito según la forma de pago
+
+3. Tributario
+Exoneraciones 
+Detaller ejemplos de exoneraciones totales o por item
+
+Tarifa reducida
+Explicar cómo afecta las posibles tarifas reducidas de clientes MAG en las facturas
+
+Hay otros escenarios de tarifa reducida aparte del MAG?
+
+Se envía algún indicador de que el cliente está en MAG?
+
+4. Cajas
+note551566cd005aAlgún movimiento en particular debe ir a hacienda?
+
+
+Algún movimiento en particular debe ir a hacienda?
+
+
+5. Bonificaciones
+Bonificaciones
+Obtener ejemplos de facturas con bonificaciones
+
+Detallar qué pasa en la factura electrónica cuando hay una bonificación
+
+Descuentos
+Detallar qué pasa en la factura electrónica cuando hay descuentos globales o por item
+
+Premios
+notefe9645ffc461Se debe enviar algo cuando hay un premio?
+
+
+Se debe enviar algo cuando hay un premio?
+
+
+Combos
+Detaller la explosión de items cuando hay combos
+
+6. Ajustes de precio
+Aún no se ha visto este proyecto
+7. Vales
+No implica ningún cambio en factura electrónica
+X. Planes de financiamiento
+noted94f53c6cd94Se ve como un documento de contado o crédito?
+
+Tomar ejemplos de facturas hechas con financiamiento
+
+
+Se ve como un documento de contado o crédito?
+
+Tomar ejemplos de facturas hechas con financiamiento
+
+
+🏦 MAG/Hacienda
+Se debe validar con el API de hacienda si un cliente está inscrito tanto en hacienda como el MAG.
+Revisar si esto aplica en el feature de 3. Tributario 
+Necesidades
+Validar si se puede hacer una factura electrónica a un cliente (si está inscrito)
+
+Obtener las actividades económicas de un cliente
+
+Validar un documento de exoneración
+
+Validar que un cliente de factura electrónica esté inscrito en Hacienda 
+
+Validar que un cliente esté inscrito en MAG para aplicar tarifas reducidas a un cliente
+
+💳 Pinpad BAC Credomatic
+LDCOM está integrado al BAC Credomatic. Se debe solicitar los siguientes datos al BAC:
+
+
+1
+5f967dc1-dab9-4a4d-9b62-35900579c62d
+incomplete
+SDK del BAC Credomatic
+
+
+2
+9a4fb8e3-021f-4d44-b3fd-62049e97ad3e
+incomplete
+Ambiente de desarrollo/producción (URLs, keys, etc)
+
+
+3
+9bda2dd5-f618-4f61-a918-0bb5a476403e
+incomplete
+Tarjetas para ambiente de desarrollo
+
+
+4
+217ee206-24b6-465f-be39-4c301e26cc28
+incomplete
+Pinpad con ambiente de desarrollo (con número de terminal, operaciones habilitadas, etc)
+
+En LDCOM se debe configurar:
+
+
+5
+3e1007b2-9844-4aa9-ad0b-ab6fc4d86afa
+incomplete
+Autorizador en el site administrativo con la integración del BAC
+
+
+6
+96c29305-00b9-418b-83ed-88784464d7b7
+incomplete
+Instalar el SDK del BAC en cada máquina
+
+Requerimientos de la integración:
+Facturar directamente al autorizados
+
+Realizar los retiros/cierres de caja automáticamente
+
+note8dd48fdee7a3Qué puede y no puede hacer LDCOM con el pinpad? se puede retirar/cerrar automáticamente? se puede hacer cobros manuales en el pinpad? qué pasa cuando falla la comunicación al pinpad?
+
+Qué puede y no puede hacer LDCOM con el pinpad? se puede retirar/cerrar automáticamente? se puede hacer cobros manuales en el pinpad? qué pasa cuando falla la comunicación al pinpad?
+
+ 
+💪🏼 Cambios a implementar
+1. Factura electrónica
+Por redactar:
+Integración con AVD
+
+Escenarios nuevos de factura electrónica
+
+2. Validaciones de MAG/Hacienda
+Revisar si esto aplica en el feature de 3. Tributario 
+Guardar exoneraciones por cliente
+Módulos: 🛠️ Site admin | 💵 POS
+Se pueden guardar múltiples exoneraciones por cliente.
+
+Se valida la fecha de vigencia de exoneraciones guardadas
+
+Se aplican las exoneraciones en los CAByS que correspondan.
+
+Criterios de aceptación
+Al agregar una nueva exoneración, se valida el documento (validez y fecha) ante Hacienda.
+
+Si la API de hacienda está caída, muestra una advertencia y no permite agregarlo.
+
+Al agregar una nueva exoneración, se aplican las tarifas reducidas.
+
+Si el cliente ya trae una exoneración guardada:
+Se valida la fecha de vigencia (y muestra advertencia si está vencida)
+¿Se debe borrar?
+
+
+No se valida el documento con hacienda de nuevo.
+
+
+La exoneración solo se aplica a los CAByS correspondientes.
+
+Validaciones de MAG/Hacienda
+Módulos: 💵 POS
+Validar la inscripción en hacienda/mag al agregar un nuevo cliente de factura electrónica en el documento.
+
+Criterios de aceptación
+Un cliente existente no se valida.
+
+Se valida que el cliente esté inscrito en Hacienda al agregarlo en una factura electrónica.
+
+Si el cliente no está inscrito no se puede agregar como factura electrónica
+
+Si el cliente está inscrito en MAG, se aplican las tarifas reducidas a los productos que aplican (véase 3. Tributario )
+
+Si la API de hacienda está caída, muestra una advertencia
+No permite agregar el cliente (confirmar con Dos Pinos).
+
+No aplica ninguna tarifa reducida.
+
+
+3. BAC Credomatic
+Nada por mencionar.

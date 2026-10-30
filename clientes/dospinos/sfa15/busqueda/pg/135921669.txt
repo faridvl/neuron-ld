@@ -1,0 +1,745 @@
+[No Usar] Propuesta de Solución CO-696-0015
+INSUMOS INTERNOS
+Descripción del Cambio
+Insumos enviados por Dos Pinos
+Pendientes
+Pendiente
+ | Fecha Solicitud
+ | Estado
+ | Notas
+ | Correo
+ | 
+Revisar y confirmar si los reportes de proformas y facturación de obras en proceso deben combinarse en un solo
+reporte o mantenerse separados, y definir los filtros necesarios para cada uno.
+ | 17/12/25
+ | Completado
+ | Respuestas:
+Remítase a la página 38 del requerimiento de obras en proceso versión 2: Serían dos reportes por separado, los filtros: deudor/Rango de fecha(desde-hasta) /Almacen /estatus (activas sin vencer, finalizadas, vencidas) /proforma/Tipo de oferta No se encuentra trazabilidad que se haya compartido la versión 2 del documento al equipo de LD En la página 2 de la minuta "Sesión 2 | Consultas CDC | 15. Obras en Proceso" del 18/12/2025 se indica lo siguiente: "Estados y reportes: Se estableció que los estados de las proformas serán activas, vencidas y finalizadas, y que los reportes podrán filtrar por estos estados, además de incluir información como ID deudor, monto, fechas, unidad productiva, usuario y tipo de oferta".
+ |  | 
+Aclarar a qué monto se refieren en los reportes solicitados (monto original, despachado, pendiente, etc.) y comunicar la definición al equipo de desarrollo. Actualizar en versión 002 del documento de CDC
+ | 17/12/25
+ | Completado
+ | Respuestas:
+En ningún reporte se indica monto despachado y pendiente, lo que se solicita quedó claro en la minuta   Sesión 2_ Consultas CD _ 15. Obras en proceso 18.12.2025. Solo se indica que el reporte debe mostrar el monto original de la proforma. En Minuta Sesión 2_ Consultas CD _ 15. Obras en proceso 18.12.2025 se establecieron los lineamientos para la reportería y estatus de Obras en Proceso, página 2. Además, en el To Be Obras en Proceso versión 02, página 38 se agregó el tercer estatus de las preventas "Vencidas" y el comentario de mostrar los cambios realizados en preventa. No se encuentra referencia que se haya compartido la V02 del documento al equipo de LD
+ |  | 
+Revisar internamente si es necesario solicitar el desarrollo de una bitácora de cambios para las proformas de obras en
+proceso o si basta con la visualización de datos originales y modificaciones desde el reporte o módulo de edición.
+ | 17/12/25
+ | Completado
+ | Respuestas:
+La bitácora se descartó, se revisará a nivel de reportes. Minuta “Sesión 1 | Consultas CDC | 15. Obras en Proceso" del 17.12.2025 en la página 3 se detalla lo siguiente "Trazabilidad y modificaciones: Se acordó que la proforma debe conservar el registro de los materiales originales y los saldos, y que cualquier modificación (agregar, quitar o cambiar cantidades) debe ser visible al consultar o editar la proforma. Se discutió la conveniencia de una bitácora de cambios, pero se concluyó que basta con poder ver el estado actual y original en reportes".
+ |  | 
+Confirmar si al modificar una proforma es posible visualizar todos los materiales originales y las modificaciones realizadas, para determinar si es necesario un desarrollo adicional.
+ | 17/12/25
+ | Completado
+ | Respuestas:
+No es necesario un desarrollo adicional, porque la trazabilidad quedaría a nivel de reportes no de proformas. Minuta del 17.12.2025 Minuta “Sesión 1 | Consultas CDC | 15. Obras en Proceso" del 17.12.2025 en la página 3 se detalla lo siguiente "Trazabilidad y modificaciones: Se acordó que la proforma debe conservar el registro de los materiales originales y los saldos, y que cualquier modificación (agregar, quitar o cambiar cantidades) debe ser visible al consultar o editar la proforma. Se discutió la conveniencia de una bitácora de cambios, pero se concluyó que basta con poder ver el estado actual y original en reportes".
+ |  | 
+"La oferta o proforma para OBP deberá tener un campo para escoger el tipo de oferta”: Cuáles tipos de proforma existen?
+ | 29-12-25
+ | Completado
+ | R/ Según conclusiones de reunión del 18/12/2025 existirán dos tipos de proformas (venta normal y Obras en Proceso).
+ |  | 
+Cuando dice que no cambia crédito significa que si el cliente no tiene límite disponible no debe mostrarse e igual permite guardar la OBP? 
+ | 29-12-25
+ | Completado
+ | R/ En proforma No valida límite de crédito sin embargo al crear la Preventa el sistema si debe validarlo.
+ |  | 
+Se menciona que las OBP pueden incluir códigos 6000, SNF, horas hombre, kilometraje, materiales y servicios.Varios se mencionan en el AS-IS pero asumo que no irían en LDCOM (como las horas hombre, SNF, código 6000, kilometraje) puesto que no se han mencionado en la lista de materiales en otras sesiones. Confirmar este punto.
+ | 29-12-25
+ | Completado
+ | R/ Esos procesos no van en LDCom, lo único que si va es la preventa y factura de cobro de comisión sobre el Código 6000.
+ |  | 
+Los SNF (servicios no facturados) se van a integrar en ldcom? Porque también se menciona "Código 6000 se manejará por medio de lógica Dos Pinos interfazado a SFA.”
+ | 29-12-25
+ | Completado
+ | R/ Si correcto
+ |  | 
+Según el texto: "se creará una oferta o proforma desde el sistema de facturación, la cual hará referencia a la cotización firmada por el asociado”. La proforma creada en LDCOM será la cotización en sí misma? O la cotización es otro documento externo al cual se necesita referenciar durante la creación de la proforma? 
+ | 29-12-25
+ | Completado
+ | R/ La oferta o proforma es un documento externo al sistema que se utilizara para la creación de la Proforma en LDCom.
+ |  | 
+Se pueden agregar más materiales durante todo el OBP?
+ | 29-12-25
+ | Completado
+ | SI
+ |  | 
+Cuando se liquide/despache el último material de la OBP:Se cierra automáticamente la OBP o debe cerrarse manualmente?
+ | 29-12-25
+ | Completado
+ | SI
+ |  | 
+Se imprime algo extra?
+ | 29-12-25
+ | Completado
+ | NO
+ |  | 
+Sobre el vencimiento de una OBP:
+ Qué pasa si vence y ya se había despachado materiales? (o sea, quedan pendientes)
+
+Se puede extender la vigencia
+
+ | 29-12-25
+ | Completado
+ | Seguirá activa pero vencida hasta su conclusión.
+
+Si
+
+ |  | 
+Es obligatorio haber creado una OBP para realizar una factura en una OBP? O se pueden crear de inmediato con una primera factura?
+ | 29-12-25
+ | Completado
+ | R/ Si es obligatorio que exista una Proforma antes de facturar materiales de una OBP.
+ |  | 
+Puede haber más de una OBP por asociado?
+ | 29-12-25
+ | Completado
+ | SI
+ |  | 
+Cualquier tipo de vendedor puede crear OBPs?
+ | 29-12-25
+ | Completado
+ | R/ Por roles, financiero creara las proformas de OBP y personal AV podrá hacer las preventas para facturación.
+ |  | 
+Cómo se identifica una OBP? 
+Tendría un consecutivo aparte?
+
+Al crearse la proforma debe imprimirse algún número de OBP?
+
+Ese número debe imprimirse en cada factura/NC asociada?
+
+
+ | 29-12-25
+ | Completado
+ | a. No
+b.No
+C. No
+ |  | 
+Sobre el financiamiento y formas de pago:
+Sólo se puede pagar con financiamiento? Se permiten otras formas de pago de contado? 
+
+Se pueden realizar pagos parciales en facturas durante un OBP? (Ejemplo, una OBP con 5 facturas de las cuales 1 fue en contado)
+
+Qué pasa si el límite de financiamiento se agota durante media OBP?
+
+
+ | 29-12-25
+ | Completado
+ | a.R/ Solo financiamiento
+b.R/ No
+c.R/ No se podría facturar más (la única manera es solicitar un estudio extra para financiamiento y procesos a lo interno).
+ |  | 
+Puede incluir graneles/sacos en un OBP?
+ | 29-12-25
+ | Completado
+ | R/ No.c.
+ |  | 
+El OBP debe solicitar datos extra del proyecto? (Ejemplo, subir documentos, referencias cotizaciónes, etc)
+ | 29-12-25
+ | Completado
+ | R/ No.
+ |  | 
+Pag. 33: “No existirá dependencia entre la oferta y la factura para facturar los despachos de materiales.”: dependencia en qué sentido?
+ | 29-12-25
+ | Completado
+ | R/ Error de redacción del documento. Es un beneficio que no impacta el sistema
+ |  | 
+Se necesita cambiar el estado de una OBP desde otro lugar diferente al módulo de facturación? (Ejemplo: un monitor de OBPs en el site admin para editarlas o cerrarlas manualmente) 
+ | 29-12-25
+ | Completado
+ | R/ No.
+ |  | 
+Bajo qué criterios se busca una OBP en el punto de venta? (Ejemplo, código de cliente, número de OBP, etc)
+ | 29-12-25
+ | Completado
+ | R/ En sesión del 18/12/2025 se establecieron los criterios de búsqueda.
+ |  | 
+Devoluciones:
+Se menciona que el crédito de financiamiento no se compensa automáticamente en el SFA sino mediante aprobaciones:
+No se debe enviar del todo por interface cuando sea una nota de crédito? O se envía siempre e interno se maneja esa lógica de compensación?
+
+Se verá más a detalle con las integraciones pero dejo el comentario acá que he escuchado en otras sesiones de que las transacciones (ventas, NC, etc) no se enviarán en vivo sino un consolidado al final del día. Estas OBP, o facturas de una OBP, aplicarían en ese mismo consolidado?
+
+
+ | 29/12/2025
+ | Completado
+ | R/ Toda nota de crédito se envía por interfaz y su compensación será administrado por SFA.
+
+Si
+
+ |  | 
+Reportes:
+Se mencionan los reportes pero no los filtros que se requieren para ellos (Ejemplo, filtrar por sucursal, por caja, por estado, etc)
+ | 29/12/2025
+ | Completado
+ | R/ En sesión del 18712/2025 se establecieron los criterios de búsqueda.
+ |  | 
+Reportes:Se menciona incluir “monto” en el reporte pero se refiere al monto original de la proforma, al monto despachado hasta la actualidad, la diferencia, el monto pendiente o algún otro?
+ | 29/12/2025
+ | Completado
+ | R/ Monto de la proforma.
+ |  | 
+Reportes:
+Viendo ambos reportes pensé que se podría unir ambos en uno solo, que incluya todas las facturas por OBP, y que ya ahí traiga la información tanto del OBP como de cada factura. Analicen si hace sentido o si debería mantenerse por separado:
+Campos:
+ID Deudor
+
+Número de OBP
+
+Número de factura
+
+Monto
+Original de proforma
+
+Despachado
+
+Pendiente
+
+
+Estado: Activo/Cerrado
+
+Código, nombre y cantidad de materiales facturados
+
+Código, nombre y cantidad de materiales pendientes
+
+Fecha de creación
+
+Fecha de vencimiento
+
+Días de vigencia
+
+Sucursal
+
+Usuario (código y nombre)
+
+Tipo de oferta
+
+
+Con estos filtros:
+
+ Por sucursal
+
+Por asociado
+
+Por rango de fechas
+
+Por número de OBP
+
+ | 29/12/2025
+ | Completado
+ | R/ De acuerdo con lo anterior.
+ |  | 
+Confirmar si serán requeridos reportes nuevos o se adaptarán a los de LDCOM
+ |  | Completado
+ | Respuestas:
+Remítase a la página 38 del requerimiento de obras en proceso versión 2: Serían dos reportes por separado, los filtros : deudor/Rango de fecha(desde-hasta)/Almacen /estatus (activas sin vencer, finalizadas, vencidas)/proforma/Tipo de oferta No se encuentra trazabilidad que se haya compartido la versión 2 del documento al equipo de LD En la página 2 de la minuta "Sesión 2 | Consultas CDC | 15. Obras en Proceso" del 18/12/2025 se indica lo siguiente: "Estados y reportes: Se estableció que los estados de las proformas serán activas, vencidas y finalizadas, y que los reportes podrán filtrar por estos estados, además de incluir información como ID deudor, monto, fechas, unidad productiva, usuario y tipo de oferta".
+ |  | 
+Aclarar a qué monto se refieren en los reportes solicitados (monto original, despachado, pendiente, etc.) y comunicar la definición al equipo de desarrollo. Actualizar en versión 002 del documento de CDC
+ |  | Completado
+ | Respuestas:
+En ningún reporte se indica monto despachado y pendiente, lo que se solicita quedó claro en la minuta   Sesión 2_ Consultas CD _ 15. Obras en proceso 18.12.2025. Solo se indica que el reporte debe mostrar el monto original de la proforma. En Minuta Sesión 2_ Consultas CD _ 15. Obras en proceso 18.12.2025 se establecieron los lineamientos para la reportería y estatus de Obras en Proceso, página 2. Además, en el To Be Obras en Proceso versión 02, página 38 se agregó el tercer estatus de las preventas "Vencidas" y el comentario de mostrar los cambios realizados en preventa. No se encuentra referencia que se haya compartido la V02 del documento al equipo de LD
+ |  | 
+Revisar internamente si es necesario solicitar el desarrollo de una bitácora de cambios para las proformas de obras en
+proceso o si basta con la visualización de datos originales y modificaciones desde el reporte o módulo de edición.
+ |  | Completado
+ | Respuestas:
+La bitácora se descartó, se revisará a nivel de reportes. Minuta “Sesión 1 | Consultas CDC | 15. Obras en Proceso" del 17.12.2025 en la página 3 se detalla lo siguiente "Trazabilidad y modificaciones: Se acordó que la proforma debe conservar el registro de los materiales originales y los saldos, y que cualquier modificación (agregar, quitar o cambiar cantidades) debe ser visible al consultar o editar la proforma. Se discutió la conveniencia de una bitácora de cambios, pero se concluyó que basta con poder ver el estado actual y original en reportes".
+ |  | 
+Confirmar si al modificar una proforma es posible visualizar todos los materiales originales y las modificaciones realizadas, para determinar si es necesario un desarrollo adicional.
+ |  | Completado
+ | Respuestas:
+La bitácora se descartó, se revisará a nivel de reportes. Minuta “Sesión 1 | Consultas CDC | 15. Obras en Proceso" del 17.12.2025 en la página 3 se detalla lo siguiente "Trazabilidad y modificaciones: Se acordó que la proforma debe conservar el registro de los materiales originales y los saldos, y que cualquier modificación (agregar, quitar o cambiar cantidades) debe ser visible al consultar o editar la proforma. Se discutió la conveniencia de una bitácora de cambios, pero se concluyó que basta con poder ver el estado actual y original en reportes".
+ |  | 
+Definir cómo van a ser las alertas solicitadas:
+Cambio de precio significativo
+
+Inventario sin precio
+
+ |  | Pendiente
+ | No aplican alertas
+[LD] ¿Se deben descartar por completo las alertas mencionadas?
+ |  | 
+Detalle de los reportes que necesitan incluyendo los filtros y la descripción de cada campo.
+ |  | Completado
+ | Respuestas:
+Remítase a la página 38 del requerimiento de obras en proceso versión 2: Serian dos reportes por separado, los filtros: deudor/Rango de fecha(desde-hasta) /Almacen /estatus (activas sin vencer, finalizadas, vencidas) /proforma/tipo de ofertas. En Minuta Sesión 2_ Consultas CD _ 15. Obras en proceso 18.12.2025 se establecieron los lineamientos para la reportería y estatus de Obras en Proceso, página 2. Además, en el To Be Obras en Proceso versión 02, página 38 se agregó el tercer estatus de las preventas "Vencidas" y el comentario de mostrar los cambios realizados en preventa. No se encontró trazabilidad de que se haya compartido la versión 02 del documento con el equipo de LD
+ |  | 
+Actualización de Oferta
+Actualización
+ | Versión
+ | Fecha
+ | 
+Ajustes de redacción
+ | 2
+ | 24/02/2026
+ | 
+Ajustes de oferta - nuevos cambios
+ | 2
+ | 10/03/2026
+ | 
+PROPUESTA DE SOLUCIÓN
+ SITUACIÓN ACTUAL
+Actualmente, las Obras en Proceso (OBP) en los AVs de Dos Pinos se gestionan como proyectos de mediano y largo plazo coordinados por la Unidad de Equipos de Ordeño, en atención a requerimientos de los asociados relacionados con mantenimiento mayor, modernización o instalación de equipos. Estas obras pueden extenderse hasta el plazo definido según la operación y requieren diagnóstico técnico, definición de materiales y aprobación de financiamiento. La operación se soporta en la creación de pedidos en SAP (ZPLE), que comprometen el crédito del asociado y permiten la facturación parcial conforme se ejecutan los despachos. Si bien el modelo cumple con los requisitos financieros, implica un flujo operativo complejo, inverso al proceso estándar de facturación, que demanda validaciones manuales y coordinación entre áreas.
+Flujo Actual
+Obras en Proceso
+N°
+ | Etapa
+ | Descripción
+ | 
+1
+ | Solicitud de atención técnica
+ | El asociado solicita revisión por fallas, averías o modernización de equipos, lo que puede derivar en una Obra en Proceso.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 8-9)
+ | 
+2
+ | Diagnóstico técnico
+ | La Unidad de Equipos de Ordeño realiza el diagnóstico técnico para determinar el alcance del trabajo y si corresponde a una OBP.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 9-10)
+ | 
+3
+ | Levantamiento de necesidades
+ | Se identifican los materiales y servicios requeridos para la OBP, con apoyo del Encargado de Operaciones del AV.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 10-11)
+ | 
+4
+ | Consulta de disponible financiero
+ | La UEO consulta por correo electrónico a Servicios Financieros la disponibilidad crediticia del asociado (consulta no vinculante).
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 11-12)
+ | 
+5
+ | Estudio de financiamiento
+ | Servicios Financieros realiza el análisis financiero y define si se aprueba o no el financiamiento de la OBP.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 12-13)
+ | 
+6
+ | Creación del pedido
+ | El Encargado Financiero crea el pedido de Obra en Proceso en SAP (ZPLE), capturando el disponible de crédito aprobado.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 135–13-15)
+ | 
+7
+ | Ejecución de la obra
+ | Se ejecutan los trabajos técnicos y se coordinan los despachos de materiales conforme avanza la OBP.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 15-17)
+ | 
+8
+ | Facturación parcial
+ | A medida que se despachan materiales, se generan facturas parciales asociadas a la OBP.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 17-19)
+ | 
+9
+ | Seguimiento administrativo
+ | Servicios Financieros y el Encargado Financiero dan seguimiento a partidas abiertas y al estado de cada OBP.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 19-20)
+ | 
+10
+ | Finalización y cobro
+ | Una vez concluida la OBP, se informa a Servicios Financieros para consolidar facturas y proceder con el cobro al asociado.
+Resumen generado según la documentación proporcionada por el cliente (15. To_Be_Obras en Proceso V002, 2026, pp. 20-22)
+ | 
+ GAPS INCLUIDOS EN ESTA PROPUESTA
+Nuevas necesidades solicitadas por Dos Pinos
+ID
+ | Proyecto CT
+ | CDC
+ | 
+GAP Nuevo
+ | El sistema debe permitir la generación de facturas fraccionadas a partir de una preventa, conforme se vayan despachando los materiales asignados a una obra en proceso. Cada despacho debe reflejarse en una factura individual, eliminando automáticamente los materiales facturados de la proforma, y conservando únicamente aquellos que aún no han sido despachados. Esta funcionalidad debe garantizar trazabilidad por obra, por responsable y por fecha de despacho.
+ | To_Be_Obras en Proceso Versión 002
+ | 
+GAP Nuevo
+ | Permitir el control de plazos de vigencia de la OBP y de las ofertas asociadas, incluyendo la gestión de extensiones autorizadas y su trazabilidad.
+ | To_Be_Obras en Proceso Versión 002, págs. 33
+ | 
+GAP Nuevo
+ | Disponer de reportes de ofertas/proformas asociadas a Obras en Proceso, incluyendo estado (activas, vencidas, finalizadas), materiales, montos, fechas y usuario responsable.
+ | To_Be_Obras en Proceso Versión 002, págs. 38
+ | 
+GAP Nuevo
+ | Permitir la visualización de las ofertas/proformas asociadas a la OBP durante los procesos de preventa o facturación, como referencia de materiales y servicios aprobados.
+ | To_Be_Obras en Proceso Versión 002, págs. 25
+ | 
+GAP Nuevo
+ | Disponer de reportes de facturación vinculados a Obras en Proceso, que permitan comparar lo ofertado versus lo facturado, con detalle de materiales, montos y financiamiento.
+ | To_Be_Obras en Proceso Versión 002, págs. págs. 39
+ | 
+PROPUESTA DE SOLUCIÓN OBRAS EN PROCESO
+Preventa
+LD Preventa
+Ruta: Preventa / FX Preventa/Proforma
+Cambio 1. Permitir la modificación de la vigencia en proformas en LDCOM
+ | 
+Se requiere incorporar una funcionalidad para Proformas en LDCOM, en donde el usuario podrá crear proformas que permitan:
+Modificar la vigencia 
+Definir fecha de vigencia al momento de su creación.
+
+Editar la vigencia mediante usuario autorizado.
+
+Impedir la facturación si la proforma se encuentra vencida.
+
+
+ | 
+Obras en Proceso
+LD Preventa
+Ruta: Por Definir
+Cambio 2. Nueva funcionalidad de Obras en proceso⁣
+ | 
+Se requiere incorporar una funcionalidad para Obras en Proceso, en donde el usuario podrá crear proformas que permitan:
+Modificación de artículos y cantidades
+Modificar las cantidades de los artículos definidos.
+
+Incluir nuevos artículos dentro de la proforma.
+Los artículos incorporados deberán cumplir con las reglas de negocio definidas para OBP, considerando el Tipo de Crédito correspondiente.
+
+
+Respetar las condiciones comerciales de los artículos conforme a las negociaciones establecidas.
+
+
+Estado manual de la proforma
+Abierta: cuando existan cantidades pendientes por facturar.
+
+Cerrada: cuando:
+Se hayan facturado la totalidad de los artículos, o
+
+Sea cerrada manualmente por un usuario autorizado.
+
+
+Vencida: Corresponde a aquellas proformas cuya fecha de vigencia ha sido superada y que mantienen cantidades pendientes por facturar.
+No se permitirá generar facturas mientras la proforma se encuentre vencida.
+
+El estado podrá revertirse a Abierta únicamente mediante la edición autorizada de la fecha de vigencia.
+
+No implica cierre automático ni cancelación de la proforma, únicamente restricción operativa de facturación.
+
+
+
+Vigencia 
+Definir fecha de vigencia al momento de su creación.
+
+Editar la vigencia mediante usuario autorizado.
+
+Impedir la facturación si la proforma se encuentra vencida.
+
+
+Consideraciones:
+La proforma no deberá cerrarse automáticamente al convertirse en preventa o factura.
+Deberá permanecer activa.
+
+Las cantidades se descontarán progresivamente conforme se facturen.
+
+Solo se cerrará cuando se cumplan las condiciones definidas en el estado.
+
+
+El sistema deberá garantizar que:
+Las condiciones comerciales definidas en la proforma (precios, descuentos, plan de financiamiento, etc.) se respeten durante la facturación parcial.
+
+No se alteren las condiciones negociadas originalmente, salvo modificación autorizada de la proforma.
+
+
+ | 
+LD Preventa
+Ruta: Por definir
+Cambio 3. Reimpresión
+ | 
+Actualmente LDCOM cuenta con la funcionalidad de reimpresión de documentos en Preventa. 
+Se requiere crear una nueva opción que permita realizar la reimpresión de Proformas, manteniendo el comportamiento y lineamientos funcionales vigentes en el sistema.
+Esta nueva opción permitirá generar una copia de una proforma previamente emitida, sin afectar el documento original ni modificar su estado.
+Consideraciones:
+Las opciones de reimpresión deberán respetar el modelo de seguridad y roles vigente en LDCOM.
+
+La reimpresión corresponde a una copia del documento ya emitido.
+
+Se utilizarán los formatos vigentes para Proformas
+
+ | 
+Validaciones Preventa
+Preventa
+Ruta: Por definir
+Cambio 4. Identificación tipo Proforma
+ | 
+Se requiere incorporar un mecanismo de validación que permita identificar si una proforma corresponde al flujo estándar de LDCOM o al flujo de Obras en Proceso, con el fin de que el proceso de facturación aplique las reglas de negocio correspondientes a cada tipo.
+El sistema deberá incorporar un nuevo indicador que clasifique la proforma como:
+Proforma Estándar (LDCOM)
+
+Proforma de Obras en Proceso
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta / FX Preventa
+Cambio 5. Validación de Tipo de Preventa
+ | 
+Se requiere incorporar una validación en el proceso de preventa que permita identificar el tipo de preventa (Estándar LDCOM, granel, sacos, silos u obras en proceso) para aplicar las reglas de negocio correspondientes.
+ 
+El sistema deberá:
+Asociar cada tipo de preventa a las reglas operativas correspondientes, tales como:
+Tipos de artículos permitidos
+
+Origen de los artículos.
+
+
+Seleccionar el tipo de preventa al momento de generar una preventa desde una proforma.
+Los artículos seleccionados en la proforma pueden ser eliminados automáticamente de la preventa, según el tipo de preventa seleccionado.
+
+Ejemplo: En la proforma se seleccionaron botas y sacos, siendo la primera aplicable para una preventa general y la segunda como una preventa a saco.
+Al cargar la proforma como una preventa, y seleccionar que será de tipo Saco, el sistema consultará la decisión de eliminar las botas.
+
+Luego, solo dejará los sacos como parte del tipo de preventa y seguirá su flujo.
+
+
+
+ 
+Consideraciones
+ La incorporación de Tipos de Preventa no modifica el comportamiento actual de las preventas estándar mientras no se apliquen reglas adicionales.
+
+Este cambio habilita la aplicación de validaciones específicas para flujos de Proformas.
+
+El cambio de selección de tipos de Preventa se desarrollará en el proyecto CO-696-0013 Facturación a Granel.
+
+ | 
+LD Preventa
+Ruta: Por Definir
+Cambio 6. Control de tipo de preventa al convertir proformas de Obras en Proceso
+ | 
+Se requiere incorporar una nueva funcionalidad que permita gestionar el “Tipo de Preventa” dentro del proceso de conversión de proformas de Obras en Proceso a preventa.
+ 
+Al generar una preventa a partir de una proforma de Obras en Proceso, el sistema deberá:
+Identificar que la proforma corresponde al flujo de Obras en Proceso.
+
+Solicitar la selección del tipo de preventa correspondiente (ej. granel, sacos, silos, etc.).
+
+Limitar los artículos de la proforma que pueden incluirse en la preventa, permitiendo únicamente aquellos que sean compatibles con el tipo de preventa seleccionado.
+
+Bloquear o deshabilitar los artículos no aplicables, evitando su inclusión en la preventa.
+
+ 
+Consideraciones
+Este control aplica exclusivamente a proformas clasificadas como Obras en Proceso.
+
+El flujo estándar de preventa LDCOM no se ve afectado.
+
+No se permitirá generar una preventa con artículos que no correspondan al tipo seleccionado.
+
+ 
+ | 
+ 
+ LD Preventa
+Ruta: Por Definir
+Cambio 7. Asociación de planes de financiamiento en proformas de Obras en Proceso
+ | 
+Se requiere incorporar una nueva funcionalidad que permita asociar un plan de financiamiento desde la creación de la proforma de Obras en Proceso, con el objetivo de que dicho plan sea utilizado como referencia en las preventas que se generen a partir de la misma.
+ 
+El sistema deberá permitir:
+ Asociar un plan de financiamiento al momento de generar la proforma de Obras en Proceso.
+Utilizar dicho plan como plan por defecto en las preventas que se deriven de la proforma.
+Mantener las condiciones comerciales negociadas (precios, descuentos y plan de financiamiento) durante el proceso de facturación parcial, salvo modificación autorizada.
+
+ 
+Consideraciones
+La asociación del plan no implica validación de crédito en la proforma.
+
+El control de crédito se mantiene bajo las reglas vigentes del sistema al momento de facturar.
+
+Este comportamiento aplica únicamente al flujo de Obras en Proceso.
+
+ | 
+ 
+LD Preventa
+Ruta: Por Definir
+Cambio 8. Validación Tipo de Crédito Preventa
+ | 
+Se requiere incorporar una validación del Tipo de Crédito mediante la pantalla de simulación de cuotas, cuando se presenten cambios que impacten las condiciones financieras.
+ 
+El sistema deberá presentar nuevamente la pantalla de simulación de cuotas cuando:
+Se modifique el plan de financiamiento asociado a la proforma o preventa.
+
+Se editen las cantidades o artículos de la proforma o preventa, generando un cambio en el monto financiado.
+
+ 
+La simulación permitirá al usuario:
+Confirmar la continuidad del plan original.
+
+Seleccionar y confirmar un nuevo plan de financiamiento, antes de continuar con el proceso.
+
+ 
+ 
+Consideraciones
+No se permitirá continuar el flujo sin la confirmación explícita del plan mediante la simulación.
+
+Aplica únicamente a proformas y preventas de Obras en Proceso.
+
+ 
+ | 
+Validaciones Punto de Venta
+ 
+Punto de Venta
+Ruta: Punto de Venta / FX Preventa
+Cambio 9. Validación de Tipo de Proforma
+ | 
+Se requiere incorporar una validación en el proceso de facturación que permita identificar el tipo de proforma (Estándar LDCOM u Obras en Proceso) para aplicar las reglas de negocio correspondientes.
+ 
+El sistema deberá:
+Validar el tipo de proforma.
+Proformas Estándar (LDCOM):
+Mantener el comportamiento actual del sistema.
+
+Cerrar la proforma al convertirse en preventa/factura, según lógica vigente.
+
+
+
+Proformas de Obras en Proceso:
+No cerrar la proforma al facturar.
+
+No se permitirá agregar en la factura artículos que no estén previamente incluidos en la proforma origen.
+
+No se permitirá facturar cantidades superiores al saldo pendiente definido en la proforma.
+
+Permitir facturación parcial.
+
+Controlar cantidades pendientes.
+
+Respetar vigencia y estado.
+
+Se deberá almacenar el identificador de la proforma origen.
+
+
+ | 
+Reportes Proformas
+Site Administrativo
+Ruta: Por definir
+Cambio 6. Proformas por Obras en Proceso
+ | 
+Se requiere desarrollar un nuevo reporte que permita visualizar el estado actual de las proformas, su vigencia, monto negociado y detalle de artículos comprometidos.
+El reporte permitirá apoyar la gestión comercial mediante el control de proformas vigentes y vencidas, facilitando el análisis por sucursal, cliente y unidad productiva.
+Filtros:
+Sucursales
+
+Cliente
+
+Unidad Productiva
+
+Estado
+
+Rango de Fechas
+
+
+Detalle
+Id Sucursal: Corresponde al ID de la sucursal 
+
+Nombre Sucursal: Corresponde al nombre de la sucursal 
+
+Id Proforma: Corresponde al número consecutivo único que identifica la proforma dentro del sistema.
+
+Id Cliente: Identificador del cliente.
+
+Cliente: Nombre del cliente.
+
+Unidad productiva (finca): Unidad productiva asociada a la operación comercial o proyecto vinculado a la proforma.
+
+Monto: Valor total negociado en la proforma al momento de su creación o última actualización.
+
+Fecha de creación: Fecha en la cual se generó la proforma en el sistema.
+
+Fecha de vigencia: Fecha límite hasta la cual las condiciones comerciales de la proforma se consideran válidas.
+
+Días de vigencia: Cantidad de días definidos como periodo de validez comercial desde la fecha de creación.
+
+Estado: Condición actual de la proforma (por ejemplo: Abierta, Finalizadas, Vencida), de acuerdo con su situación operativa.
+
+Id Artículo: Identificador del artículo.
+
+Artículo: Nombre o descripción del artículo.
+
+Cantidad proforma: Cantidad total de unidades del artículo definidas inicialmente en la proforma al momento de su creación o última versión aprobada.
+
+Cantidad Modificada: Modificación de la cantidad del artículo posterior a la creación de la proforma (aumento o disminución).
+
+Cantidad facturada: Cantidad total de unidades del artículo que han sido facturadas contra la proforma, considerando todas las facturas asociadas a la misma. 
+
+Saldo por artículo: Cantidad de unidades del artículo que aún no han sido facturadas y que permanecen disponibles para consumo dentro de la proforma.
+
+Usuario: Usuario que generó la OBP en el sistema.
+
+
+Formato: Libro de Excel (.xlsx). 
+ | 
+Site Administrativo
+Ruta: Por definir
+Cambio 7. Facturas de Proformas Obras en Proceso
+ | 
+Se requiere desarrollar un nuevo reporte que permita visualizar el detalle de facturación vinculada a una Proforma de Obras en Proceso (OBP), permitiendo identificar qué facturas han sido generadas, qué artículos fueron facturados y en qué cantidades.
+El reporte permitirá apoyar el control operativo y validación de ejecución.
+Filtros:
+Sucursales
+
+Cliente
+
+Unidad productiva
+
+Estado
+
+Rango de Fechas
+
+
+Detalle
+Id Sucursal: Corresponde al ID de la sucursal 
+
+Nombre Sucursal: Corresponde al nombre de la sucursal 
+
+Fecha: Fecha de emisión de la factura.
+
+N° Factura: Identificador único de la factura generada a partir de la OBP
+
+Id Proforma: Corresponde al número consecutivo único que identifica la proforma dentro del sistema.
+
+Fecha de creación proforma: Fecha en la cual se generó la proforma en el sistema.
+
+Fecha de vigencia proforma: Fecha límite hasta la cual las condiciones comerciales de la proforma se consideran válidas.
+
+Días de vigencia proforma: Cantidad de días definidos como periodo de validez comercial desde la fecha de creación.
+
+Estado proforma: Condición actual de la proforma (por ejemplo: Abierta, Cerrada, Vencida), de acuerdo con su situación operativa.
+
+Id Cliente: Identificador del cliente.
+
+Cliente: Nombre del cliente.
+
+Unidad productiva (finca): Unidad productiva asociada a la operación comercial o proyecto vinculado a la proforma.
+
+Id Artículo: Identificador del artículo.
+
+Artículo: Nombre o descripción del artículo.
+
+Cantidad facturada: Cantidad total de unidades del artículo que han sido facturadas contra la proforma, considerando todas las facturas asociadas a la misma. 
+
+Saldo por artículo: Cantidad de unidades del artículo que aún no han sido facturadas y que permanecen disponibles para consumo dentro de la proforma.
+
+
+Formato: Libro de Excel (.xlsx). 
+ | 
+SUPUESTOS Y RESTRICCIONES
+Se asume que el flujo de Obras en Proceso aplica únicamente a negociaciones donde el cliente factura de manera parcial y progresiva, y no reemplaza el uso de la proforma estándar para ventas de una sola facturación.
+
+El crédito no se valida en la proforma. El control de crédito se realiza al momento de facturar, bajo las reglas vigentes del sistema.
+
+La proforma de Obra en Proceso no se cierra automáticamente al generar una factura; solo se cierra al agotarse las cantidades o por cierre manual autorizado.
+
+El sistema no permite facturar cantidades superiores a las definidas en la proforma, salvo que la proforma sea editada previamente por un usuario autorizado.
+
+Solo se podrán facturar artículos previamente incluidos en la proforma, los cuales deberán cumplir con las reglas de negocio definidas para OBP según el Tipo de Crédito correspondiente. No se podrán agregar artículos nuevos directamente en la factura.
+
+No se podrán facturar proformas vencidas. 
+
+Se establece que las devoluciones realizadas mediante Nota de Crédito sobre facturas asociadas a Obras en Proceso no generarán ajustes automáticos en la proforma origen. La proforma conservará el acumulado de cantidades facturadas originalmente, independientemente de devoluciones posteriores. En caso de requerirse la refacturación de unidades previamente devueltas, será obligatorio realizar una modificación manual de la proforma por parte de un usuario autorizado. El sistema no ejecutará ajustes automáticos derivados de dichas devoluciones.
+
+No se considera dentro del alcance la generación de alertas automáticas (notificaciones por consumo, vencimiento o desviaciones). El control se realiza únicamente por reportes.
+
+Esta propuesta de solución no considera cambios en el desarrollo fuera de lo indicado en la misma. Cualquier cambio sobre el alcance indicado en la presente propuesta de solución será sujeto de un nuevo análisis y evaluación del impacto de lo que conllevaría su inclusión. Bajo esta premisa quedamos atentos a su validación para confirmar que el alcance descrito refleja adecuadamente las expectativas actuales y así avanzar con una ejecución alineada.
+
+ | 
+Excel de Estimación 
+Tiempos.xlsx
+CO-696-0015 Obras en Proceso.xlsx
+CO-696-0015 Obras en Proceso V2.xlsx
+Versiones
+ 
+ 

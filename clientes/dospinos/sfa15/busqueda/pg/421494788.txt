@@ -1,0 +1,384 @@
+LD-GENERAL Autenticación y manejo de errores
+Historial de cambios
+Fecha
+ | Descripción
+ | Autor
+ | 
+11/Agosto/2026
+ | Autenticación con Microsoft Entra ID por client credentials.
+ | fvillacis@ld.co.cr
+ | 
+04/Septiembre/2026
+ | Sección de manejo de errores.
+ | fvillacis@ld.co.cr
+ | 
+Descripción
+Este documento cubre dos temas transversales a todos los endpoints LD-xx de la API de integración: cómo autenticarse, y cómo interpretar las respuestas de error. Ambos aplican de la misma forma sin importar el endpoint que se consuma.
+1. Autenticación
+Todos los endpoints LD-xx requieren un token de acceso emitido por Microsoft Entra ID. La API no emite tokens ni administra credenciales: solo valida el JWT que el llamador presenta en cada request.
+Alcance
+Aplica a todos los endpoints de la API de integración. No existen endpoints anónimos en ambientes con autenticación habilitada.
+Secuencia del flujo
+El cliente solicita un token a Entra ID usando grant_type=client_credentials.
+
+Entra ID valida las credenciales de la aplicación y emite un access_token (JWT).
+
+El cliente invoca el endpoint LD-xx enviando el token en la cabecera Authorization.
+
+La API valida firma, vigencia y audiencia del token.
+
+Si el token es válido se ejecuta la operación; si no, se responde 401 o 403 y el intento queda registrado en auditoría.
+
+Reglas de negocio
+El token se solicita a Entra ID, no a LDCOM ni a esta API.
+
+Se envía en cada request como Authorization: Bearer <access_token>.
+
+La API acepta como audiencia válida tanto {ClientId} como api://{ClientId} de la aplicación que representa a la API. Ambas formas corresponden al mismo registro; la que emite Entra ID depende de cómo el llamador pida el scope.
+
+Se recomienda cachear el token y renovarlo con margen antes del vencimiento. Un token que expira a mitad de vuelo produce un 401.
+
+Auditoría de accesos rechazados
+Los intentos fallidos quedan registrados en la tabla Events:
+Situación
+ | Registro
+ | 
+Token presentado pero inválido (vencido, firma incorrecta, audiencia equivocada)
+ | Se audita como AUTHENTICATION_FAILURE
+ | 
+Token válido pero sin el permiso requerido
+ | Se audita como AUTHORIZATION_FAILURE
+ | 
+Nunca se registra el token ni la cabecera de autorización.
+Endpoint de Entra ID
+POST https://login.microsoftonline.com/{TenantId}/oauth2/v2.0/token
+Ejemplo — application/x-www-form-urlencoded
+Content-Type: application/x-www-form-urlencoded
+textwide760Ejemplo — curl (multipart/form-data)
+Entra ID también acepta el body como multipart/form-data (por ejemplo, usando --form en curl en vez de -d). El resultado es el mismo: un access_token Bearer. Esta llamada obtiene el token — no lleva ningún Authorization: Bearer propio.
+bashwide760Descripción de campos
+Campo
+ | Tipo
+ | Requerido
+ | Descripción
+ | 
+grant_type
+ | string
+ | Sí
+ | Siempre client_credentials.
+ | 
+client_id
+ | string
+ | Sí
+ | GUID de la aplicación cliente registrada en Entra ID.
+ | 
+client_secret
+ | string
+ | Sí
+ | Secreto de la aplicación cliente. No debe versionarse ni compartirse.
+ | 
+scope
+ | string
+ | Sí
+ | api://{ClientId de la API}/.default. También se acepta {ClientId}/.default.
+ | 
+Response — 200 OK
+jsonwide760Campos del response
+Campo
+ | Descripción
+ | 
+token_type
+ | Siempre Bearer.
+ | 
+expires_in
+ | Vigencia en segundos. Renovar antes de que llegue a 0.
+ | 
+access_token
+ | JWT a enviar en la cabecera Authorization de cada llamada a la API.
+ | 
+Uso del token en los endpoints LD-xx
+textwide760Notas de implementación
+La validación usa Microsoft.Identity.Web sobre el esquema JwtBearer.
+
+La auditoría de accesos rechazados se engancha a los eventos existentes de JwtBearer sin reemplazarlos, para no perder el comportamiento por defecto.
+
+Un fallo al auditar nunca convierte un 401/403 limpio en un 500: se registra en el log y la respuesta original se mantiene.
+
+Swagger (solo en Development) incluye el esquema Bearer para probar los endpoints con un token pegado a mano.
+
+Evidencias
+Ambiente
+ | http://testing-iis/BETA/DOS_PINOS_STAGING/INTEGRATIONS
+ | 
+Fecha
+ | 11/Agosto/2026
+ | 
+2. Manejo de errores
+Todas las respuestas de error del API — fuera de los 401/403 de autenticación, que emite el middleware de Entra ID sin pasar por este envelope — usan el mismo formato:
+jsonwide760Campos del envelope
+Campo
+ | Tipo
+ | Descripción
+ | 
+status
+ | integer
+ | Código HTTP, repetido en el cuerpo.
+ | 
+code
+ | string
+ | Código de error estable. Es el valor a usar para tomar decisiones automáticas, no el message.
+ | 
+message
+ | string
+ | Mensaje descriptivo en español, orientado a operación.
+ | 
+data
+ | null
+ | Siempre null en respuestas de error.
+ | 
+errors
+ | object | null
+ | Detalle estructurado del rechazo. La forma depende del code (por ejemplo catalog/externalValue, o field/value/validValues).
+ | 
+401 / 403 no usan este envelope
+Los códigos 401 (token ausente, inválido o expirado) y 403 (token válido pero sin el scope requerido) los emite el middleware de autenticación directamente — no pasan por este formato. Ver la sección de Autenticación arriba para el detalle de auditoría de estos casos.
+Diccionario de errores
+Catálogo completo de los códigos de error del API (ApiErrorCode), agrupado por dónde aplica cada uno. Cada documento de endpoint mantiene también su propia tabla resumida de “Códigos de error” solo con los que le aplican a él — esta es la referencia completa y la fuente única de verdad para el HTTP status de cada código.
+Generales — cualquier endpoint
+Código
+ | HTTP
+ | Descripción
+ | 
+VALIDATION_ERROR
+ | 422
+ | Uno o más campos de validación han fallado.
+ | 
+UNAUTHORIZED_ERROR
+ | 401
+ | No tiene permisos para realizar esta acción.
+ | 
+INTERNAL_ERROR
+ | 500
+ | Ha ocurrido un error inesperado en el servidor.
+ | 
+EXTERNAL_SYSTEM_ERROR
+ | 500
+ | No se pudo completar la operación en el sistema externo (LDCOM).
+ | 
+LDCOM_BUSINESS_ERROR
+ | 422
+ | Error de lógica en el sistema LDCOM.
+ | 
+CATALOG_RESOLUTION_WARNING
+ | 422
+ | Un valor de catálogo no se pudo resolver; se usó un valor de reemplazo.
+ | 
+INVALID_FIELD_TYPE
+ | 422
+ | El valor ingresado no es del tipo esperado para ese campo.
+ | 
+INVALID_MAPPING_ID
+ | 500
+ | El identificador interno del mapeo no es válido.
+ | 
+TENANT_NOT_CONFIGURED
+ | 500
+ | El cliente (tenant) solicitado no está configurado en el sistema.
+ | 
+AUTHENTICATION_NOT_CONFIGURED
+ | 500
+ | La autenticación está habilitada pero la sección AzureAd está incompleta.
+ | 
+Preventas — LD-01 / LD-02
+Código
+ | HTTP
+ | Descripción
+ | 
+PREORDER_NOT_FOUND
+ | 404
+ | La preventa especificada no existe en el sistema.
+ | 
+INVALID_PREORDER_STATUS
+ | 422
+ | La preventa no se encuentra en un estado que permita edición.
+ | 
+STORE_NOT_FOUND
+ | 422
+ | La sucursal especificada no existe en el catálogo de LDCOM.
+ | 
+CUSTOMER_NOT_FOUND
+ | 422
+ | Uno o más clientes no existen en el catálogo de LDCOM.
+ | 
+ITEM_NOT_FOUND
+ | 422
+ | Uno o más artículos no existen en el catálogo de LDCOM.
+ | 
+INVALID_QUANTITY
+ | 422
+ | Una o más cantidades son inválidas (deben ser mayores a cero).
+ | 
+INVALID_AMOUNT_CALCULATION
+ | 422
+ | El monto total de uno o más ítems no coincide con el cálculo esperado.
+ | 
+INVALID_TAX_PERCENTAGE
+ | 422
+ | El porcentaje de impuesto de uno o más ítems es inválido.
+ | 
+Saldos de crédito — LD-03
+Código
+ | HTTP
+ | Descripción
+ | 
+CUSTOMER_NOT_FOUND
+ | 422
+ | Uno o más clientes no existen en el catálogo de LDCOM. Validación todo-o-nada: si alguno no existe, no se ajusta ninguno.
+ | 
+Traslados de inventario — LD-06 / LD-07
+Código
+ | HTTP
+ | Descripción
+ | 
+STORE_NOT_FOUND
+ | 422
+ | La sucursal especificada no existe en el catálogo de LDCOM.
+ | 
+WAREHOUSE_NOT_FOUND
+ | 422
+ | La bodega especificada no existe en la sucursal indicada.
+ | 
+ITEM_NOT_FOUND
+ | 422
+ | Uno o más artículos no existen en el catálogo de LDCOM.
+ | 
+MOVEMENT_TYPE_NOT_FOUND
+ | 422
+ | El tipo de movimiento especificado no existe en el catálogo de LDCOM.
+ | 
+INVALID_BATCH
+ | 422
+ | Uno o más lotes son inválidos: no pertenece al artículo, la suma no coincide, o faltó enviarlo cuando era requerido.
+ | 
+BATCH_EXPIRATION_DATE_REQUIRED
+ | 422
+ | El lote no existe en LDCOM y el tipo de movimiento requiere la fecha de vencimiento.
+ | 
+TRANSFER_NOT_FOUND
+ | 404
+ | El traslado especificado no existe en LDCOM.
+ | 
+INVALID_TRANSFER_STATUS
+ | 422
+ | El traslado no se encuentra en un estado que permita edición (solo se puede editar “Guardado sin aplicar”).
+ | 
+Órdenes de compra — LD-08
+Código
+ | HTTP
+ | Descripción
+ | 
+STORE_NOT_FOUND
+ | 404
+ | La sucursal no tiene mapeo en CrossReference. Este endpoint responde 404 para este código, a diferencia del 422 que usan los demás endpoints de esta tabla.
+ | 
+WAREHOUSE_NOT_FOUND
+ | 422
+ | La bodega no existe en la sucursal indicada.
+ | 
+ITEM_NOT_FOUND
+ | 422
+ | Un itemExternalId no existe en LDCOM.
+ | 
+SUPPLIER_NOT_FOUND
+ | 422
+ | El proveedor especificado no existe en LDCOM.
+ | 
+SUPPLIER_NO_AGENCY
+ | 422
+ | El proveedor no tiene agencias habilitadas en la sucursal indicada.
+ | 
+ITEM_NOT_ASSOCIATED_TO_SUPPLIER
+ | 422
+ | Artículo no asociado al proveedor y autoAssociateItems: false.
+ | 
+ITEM_NOT_ASSOCIATED_TO_AGENCY
+ | 422
+ | Artículo asociado al proveedor pero no a su agencia en esa sucursal.
+ | 
+ITEM_INACTIVE_FOR_PURCHASE
+ | 422
+ | El artículo existe pero está inactivo para compras.
+ | 
+SUPPLIER_DISCOUNT_NOT_FOUND
+ | 422
+ | Un descuento de proveedor no existe en el catálogo de descuentos de LDCOM.
+ | 
+CEDI_ORDER_REQUIRED
+ | 422
+ | orderType: CEDI sin cediOrderExternalId.
+ | 
+INVALID_ORDER_TYPE
+ | 422
+ | orderType no es LOCAL, CEDI ni FOREIGN.
+ | 
+ORDER_TYPE_NOT_SUPPORTED
+ | 422
+ | orderType: FOREIGN — las órdenes de exterior no están soportadas.
+ | 
+INVALID_QUANTITY
+ | 422
+ | Una o más cantidades son ≤ 0.
+ | 
+INVALID_TAX_PERCENTAGE
+ | 422
+ | El impuesto no corresponde a uno configurado para el artículo.
+ | 
+INVALID_BATCH
+ | 422
+ | Artículo con control de lote sin lotes, o suma de cantidades inconsistente.
+ | 
+BATCH_EXPIRATION_DATE_REQUIRED
+ | 422
+ | Lote nuevo sin fecha de vencimiento.
+ | 
+Catálogos de consulta — LD-04 / LD-05 / LD-09
+Código
+ | HTTP
+ | Descripción
+ | 
+STORE_NOT_FOUND
+ | 422
+ | La sucursal especificada no existe en el catálogo de LDCOM.
+ | 
+WAREHOUSE_NOT_FOUND
+ | 422
+ | La bodega no existe en la sucursal indicada (LD-05) o ninguna combinación sucursal×bodega pedida existe.
+ | 
+ITEM_NOT_FOUND
+ | 422
+ | Uno o más artículos no existen en el catálogo de LDCOM.
+ | 
+CATEGORY_NOT_FOUND
+ | 422
+ | Una o más categorías no existen en el catálogo de LDCOM. (LD-04 / LD-05)
+ | 
+ADJUSTMENT_TYPE_NOT_FOUND
+ | 422
+ | Uno o más tipos de ajuste no existen en el catálogo de LDCOM. (LD-09)
+ | 
+VALIDATION_ERROR
+ | 422
+ | Caso puntual de LD-05: se pidió warehouseExternalIds sin storeExternalIds.
+ | 
+INVALID_FILTER_COMBINATION
+ | 400
+ | Se enviaron itemExternalIds y categoryExternalIds a la vez. (LD-04 / LD-05)
+ | 
+INVALID_DATE_RANGE
+ | 400
+ | dateFrom es posterior a dateTo. (LD-09)
+ | 
+INVALID_CURSOR
+ | 400
+ | El cursor proporcionado es inválido o expiró.
+ | 

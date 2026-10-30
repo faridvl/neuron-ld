@@ -1,0 +1,500 @@
+POS-12 Ventas y devoluciones
+Mi rol: LDCOM (consumidor del servicio) Servicio: p_POS12_ReplicarVentas publicado en Informatica Cloud Trigger: Por cada cierre de caja, LDCOM llama al servicio y espera respuesta sincrónica Versión: 1.0 — 16/06/2026
+:info:atlassian-info#FFFAE6Estado del documento: Borrador (Entregado por Informática a DP)
+Historial de cambios
+Fecha
+ | Descripción
+ | Autor
+ | 
+26/Mayo/2026
+ | Primer entregable de Informática a Dos Pinos
+ |  | 
+Descripción
+En el cierre de caja se envían, en vivo, todos los documentos (de facturas y devoluciones) a Dos Pinos.
+La única excepción son las ventas de crédito (conocido en Dos Pinos como ventas a distribuidores) las cuales viajan en tiempo real, y no se envían en el consolidado del cierre de caja.
+Contexto de uso
+Flujos relacionados
+Flujo
+ | Descripción
+ | 
+FL-01
+ | Ventas y devoluciones
+ | 
+Interfaces Dos Pinos relacionadas
+Flujo
+ | Descripción
+ | 
+POS-12
+ | Ventas y devoluciones
+ | 
+Servicios de Informática
+Nombre del servicio
+ | Notas
+ | 
+p_POS12_ReplicarVentas
+ |  | 
+Triggers
+Cierre de caja: Se envía el consolidado de todos los documentos creados en la caja, excepto los documentos de crédito.
+
+Ventas de crédito: Se envían como documentos individuales, en tiempo real.
+
+1. Autenticación
+⚠️ PENDIENTE COMPLETO — No está en ningún documento recibido.
+Campo
+ | Valor
+ | 
+Tipo de auth
+ | ❓ Sin definir
+ | 
+URL de token / login
+ | ❓ Sin definir
+ | 
+Usuario / client_id
+ | ❓ Sin definir
+ | 
+Contraseña / client_secret
+ | ❓ Sin definir
+ | 
+Header requerido
+ | ❓ Sin definir
+ | 
+2. Endpoint
+⚠️ PENDIENTE — El documento dice literalmente [Sin definir].
+Campo
+ | Valor
+ | 
+Método
+ | POST
+ | 
+URL (DEV/QA)
+ | ❓ Sin definir
+ | 
+URL (PROD)
+ | ❓ Sin definir
+ | 
+Content-Type
+ | application/json
+ | 
+VPN requerida
+ | ❓ Sin confirmar
+ | 
+3. Request
+3.1 Estructura
+wide7603.2 Control — una sola vez por llamada
+Campo
+ | Tipo
+ | Descripción
+ | Obligatorio
+ | 
+IDITZ
+ | string
+ | Identificador de interfaz. Valor fijo: "FSD-12"
+ | ✅
+ | 
+CSAGR
+ | string
+ | ID del cierre de caja. Ej: "20260511-1200"
+ | ✅
+ | 
+NROEJ
+ | string
+ | Número de ejecución
+ | ✅
+ | 
+DATEE
+ | string
+ | Fecha YYYYMMDD
+ | ✅
+ | 
+HOURE
+ | string
+ | Hora HH:MM:SS
+ | ✅
+ | 
+BUKRS
+ | string
+ | Sociedad SAP. Ej: "CR01"
+ | ✅
+ | 
+REFERENCIA
+ | string
+ | Referencia de liquidación. Ej: "LIQUIDACION/AA-611~1518"
+ | ✅
+ | 
+USER
+ | string
+ | Usuario que ejecuta
+ | ✅
+ | 
+GUID
+ | string (UUID v4)
+ | UUID único por invocación — generado por LDCOM
+ | ✅
+ | 
+3.3 Cab_DVPostLiqVts.Item[] — cabecera, un objeto por documento de venta
+Campo
+ | Descripción
+ | Obligatorio
+ | 
+DCNUM
+ | Número del documento de venta. Ej: "518F502067"
+ | ✅
+ | 
+AUART
+ | Tipo de orden SAP. Ej: "ZVNH", "ZREH"
+ | ✅
+ | 
+VKORG
+ | Organización de ventas. Ej: "CR01", "CR02"
+ | ✅
+ | 
+VTWEG
+ | Canal de distribución. Ej: "11"
+ | ✅
+ | 
+SPART
+ | División. Ej: "10", "11"
+ | ✅
+ | 
+KUNNR
+ | Número de cliente SAP (10 dígitos)
+ | ✅
+ | 
+WAERK
+ | Moneda. Ej: "CRC"
+ | ✅
+ | 
+FACTN
+ | Número de factura
+ | ✅
+ | 
+BSTNK
+ | Orden de compra del cliente
+ | ❓
+ | 
+XBLNR
+ | Referencia externa
+ | ❓
+ | 
+IHREZ
+ | Su referencia
+ | ❓
+ | 
+ZZRPRE
+ | Ruta de preventa. Ej: "P1514"
+ | ❓
+ | 
+ZZRENT
+ | Ruta de entrega. Ej: "1518"
+ | ❓
+ | 
+BSTDK
+ | Fecha de la orden YYYYMMDD
+ | ✅
+ | 
+VDATU
+ | Fecha de entrega YYYYMMDD
+ | ✅
+ | 
+ROUNA
+ | Número de ronda
+ | ❓
+ | 
+UMSKZ
+ | Indicador especial G/L. Ej: "L"
+ | ❓
+ | 
+ZZFACT
+ | ❓ Sin descripción
+ | ❓
+ | 
+AUGRU
+ | Razón de la orden. Ej: "B00"
+ | ❓
+ | 
+XREFF
+ | Referencia cruzada. Ej: "1518CRE20250919"
+ | ❓
+ | 
+KOSTL
+ | Centro de costo
+ | ❓
+ | 
+KBETR
+ | Importe condición. Ej: "0.53"
+ | ❓
+ | 
+SALES_OFF
+ | Oficina de ventas. Ej: "8006"
+ | ❓
+ | 
+SALES_DIST
+ | Distrito de ventas. Ej: "122"
+ | ❓
+ | 
+AUTORIZADO
+ | Código de autorización
+ | ❓
+ | 
+IND_CME
+ | Indicador CME
+ | ❓
+ | 
+LIBREUSO
+ | Campo libre
+ | ❓
+ | 
+ZDOC_FIS_XML
+ | Número documento fiscal XML
+ | ✅
+ | 
+ZZCAE
+ | CAE (Código Autenticación Electrónica)
+ | ✅
+ | 
+KUNNR2
+ | ❓ Sin descripción
+ | ❓
+ | 
+KUNNR3
+ | ❓ Sin descripción
+ | ❓
+ | 
+CAJA
+ | ID de caja. En ejemplos: "XXXX"
+ | ❓
+ | 
+ZTERM
+ | Condición de pago. Ej: "Z001"
+ | ❓
+ | 
+3.4 Det_DVPostLiqFin.Item[] — líneas de producto
+Campo
+ | Descripción
+ | Obligatorio
+ | 
+DCNUM
+ | Número de documento (FK a cabecera)
+ | ✅
+ | 
+POSNR
+ | Posición de línea. Ej: "1", "2"
+ | ✅
+ | 
+MATNR
+ | Código de material SAP
+ | ✅
+ | 
+KWMENG
+ | Cantidad
+ | ✅
+ | 
+VRKME
+ | Unidad de medida. Ej: "UN"
+ | ✅
+ | 
+ZTERM
+ | Condición de pago
+ | ❓
+ | 
+NETPR
+ | Precio neto. Ej: "10112.36"
+ | ✅
+ | 
+PRCTR
+ | Centro de beneficio
+ | ❓
+ | 
+ZZRPRE
+ | Ruta de preventa
+ | ❓
+ | 
+WERKS
+ | Centro/Planta SAP
+ | ✅
+ | 
+LGORT
+ | Almacén
+ | ✅
+ | 
+3.5 Cond_DVPostLiqFin.Item[] — condiciones de precio
+Campo
+ | Descripción
+ | Obligatorio
+ | 
+DCNUM
+ | Número de documento (FK a cabecera)
+ | ✅
+ | 
+POSNR
+ | Posición de línea
+ | ✅
+ | 
+KSCHL
+ | Tipo de condición SAP. Ej: "ZPR1"
+ | ✅
+ | 
+KBETR
+ | Importe de la condición
+ | ✅
+ | 
+3.6 Ejemplo completo
+jsonwide7604. Response
+4.1 Exitoso
+jsonwide7604.2 Error de negocio (documento duplicado)
+jsonwide7604.3 Códigos conocidos
+status_code
+ | Significado
+ | Acción LDCOM
+ | 
+200
+ | Registro exitoso
+ | Marcar liquidación como enviada
+ | 
+400
+ | Error de negocio (ej. duplicado)
+ | Registrar error — ❓ ¿reintentar?
+ | 
+❓ otros
+ | Sin documentar
+ | ❓
+ | 
+5. Manejo de errores
+Escenario
+ | Comportamiento conocido
+ | Pendiente
+ | 
+Documento duplicado
+ | 400 + mensaje descriptivo
+ | ¿Qué hace LDCOM?
+ | 
+Servicio caído / timeout
+ | ❓
+ | ¿Hay timeout definido?
+ | 
+Auth inválida
+ | ❓
+ | ¿Qué retorna?
+ | 
+Payload malformado
+ | ❓
+ | ¿Qué retorna?
+ | 
+Reintentos
+ | ❓
+ | ¿Pueden generar duplicados?
+ | 
+6. Pruebas
+6.1 Estado de acceso
+Recurso
+ | Estado
+ | 
+URL del endpoint
+ | ❓ Pendiente
+ | 
+Credenciales
+ | ❓ Pendientes
+ | 
+Ambiente QA/DEV
+ | ❓ Sin confirmar
+ | 
+VPN
+ | ❓ Sin confirmar
+ | 
+Colección Postman
+ | ❓ No recibida
+ | 
+6.2 Escenarios a cubrir
+#
+ | Escenario
+ | Resultado esperado
+ | 
+1
+ | Documento nuevo, payload válido
+ | 200
+ | 
+2
+ | Mismo documento dos veces (duplicado)
+ | 400 con msg duplicado
+ | 
+3
+ | ❓ Campos obligatorios faltantes
+ | ❓
+ | 
+4
+ | ❓ Auth inválida o expirada
+ | ❓
+ | 
+5
+ | ❓ Múltiples documentos en un solo request
+ | ❓
+ | 
+7. Catálogos
+Valores observados en los ejemplos. Pendiente catálogo oficial de Dos Pinos/BD Consultores.
+Campo
+ | Valores vistos
+ | Descripción
+ | 
+AUART
+ | ZVNH, ZREH
+ | Tipo de orden SAP — ❓ significado
+ | 
+VKORG
+ | CR01, CR02
+ | Organización de ventas
+ | 
+BUKRS
+ | CR01
+ | Sociedad SAP Costa Rica
+ | 
+WAERK
+ | CRC
+ | Moneda colón costarricense
+ | 
+VRKME
+ | UN
+ | Unidad de medida — unidades
+ | 
+KSCHL
+ | ZPR1
+ | Tipo de condición precio — ❓ significado
+ | 
+AUGRU
+ | B00
+ | Razón de orden — ❓ significado
+ | 
+UMSKZ
+ | L
+ | Indicador G/L — ❓ significado
+ | 
+ZTERM
+ | Z001, Z005
+ | Condición de pago — ❓ significado
+ | 
+8. Preguntas para la reunión
+🔴 Sin estas no puedo ni empezar
+¿Cuál es la URL del servicio que debo consumir? (ambiente DEV y PROD)
+
+¿Cómo me autentico contra ese endpoint? ¿OAuth2, Basic Auth, API Key? ¿Qué credenciales me corresponden a mí como LDCOM?
+
+¿Necesito VPN? ¿O el endpoint es accesible desde internet?
+
+🟡 Para poder probar correctamente
+¿Tienen una colección de Postman o equivalente que puedan compartir?
+
+¿Cuál es el timeout del servicio? Si no hay respuesta en X segundos, ¿qué debo hacer?
+
+¿Qué debe hacer LDCOM ante un 400? ¿Hay reproceso manual, reintento automático, alerta?
+
+¿Hay riesgo de duplicado si LDCOM reintenta? El servicio valida duplicados por Control, pero ¿qué pasa si el reintento lleva el mismo GUID?
+
+🟢 Para mapear los campos correctamente
+¿Cuáles campos de Cab_DVPostLiqVts son obligatorios? Los que vienen vacíos en los ejemplos, ¿pueden omitirse o deben enviarse como ""?
+
+¿Qué son KUNNR2 y KUNNR3? No están descritos en ningún documento.
+
+¿CAJA tiene un formato específico? En todos los ejemplos viene "XXXX".
+
+¿El GUID lo genera LDCOM libremente? ¿Hay alguna validación de formato en el receptor?
+
+Última actualización: 16/06/2026

@@ -1,0 +1,135 @@
+
+=====P1=====
+ 
+ 
+ 
+ 
+Documento de Diseño 
+ 
+Proyecto AV Retail 
+ 
+ 
+ 
+ 
+VERSIÓN 001 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=====P2=====
+  
+Índice 
+1. Descripción General .............................................................................................................................................. 3 
+2. Actores y Sistemas Involucrados .................................................................................................................... 3 
+3. Alcance Funcional .................................................................................................................................................. 3 
+4. Patrón y plataforma de integración ............................................................................................................... 3 
+5. Seguridad ................................................................................................................................................................... 4 
+6. Interfaces y Endpoints ......................................................................................................................................... 4 
+7. Pruebas ....................................................................................................................................................................... 5 
+8. Riesgos y Mitigaciones ......................................................................................................................................... 5 
+9. Diagrama.................................................................................................................................................................... 5 
+10. Mapeo de campos ................................................................................................................................................ 5 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+=====P3=====
+1. Descripción General 
+Modelo de Integración Sincrónica en tiempo real. 
+Esta integración tiene como objetivo implementar una integración que permita procesar 
+las solicitudes de autorización de venta financiada provenientes de los sistemas origen de 
+Dos Pinos, utilizando Informatica Cloud – Application Integration (CAI) como capa de 
+integración y orquestación para el consumo de los servicios expuestos por SFA. 
+2. Actores y Sistemas Involucrados 
+Sistema Rol 
+SFA  Destino Proveedore de api   
+informática  Orquestación, validaciones, reglas de 
+negocio, exposición de Endpoint API y 
+registro de trazas. 
+LDCOM Sistema consumidor que dispara eventos 
+programados para consumir la API expuesta 
+por informática. Controla la frecuencia de 
+ejecución. 
+Monitor Integral Correlación de transacciones con ID único. 
+ 
+3. Alcance Funcional 
+Endpoints a utilizar: 
+• End Point: https://usw3-cai.dm-us.informaticacloud.com/active-
+bpel/rt/p_SFA15_Autorizacion_Venta_Final 
+• Swagger: https://usw3-cai.dm-us.informaticacloud.com/active-
+bpel/rt/p_SFA15_Autorizacion_Venta_Final?swagger  
+4. Patrón y plataforma de integración  
+• Patrón: Sincrónico en tiempo real 
+• Plataforma: informática Cloud 
+• Middleware único: informática Cloud (cumpliendo regla corporativa). 
+• Observabilidad: Obligatoria, implementada con Monitor Integral (API de control) 
+=====P4=====
+5. Seguridad 
+• Autenticación: Básica entre informática y LDCOM. 
+6. Interfaces y Endpoints 
+a) Endpoint hacia LDCOM: 
+• Método: POST 
+• Protocolo: HTTPS 
+• Autenticación: Básica  
+• Formato: JSON 
+• Campos:  
+• Insertar solicitud de crédito  
+• codEmpresa Varchar 
+• codAgencia Varchar 
+• codTipoId Varchar 
+• numId Varchar 
+• codCliente Varchar 
+• fecSolicitud Datetime 
+• nomAutorizado Varchar 
+• codTipoIdAu Varchar 
+• numIdAu Varchar 
+• indUsaLinea Varchar 
+• numLinea Numerico 
+• idExterno Varchar 
+• codUnidadCosto Varchar 
+• numConvenio Varchar 
+• plazoCredito Numerico 
+• tipCredito Numerico 
+• monSolicitud Numerico 
+• observaciones Varchar 
+• codUsuario Varchar 
+• Fecha (string) 
+• Insertar Crédito 
+• codEmpresa Varchar 
+• codUsuario Varchar 
+• indAccion Numerico 
+• numSolicitud Numerico 
+=====P5=====
+7. Pruebas 
+• Unitarias: Validación de extracción desde SFA y formato JSON. 
+• Integración: Llamada a endpoint SFA desde Informática. 
+• Seguridad: Validación TLS 1.2 y API Key funcional. 
+8. Riesgos y Mitigaciones 
+Riesgo Mitigación 
+Volumetría superior a la estimada Habilitar paginación/lotes, compresión y 
+ventana de proceso ampliable. 
+Intermitencia de LDCOM al consumir API Reintentos exponenciales e idempotencia 
+en Integration Hub. 
+Exposición de credenciales Uso de bóveda y API Key cifrada. 
+ 
+9. Diagrama 
+ 
+10. Mapeo de campos 
+SFA15 Autorización 
+de la venta financiada.xlsx
+ 

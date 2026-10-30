@@ -1,0 +1,790 @@
+[No Usar] Propuesta de solución CO-696-0007
+INSUMOS INTERNOS
+Descripción del Cambio
+Insumos enviados por Dos Pinos
+Pendientes
+Pendiente
+ | Fecha Solicitud
+ | Estado
+ | Notas
+ | Correo
+ | 
+Compartir las fórmulas utilizadas para calcular cuotas, intereses y amortización, para que el equipo pueda implementarlas correctamente en el sistema
+ | 26/11/2025
+ | Completado
+ | En la página 12 y 13 del CDC se aclara
+Plantilla_Modelo To_Be_Financiamiento Versión 002.docx
+ | 7_ Plantilla_Modelo To_Be_Financiamiento Versión 002 15-01-26.msg
+ | 
+Acordar los alcances y reglas para la facturación financiada en contingencia, incluyendo si se permite, se prohíbe o solo se muestra una advertencia
+ | 26/11/2025
+ | Traslado a otro CDC
+Se debe trasladar al alcance de Facturación
+ | Se encuentra dentro del alcance del CDC de facturación
+Plantilla_Modelo To_Be_Facturación Versión 002.docx
+ |  | 
+Coordinar una sesión con los arquitectos para definir los aspectos técnicos de la integración y almacenamiento de los planes de financiamiento
+ | 26/11/2025
+ | Completado
+ | Se ejecuto sesión el 20/01/2026
+ |  | 
+Solicitar a Jorge información sobre la posibilidad de generar reportes detallados de facturación en contingencia, incluyendo eventos pequeños y su evidencia
+ | 26/11/2025
+ | Traslado a otro CDC
+Se debe trasladar al alcance de Facturación
+ | R/ No, no existe y según mencionaron en la sesión, se solicitó un reporte similar en el CDC de facturación.
+ |  | 
+Investigar si existe una bitácora específica en LDCOM que registre los eventos de trabajo en modo local y reportar los hallazgos
+ | 26/11/2025
+ | Completado
+ | Actualmente no existen reportes de este tipo se deben considerar como parte del alcance.
+ |  | 
+Puedo utilizar planes sincronizados con más de N horas/días?
+ | 27/11/2025
+ | Completado
+ | R/ Sin restricción
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+Si la interface está caída cómo se pueden validar los límites?
+ | 27/11/2025
+ | Traslado a otro CDC
+Se encuentra dentro del alcance del CDC de facturación
+ | Se encuentra dentro del alcance del CDC de facturación
+Plantilla_Modelo To_Be_Facturación Versión 002.docx
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+En contingencia se podrían “enviar datos” al SFA/Dos Pinos obsoletos. Debe haber un tiempo máximo de tolerancia? Se debería bloquear la venta?
+ | 27/11/2025
+ | Completado
+ | R/ Sin bloquear nada; enviar un indicador de que la factura se hizo en contingencia
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+Queda alguna bitácora cuando LDCOM entra en contingencia?
+ | 27/11/2025
+ | Completado
+ | R/ bitácora de apagones no. las facturas si indican si fueron hechas online.
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+ Auth
+    • La autenticación se maneja con Entra (Active Directory)?
+La autorización se manejará:
+
+Opción A: desarrollo a la medida: mucho más dev y esfuerzo
+
+EntraID (Active directory): roles más sencillos, pero governanza la tiene infra
+
+Interface con LDCOM/Dos Pinos: implicaría desarrollo para obtener roles de un usuario por API
+
+ | 27/11/2025
+ | Completado
+ | R/: La autenticación seria por medio de active directory, la seguridad seria administrada por el active directory.
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+Almacenamiento
+Lleva una DB individual para la gestión de planes/bitácora?
+
+Algún requerimiento técnico sobre la DB, límites, tamaño de historial, etc?
+
+ | 27/11/2025
+ | Completado
+ | Re_ Proyecto AV Retail _ Revisar tareas de requerimientos DP & LD 19-01-26.msg
+En sesión 20/01/2026 se aclaró que es requerida la gestión de una base de datos separada a la de LDCOM, siendo que no existen temas de límites de tamaño ya q, ya queue no se visualiza un crecimiento considerable de la BD. La base de datos es requerido que se almacene en el Azure de Logical Data.
+** Con este punto se debe validar con Yen y don Ale el manejo administrativo para las entregas, esto porque ellos quieren el ambiente en nuestro azure pero los fuentes en su devops por lo que al momento de realizar despliegues esto podria tener un bloqueo por los permisos a nuestro azure.
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+API-App
+¿Qué tipo de app debe ser? Web/Mobile/Winform?
+R/ Web. Dos Pinos va a compartir las especificaciones sobre qué debe llevar el módulo.
+
+
+¿Qué especificaciones técnicas requiere el módulo?
+
+¿Debe llenar unit tests?
+
+¿Debe llevar algún versionamiento?
+
+¿Algún requerimiento del API? Ej., microservicios, monolítico, serverless, etc.
+
+¿Qué tipo de logs se espera o desea guardar?
+
+¿Qué tanto se espera que evolucione el módulo? (para dimensionar)
+
+¿En cuál ambiente va a existir el módulo? (azure de LD o Dos Pinos)
+
+¿Cuántos ambientes se necesitan?
+
+ | 27/11/2025
+ | 2,3,4,5,6,7,8,9 = Completado
+
+ | R/ Web. Dos Pinos va a compartir las especificaciones sobre qué debe llevar el módulo.
+Re_ Proyecto AV Retail _ Revisar tareas de requerimientos DP & LD 19-01-26.msg
+
+Respuestas:
+Se debe desarrollar un aplicativo web
+
+Tomar en consideración el documento de requerimiento técnicos de desarrollo de Dos Pinos
+
+Si debe llevar pruebas unitarias
+
+Si debe llevar versionamiento en DevOps Dos Pinos
+
+Debe programarse con microservicios, serverless (NO Azure functions).
+Es requerido que se realice el desarrollo con Microservicios- serveless con contenedores.
+
+
+Se requiere bitácoras básicas: usuario y fecha y hora de registro y de cambio, valor anterior y valor actual.
+
+Por el momento NO se espera mayores cambios
+
+Azure Dos Pinos
+
+Tres ambientes Desarrollo (DEVOPS), Calidad y Producción 
+
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.msg
+ | 
+Interfaces
+Cuál es el alcance de:
+LDCOM
+
+El módulo externo
+
+Dos Pinos
+
+
+¿Quién tiene la fuente de la verdad? ¿Quién hace las reglas? ¿Qué pasa si el desarrollo de planes de financiamiento se cae?
+
+¿El desarrollo va a trabajar de forma aislada o debe interfazar algún dato con el SFA? ¿Qué alcance tendría dichas interfaces?
+
+Se ha hablado de que las ventas van a consolidarse. ¿El envío al SFA de cada venta también será en batch o será individual por factura?
+
+¿El nuevo desarrollo debe conectarse al monitor 360?
+
+¿Con qué frecuencia deben sincronizarse los límites de crédito (monto habilitado), estado de usuario (banca/no banca)?
+
+ | 27/11/2025
+ | Completado
+ | Re_ Proyecto AV Retail _ Revisar tareas de requerimientos DP & LD 19-01-26.msg
+Este módulo deberá integrarse por medio de APIs con LDCom en el momento de registrar una factura financiada a un asociado (ver gráfico y leer requerimiento)
+La fuente de la verdad la tiene este módulo de Planes de Financiamiento. Si se cae se activa el plan de contingencia trabajando en Local como lo hace LDCom.
+
+El desarrollo va a trabajar interconectado únicamente con LDCom
+
+Esta pregunta NO aplica para este desarrollo
+
+NO, no debe conectarse al monitor 360
+
+No aplica.
+
+ Con qué frecuencia deben sincronizarse los límites de crédito (monto habilitado), estado de usuario (banca/no banca)?
+ Sobre esta duda se expuso en sesión por parte de cada que la frecuencia de sincronización de la información seria definida más adelante.
+ | LD - Financiamiento_ Preguntas técnicas 27-11-25.
+msg
+ | 
+Durante la sesión del 20/01 Kattia se dejo la tarea de verificar si hay algún archivo técnico adicional que LD deba tener para realizar el envío de este.
+ | 20-01-25
+ | Pendiente
+ |  |  | 
+Al revisar los CDC, se menciona la funcionalidad de “consultar y modificar clientes en un plan”; sin embargo, los clientes referenciados corresponden únicamente a Banca / No Banca.
+¿Podrían confirmarnos si se deben incluir clientes específicos dentro del plan o si únicamente se debe indicar a cuál de los dos tipos de cliente (Banca o No Banca) aplica el plan?
+ | 22/01/2026
+ | Pendiente
+ |  |  | 
+Adicionalmente, tenemos una consulta respecto a la definición del plazo al momento de crear el plan. Entendemos como referencia general un rango de 1 a 52 semanas; no obstante, en los CDC se muestran ejemplos donde se habla de planes con plazos de 1 a 4 semanas, 1 a 2 semanas, entre otros. En este contexto, nos gustaría confirmar cuál es el comportamiento esperado al crear el plan.
+                        a. Definir un plazo máximo (por ejemplo, 4 semanas), permitiendo que el cliente elija en la venta entre 1, 2, 3 o 4 semanas
+                        b. Definir un rango de plazo (por ejemplo, de 2 a 4 semanas), permitiendo que el cliente elija entre 2, 3 o 4 semanas.
+                        c. Definir opciones de plazo limitadas (por ejemplo, 2, 4 y 6 semanas), para que el cliente seleccione únicamente entre esas opciones al momento de la venta.
+ | 22/01/2026
+ | Pendiente
+ |  |  | 
+PROPUESTA DE SOLUCIÓN
+OBJETIVO
+Implementar una funcionalidad que permita la administración centralizada de los tipos de crédito, incluyendo tasas, plazos, artículos asociados y condiciones aplicables por tipo de cliente, asegurando su correcta integración con LDCOM y el proceso de facturación.
+Actualización de Oferta
+Fecha: 19/02/2026 v2
+Ajustes de redacción y referencias
+Reemplazar Planes de Financiamiento por Tipos de Crédito
+
+Correcciones de redacción
+
+Se mejoran y aclaran descripciones y consideraciones
+
+Nuevos Cambios
+PROPUESTA DE SOLUCIÓN (Módulo Nuevo + LDCOM)
+SITUACIÓN ACTUAL
+Actualmente, Dos Pinos administra los Tipos de Crédito mediante líneas de crédito onfiguradas en SAP para los asociados Estas líneas definen los artículos autorizados, tasas de interés, plazos y restricciones de uso según la clasificación del cliente (Banca de Desarrollo o No Banca).
+ Sin embargo, no existe un módulo unificado que permita la administración integral de los Tipos de Crédito, ni dispone de mecanismos formales de bitácoras, reportería o validaciones avanzadas en el punto de venta (POS).
+ Esto limita el control operativo y la trazabilidad, y genera la necesidad de un desarrollo externo que centralice la información y se integre con LDCOM para soportar la facturación financiada de manera consistente.
+ Por lo que requiere un desarrollo complementario que centralice la configuración y administración de los Tipos de Crédito, y que se integre con LDCOM para soportar de manera consistente y controlada la facturación financiada.
+GAPS CONTRATO INCLUIDOS EN ESTA PROPUESTA
+1. GAPS asociados al Contrato
+Tipo
+ | Id
+ | Proyecto CT
+ | CDC
+ | 
+GAP Contrato
+ | 58
+ | Cotizar contar con la forma de pago de financiamientos hacia nuestros Asociados y empleados de acuerdo a la hoja ""Forma Pago Finan. Inter"
+ | Modelo To_Be_Financiamiento Versión 002
+ | 
+2. Nuevas Necesidades identificadas
+Tipo
+ | Proyecto CT
+ | CDC
+ | 
+GAP Nuevo
+ | Desarrollo a la medida de una plataforma que permita la gestión de los Tipos de Crédito
+API Tipos de Crédito
+
+Creación de un nuevo mantenimiento dentro del nuevo módulo el cual permita la definición de Tipos de Crédito
+
+Reportes
+Reporte Tipos de Crédito
+
+Bitácora de Cambios de Tipos de Crédito
+
+
+ | Modelo To_Be_Financiamiento Versión 002
+ | 
+GAP Nuevo
+ | Reporte de Facturación por Tipos de Crédito.
+ | Modelo To_Be_Financiamiento Versión 002
+ | 
+PROPUESTA DE SOLUCIÓN PLATAFORMA DE ADMINISTRACIÓN DE TIPOS DE CRÉDITO.
+Módulo Tipos de Crédito
+Ruta: Por definir
+Cambio 1. Mantenimiento Tipos de Crédito
+ | 
+Módulo Tipos de Crédito: se requiere crear un nuevo módulo que permita la gestión y administración de Tipos de Crédito. Este módulo contemplará las siguientes funcionalidades:
+Autentificación: permitirá validar la identidad del usuario mediante credenciales autorizadas, garantizando el acceso seguro al sistema.
+
+
+Mantenimiento de Tipos de Crédito: permitirá únicamente la consulta de Tipos de Crédito (el origen de esta información proviene de la interfaz correspondiente de Dos Pinos).
+Cada Tipo de Crédito podrá contar con la siguiente información:
+Id Tipo de Crédito.
+
+Descripción Tipo de Crédito
+
+Tasa de interés.
+
+Plazo (en semanas): Se manejará un conjunto de plazos posibles por cada plan (tipo de crédito); el plazo no será abierto ni funcionará como un tope máximo.
+
+Aplica para:
+Banca para Desarrollo
+
+No Banca para Desarrollo
+
+Ambos
+
+Cliente específico
+
+
+Vigencia
+
+Fecha Inicio
+
+Fecha Fin
+
+Estado
+
+
+
+Mantenimiento Artículos: Esta funcionalidad permitirá la administración de los artículos asociados a cada Tipo de Crédito considerando lo siguiente:
+Un material podrá estar asociado a uno o más Tipos de Créditos.
+
+Un plan podrá tener uno, varios o ningún artículo asociado.
+
+
+
+Clientes: Esta funcionalidad permitirá la administración de los clientes asociados a cada Tipo de Crédito, considerando el parámetro denominado “Aplica para”.
+El comportamiento será el siguiente:
+Banca: el plan aplicará a todos los clientes clasificados como banca.
+
+No banca: el plan aplicará a todos los clientes clasificados como no banca.
+
+Ambos: el plan aplicará a todos los clientes, sin distinción de clasificación.
+
+Cliente específico: el sistema permitirá asociar un cliente puntual por Tipo de Crédito; en este caso, la selección de clientes se validará contra el valor configurado en “Aplica para”.
+
+
+ | 
+API
+Ruta: Por definir
+Cambio 2. Crear API Tipos de Crédito
+ | 
+API: Se requiere crear un API REST que centralice la gestión y consulta de los Tipos de Crédito, clientes y sus artículos asociados. Esta API incluirá el desarrollo de nuevos endpoints que permitirán:
+Auth: Endpoint que permite la autenticación y control de acceso a la información.
+
+Endpoint Planes: Permite la consulta de los Tipos de Crédito disponibles.
+
+Endpoint Artículos: Permite la consulta de los artículos asociados a los Tipos de Crédito disponibles.
+
+Endpoint Clientes: Permite la consulta de los clientes asociados a los Tipos de Crédito disponibles.
+
+
+
+Sincronización: Se considera la implementación de mecanismos de sincronización periódica de la información relevante hacia LDCOM, garantizando la consistencia de datos entre los sistemas.
+
+ | 
+API
+Ruta: Por definir
+Cambio 3. API – Bitácora
+ | 
+Bitácora: Se requiere incorporar una bitácora de comunicación del API REST que permita registrar las interacciones entre sistemas, incluyendo las solicitudes y respuestas asociadas a los procesos de autenticación, consulta de Tipos de Crédito, Clientes y Artículos.
+La bitácora deberá almacenar información como endpoint invocado, fecha y hora, resultado de la operación y origen de la solicitud, con el objetivo de facilitar la trazabilidad, el diagnóstico de errores y el monitoreo de la integración.
+
+ | 
+Reportes
+Ruta: Por definir
+Cambio 4. Reporte Tipos de Crédito
+ | 
+Reporte tipos de crédito: Se requiere incluir un nuevo reporte que permita consultar y analizar la información de los Tipos de Crédito, el cual deberá incluir los siguientes datos:
+Filtro:
+Aplica para:
+Banca para Desarrollo
+
+No Banca para Desarrollo
+
+Ambos
+
+Cliente específico 
+
+
+
+Detalle
+Id Tipo de Crédito: corresponde al identificador del Tipo de Crédito
+
+Descripción Tipo de Crédito: Nombre o descripción del Tipo de Crédito.
+
+Tipo: Condición o regla de aplicación del Tipo de Crédito (Banca, No Banca, Ambos, Cliente específico)
+
+Tasa de Interés: Porcentaje de interés aplicado al Tipo de Crédito.
+
+Plazo (en semanas): Duración del Tipo de Crédito expresada en semanas.
+
+Fecha Inicio: Fecha de inicio de vigencia del Tipo de Crédito.
+
+Fecha Fin: Fecha de fin de vigencia del Tipo de Crédito.
+
+Id Cliente: Identificador del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+Nombre Cliente: Nombre del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+10.  Id Artículo: Identificador del artículo asociado al Tipo de Crédito.
+11.  Descripción Artículo: Descripción del artículo asociado al Tipo de Crédito.
+
+Formato: Libro de Excel (.xlsx)
+
+
+ | 
+Reportes
+Ruta: Por definir
+Cambio 5. Bitácora de Cambios Planes Tipos de Crédito
+ | 
+Bitácora de Cambios Planes: Se requiere incluir un nuevo reporte que permita consultar y analizar la información de los Tipos de Crédito, el cual deberá incluir los siguientes datos:
+Filtro:
+Rango de fechas
+
+Tipo Acción
+
+
+Detalle
+Id Tipo de Crédito: corresponde al identificador del Tipo de Crédito.
+
+Descripción Tipo de Crédito: Nombre o descripción del Tipo de Crédito.
+
+Tipo: Condición o regla de aplicación del plan (Banca, No Banca, Ambos, Cliente específico)
+
+Id Artículo: Identificador del artículo asociado al Tipo de Crédito.
+
+Descripción Artículo: Descripción del artículo asociado al Tipo de Crédito.
+
+Id Cliente: Identificador del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+Nombre Cliente: Nombre del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+Usuario Creación: Usuario que creó el registro.
+
+Fecha de Creación: Fecha y hora de creación.
+
+10.  Usuario Modificación: Usuario que realizó la última modificación.
+11.  Fecha de Modificación: Fecha y hora de la modificación.
+12.  Tipo de Modificación: Acción registrada en la bitácora (creación, modificación o eliminación).
+
+
+Formato: Libro de Excel (.xlsx)
+
+
+ | 
+PROPUESTA DE SOLUCIÓN FUNCIONALIDAD TIPOS DE CRÉDITO EN LDCOM
+API
+Ruta: Por definir
+Cambio 6. Invocación API tipos de crédito
+ | 
+Configuración: Se requiere realizar una modificación a nivel de LDCOM a fin de que realice la invocación del nuevo API para el consumo de la información de los Tipos de Crédito y almacene dicha información para su posterior utilización en los procesos de facturación. En donde se podrá:
+Integración API: Se desarrollará una integración mediante servicios REST que permitirá:
+Obtener la lista de Tipos de Créditos vigentes.
+
+Obtener la lista de artículos asociados a cada Tipo de Crédito.
+
+Obtener la lista de clientes asociados a cada Tipo de Crédito.
+
+Obtener tasas, plazos e información del cliente (Banca/No Banca, Ambos, Clientes específicos).
+
+El consumo se realizará siguiendo los lineamientos del cliente en cuanto a seguridad, autorizaciones y manejo de token.
+
+
+
+ | 
+Base de Datos LDCOM
+Ruta: Por definir
+Cambio 7. Almacenamiento tipos de crédito
+ | 
+Base de Datos: Se requiere incluir en la  Base de Datos de LDCOM nuevas estructuras que permitan:
+Almacenar la información de los Tipos de Crédito, de forma que se habiliten consultas eficientes durante los procesos de facturación y preventa.
+
+Registrar los artículos asociados a cada Tipo de Crédito.
+
+Mantener la fecha y hora de la última sincronización de la información proveniente de sistemas externos.
+
+Garantizar la consistencia entre la información externa sincronizada y los datos utilizados por los módulos operativos de LDCOM.
+
+Esta arquitectura permitirá que LDCOM continúe operando aun cuando el API externo no esté disponible temporalmente, utilizando la información sincronizada localmente.
+
+
+ | 
+Site Admin
+Ruta: Catálogo - Clientes- Cliente
+Cambio 8. Límites de Tipos de Crédito y Crédito del Cliente
+ | 
+Límites de Tipos de Crédito: Se requiere incluir dos nuevos campos en el mantenimiento de clientes que permitirán la visualización de información financiera relevante, incluyendo el límite de crédito y el límite de Tipo de Crédito del cliente. Estos campos serán de consulta únicamente, sin posibilidad de edición, y estarán disponibles para apoyar los procesos operativos y de validación.
+
+ | 
+Site Admin
+Ruta: Catálogo - Clientes- Cliente
+Cambio 9. Clasificación Cliente Banca / No Banca
+ | 
+Clasificación: Se requiere incluir nuevos parámetros de categorización de clientes que permitirá clasificar a cada cliente como banca para desarrollo, no banca para desarrollo o ambos. Esta clasificación será utilizada por el sistema para la aplicación de reglas y validaciones asociadas a los Tipos de Crédito.
+
+ | 
+Site Admin
+Ruta: Catálogo - Empresa - Ventas - Subdocumentos
+Cambio 10. Indicadores Subdocumentos 
+ | 
+Subdocumentos: Creación de un nuevo indicador en los subdocumentos de crédito, que permitirá identificar y diferenciar los créditos generados mediante Tipos de Crédito. El indicador permitirá:
+
+Clasificar el documento como Crédito por Financiamiento.
+Aplicar reglas de negocio específicas según el Tipo de Crédito
+
+Habilitar el manejo de información asociada a tasas, plazos, cuotas.
+
+
+ | 
+Preventa
+Ruta: Punto de Venta 
+Cambio 11. Validación de Tipos de Crédito
+ | 
+Validación: Se requiere modificar el proceso de facturación a fin de validar, que al seleccionar un documento de Tipo de Crédito, si este corresponde a un subdocumento financiamiento (Tipo de Crédito), aplicando reglas y validaciones especificas definidas para este tipo de transacción.
+
+Consideraciones:
+El sistema deberá validar el límite de crédito del cliente antes del ingreso de los artículos a la factura.
+
+Cuando un Tipo de Crédito esté configurado para un cliente específico, este solo se mostrará para dicho cliente, independientemente de su clasificación como banca o no banca.
+
+Cada factura podrá estar asociada únicamente a un Tipo de Crédito de financiamiento.
+No se permitirá la combinación de distintos Tipos de Crédito dentro de una misma transacción.
+
+
+Para que un Tipo de Crédito se muestre como disponible, todos los artículos del documento deberán pertenecer al mismo Tipo de Crédito.
+
+El sistema validará que todos los artículos incluidos en la factura pertenezcan Tipos de Crédito seleccionado.
+Si existe una mezcla de artículos asociados a distintos Tipos de Crédito, el sistema no mostrará opciones de Tipos de Crédito disponibles.
+
+
+No se permitirá facturar con Tipos de Crédito artículos restringidos o libres.
+
+Los datos del los Tipos de Crédito (tasas, artículos asociados, plazos, estado activo/inactivo) se actualizarán al momento de abrir la caja.
+
+Al seleccionar Tipo de Crédito como forma de pago:
+No se permitirá la combinación con ninguna otra forma de pago.
+
+Será obligatoria la captura de la información del Tipo de Crédito, del asociado y de las condiciones aplicadas.
+
+
+La forma de pago Tipo de Crédito solo estará habilitada si el cliente cuenta con la condición correspondiente.
+
+La forma de pago Tipo de Crédito realizará un retiro automático en los procesos de retiro y/o cierre de caja.
+
+El sistema permitirá desactivar la forma de pago Tipo de Crédito desde el site administrativo.
+Si el cliente cuenta con la condición, pero la sucursal o la caja no, la opción no deberá mostrarse.
+
+Esta funcionalidad permitirá deshabilitar temporalmente el financiamiento.
+
+
+Se permitirá cambiar el tipo de documento de crédito a contado sin necesidad de reiniciar la factura.
+
+El sistema deberá recalcular automáticamente el documento considerando las nuevas condiciones.
+
+ | 
+Preventa
+Ruta: Preventa
+Cambio 12.  Pantalla Principal 
+ | 
+Modificar pantalla principal: Se requiere modificar la pantalla principal a fin de poder incorporar la nueva funcionalidad de Tipos de Crédito.
+
+ | 
+Preventa
+Ruta: por definir 
+Cambio 13.  Pantalla Simulador de Cuotas 
+ | 
+Simulador de Cuotas: Se requiere incluir una funcionalidad que permita visualizar el cálculo del Tipos de Crédito, considerando:
+Simulador de cuotas
+Tabla de amortización
+
+Cálculo de intereses
+Visualización del detalle por semana, incluyendo cuota, interés, saldo y semana de pago
+
+
+
+ | 
+Preventa
+Ruta: Preventa - FX Imprimir Documento - Imprimir
+Cambio 14.  Impresión de tiquetes de tipos de crédito 
+ | 
+Tiquete: Se requiere crear un nuevo tiquete que incluya la siguiente información:
+Encabezado
+Detalle de los artículos
+
+Tipos de Crédito
+Tipo de Crédito
+
+Plazo de financiamiento 
+
+
+
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta 
+Cambio 15. Validación de Tipos de Crédito
+ | 
+Validación: Se requiere modificar el proceso de facturación a fin de validar, que al seleccionar un documento de crédito, si este corresponde a un subdocumento financiamiento (Tipo de Crédito), aplicando reglas y validaciones especificas definidas para este tipo de transacción.
+Consideraciones:
+El sistema deberá validar el límite de crédito del cliente antes del ingreso de los artículos a la factura.
+
+Cuando un plan esté configurado para un cliente específico, este solo se mostrará para dicho cliente, independientemente de su clasificación como banca o no banca.
+
+Cada factura podrá estar asociada únicamente a un Tipo de Crédito.
+No se permitirá la combinación de distintos Tipos de Crédito dentro de una misma transacción.
+
+
+Para que un Tipo de Crédito se muestre como disponible, todos los artículos del documento deberán pertenecer al mismo Tipo de Crédito.
+
+El sistema validará que todos los artículos incluidos en la factura pertenezcan al Tipo de Crédito seleccionado.
+Si existe una mezcla de artículos asociados a distintos Tipos de Crédito, no se ofrecerá ningún Tipo de Crédito.
+
+
+No se permitirá facturar con financiamiento (Tipo de Crédito) artículos restringidos o libres.
+
+Los datos del Tipo de Crédito (tasas, artículos asociados, plazos, estado activo/inactivo) se actualizarán al momento de abrir la caja.
+
+Al seleccionar Tipo de Crédito como forma de pago:
+No se permitirá la combinación con ninguna otra forma de pago.
+
+Será obligatoria la captura de la información del Tipo de Crédito, del asociado y de las condiciones aplicadas.
+
+
+La forma de pago Tipo de Crédito solo estará habilitada si el cliente cuenta con la condición correspondiente.
+
+La forma de pago Tipo de Crédito realizará un retiro automático en los procesos de retiro y/o cierre de caja.
+
+El sistema permitirá desactivar la forma de pago Tipo de Crédito desde el site administrativo.
+Si el cliente cuenta con la condición, pero la sucursal o la caja no, la opción no deberá mostrarse.
+
+Esta funcionalidad permitirá deshabilitar temporalmente el financiamiento.
+
+
+Se permitirá cambiar el tipo de documento de crédito a contado sin necesidad de reiniciar la factura.
+
+El sistema deberá recalcular automáticamente el documento considerando las nuevas condiciones.
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta 
+Cambio 16.  Pantalla Principal 
+ | 
+Modificar pantalla principal: Se requiere modificar la pantalla principal a fin de poder incorporar la nueva funcionalidad de Tipos de Crédito.
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta 
+Cambio 17.  Pantalla Simulador de Cuotas 
+ | 
+Simulador de Cuotas: Se requiere incluir una funcionalidad que permita visualizar el cálculo del financiamiento, considerando:
+Simulador de cuotas
+Tabla de amortización 
+
+Cálculo de intereses
+Visualización del detalle por semana, incluyendo cuota, interés, saldo y semana de pago
+
+
+
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta 
+Cambio 18.  Impresión de tiquetes de tipos de crédito 
+ | 
+Tiquete: Se requiere crear un nuevo tiquete que incluya la siguiente información:
+Encabezado
+Detalle de los artículos
+
+Tipos de Crédito 
+Tipo de Crédito
+
+Plazo de financiamento 
+
+
+
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta - FX Cargar Preventa
+Cambio 19.  Cargar Preventa
+ | 
+Cragar Preventa: Se requiere la creación de una nueva funcionalidad que permita obtener la información del Tipo de Crédito asociado a la preventa, con el fin de visualizar dicha información en el punto de venta y, a partir de ella, permitir la continuidad del proceso de facturación.
+
+ | 
+Punto de Venta
+Ruta: Punto de Venta - Devoluciones 
+Cambio 20.  Devoluciones Facturas con Tipos de Crédito
+ | 
+Devoluciones: Se requiere extender la funcionalidad de devoluciones para que el sistema acepte facturas con Tipo de Crédito.
+El cambio permitirá registrar correctamente las devoluciones asociadas a facturas financiadas y reflejar dicha condición en la impresión del tiquete de devolución, asegurando consistencia con la información del Tipo de Crédito aplicado.
+
+ | 
+Reportes
+Site Admin 
+Ruta: por definir
+Cambio 21. Reporte de Facturación por Tipo de Crédito
+ | 
+Reporte Tipos de Crédito: Se requiere incluir un nuevo reporte que permita consultar, analizar y consolidar todas las facturas generadas utilizando un Tipo de Crédito el cual deberá incluir los siguientes datos:
+Filtro:
+Sucursal
+
+Plan
+
+Estado
+
+Rango de fechas
+
+
+Detalle
+Id Sucursal: Identificador de la sucursal.
+
+Nombre Sucursal: Nombre de la sucursal.
+
+Caja: Caja donde se realizó la facturación.
+
+Id Cajero: Identificador del cajero.
+
+Cajero: Nombre del cajero.
+
+Fecha de Factura: Fecha de emisión de la factura.
+
+Número de Factura: Número único de la factura.
+
+Id Cliente: Identificador del cliente.
+
+Nombre del Cliente: Nombre del cliente.
+
+Id Tipo de Crédito: corresponde al identificador del Tipo de Crédito.
+
+Descripción Tipo de Crédito: Nombre o descripción del Tipo de Crédito.
+
+Tasa de Interés: Tasa de interés aplicada.
+
+Plazo: Duración del Tipo de Crédito expresada en semanas.
+
+Monto Total Facturado: Monto total de la factura.
+
+
+Formato: Libro de Excel (.xlsx)
+
+
+ | 
+Supuestos y Restricciones
+Para el caso de LDCOM los Tipos de Crédito serán enviados completos mediante interfaz. LDCOM no contará con funcionalidades para crear ni editar Tipos de Crédito, limitándose únicamente a su consulta y utilización operativa.
+
+Se asume que la relación entre planes, artículos y clientes será administrable desde el nuevo Módulo de Tipos de Crédito, permitiendo asociar o desasociar artículos y clientes a los planes sincronizados desde está funcionalidad.
+
+El módulo contable y la gestión de cuentas por cobrar serán responsabilidad exclusiva del SFA.
+
+No se gestionan líneas de crédito asociadas a los Tipos de Crédito. En el proceso de facturación únicamente se referenciará el plan seleccionado y la tasa correspondiente.
+
+No se contempla la ejecución de aprobaciones financieras, validaciones crediticias adicionales ni el uso de formularios financieros relacionados con procesos internos.
+
+El SFA será el encargado de realizar los cálculos financieros definitivos, incluyendo:
+Intereses compuestos.
+
+Tablas de amortización.
+
+
+LDCOM realizará únicamente cálculos de simulación con fines visuales e informativos durante el proceso de facturación.
+Podrá presentarse un escenario en el cual el monto calculado en LDCOM difiera del monto calculado en el SFA.
+
+Estas diferencias serán gestionadas de forma administrativa, mediante procesos de revisión, pruebas y validación con el cliente, para identificar la causa de la variación.
+
+Los cálculos válidos y oficiales serán siempre los generados por el SFA.
+
+
+Los documentos viajarán por medio de una interfaz hacia el SFA, la cual será analizada en el proyecto de interfaces.
+
+Durante una facturación puede cambiarse los detalles/plazos/tasas de un plan, pero no entrarían en vigencia hasta que se sincronice localmente en el punto de venta.
+
+El nuevo módulo de Tipos de Crédito será un módulo externo a los sistemas de LDCOM, el cual será conectado por medio de API para la comunicación.
+
+La presente propuesta de solución no contempla cambios en el desarrollo distintos a los expresamente indicados. Cualquier modificación al alcance aquí descrito deberá ser sometida a un nuevo análisis y a la correspondiente evaluación de impacto para determinar las implicaciones de su inclusión. Bajo esta premisa, quedamos atentos a su validación, a fin de confirmar que el alcance definido refleja adecuadamente las expectativas actuales y poder avanzar con una ejecución debidamente alineada.
+
+ | 
+Temas por revisar Interno
+
+
+1
+d4295790-bdb7-4fe3-b4ad-a8381bbe5778
+incomplete
+Revisar con Yen y don Ale el tema del acceso de esta nueva aplicación
+
+
+2
+a3990b43-fed9-42d0-8fed-7bae1d93a6e4
+complete
+Validar si está aplicación tenga que llevar el logo de LD
+
+
+
+4
+cb01bb02-b77d-41b0-86a3-9052fedc3403
+complete
+Se deben incluir los logos de LD en el módulo de Financiamiento
+
+
+3
+35089313-e313-4b70-8e74-5f589b0d89b3
+incomplete
+Recordar cuando se vean interfaces que hay que incluir el envío de la información del API que comunica la aplicación nueva con el LDCOM
+
+
+Tiempos 
+Tiempos CO-696-0007 Planes de Financiamiento.xlsx
+Temas por revisar Interno
+ | 
+Revisar con Yen y don Ale el tema del acceso de esta nueva aplicación
+
+ | 
+Validar si está aplicación tenga que llevar el logo de LD
+
+ | 
+Recordar cuando se vean interfaces que hay que incluir el envío de la información del API que comunica la aplicación nueva con el LDCOM
+
+ | 

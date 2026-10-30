@@ -1,0 +1,528 @@
+[CDC] 8. Financiamiento
+notea0429e242592Este fue el documento utilizado durante los análisis de CDCs.
+
+Este fue el documento utilizado durante los análisis de CDCs.
+
+Objetivo general: Administrar planes de financiamiento con sus condiciones de pago, tasas de interés, plazos y materiales asociados por medio de un módulo externo. 
+Documento CDC: 7. Plantilla_Modelo To_Be_Financiamiento Versión 001
+Miro: https://miro.com/app/board/uXjVJtaJhsA=/?moveToWidget=3458764656587082303&cot=14 
+11falsenonelisttrueTemas abiertos
+Dos Pinos
+Otra sesión para ver temas técnicos de desarrollo 
+
+Fórmulas de cálculos de cuotas
+[DP 15-1-26]:  Para el calculo de esta cuota la formula utilizada es: Cuota=P*[i*(1+i)n]/[(1+i)n−1]]  
+P= es el monto a facturar o principal | i= es la tasa de interes anual (dividirla entre 52 semanas)
+
+En la página 12 y 13 del CDC se aclara Plantilla_Modelo To_Be_Financiamiento Versión 002.docx
+
+
+Revisar alcances de contingencia
+[DP 15-1-26]: Se encuentra dentro del alcance del CDC de facturación lantilla_Modelo To_Be_Facturación Versión 002.docx
+
+
+Revisar que se interfaza entre SFA-Módulo externo
+
+
+Detalle de reportes y filtros
+[DP 15-1-26] Reporte Plan de Financiamiento. Se requiere un único reporte de parametrización. Página 22 y 23 del CDC, 7. Plantilla_Modelo To_Be_Financiamiento Versión 002.docx
+
+
+LD
+Enviar preguntas abiertas (LD)
+
+Revisar si existe reporte de facturas en contingencia
+
+🎯 Objetivos
+Módulo para crear, modificar o inactivar planes de financiamiento.
+
+Elegir plazo y tasa de interés al facturar.
+
+Informar cuota semanal (simulador de cuotas) al momento de facturar.
+
+Controlar que cada material se facture según planes de financiamiento definidos.
+
+Enviar y consultar los planes desde LDCOM al SFA de Dos Pinos
+
+Bloquear combinaciones de materiales (restringidos / libres) y fuera de agrupaciones definidas.
+
+Bitácora y reportes de cambios y facturación sobre los planes creados
+
+Restringir acceso por usuarios.
+
+📜 GAPs asociados
+https://logicaldata.atlassian.net/wiki/spaces/DP/database/13860865?savedViewId=23600efd-e352-4a6e-9b5f-65d741ed722a📕 Contexto
+Actualidad
+Hoy se manejan los planes de financiamiento mediante “Líneas de crédito” en SAP (bajo el nombre Z_Planes_FI)
+
+Dichas líneas de crédito permiten:
+Asociar materiales a un plan
+
+Indicar la tasa/plazo que aplica
+
+Indicar que combinaciones están prohibidas
+
+
+Las ventas financiadas se reflejan como créditos separados en SFA y SIAG.
+
+Existen dos tipos de asociados, con tasas distintas
+Beneficiarios de Banca de Desarrollo
+
+No Banca
+
+
+Existen 2 tipos de materiales
+Generales: a cualquier plazo, tasa de interés por asociado
+
+Restringidos: plazo establecido, tasas especiales o tasa cero.
+
+
+Reglas de negocio
+Cada factura = 1 plan de financiamiento (no se pueden incluir materiales de agrupaciones/planes distintos).
+
+Material restringido → solo se vende en su plan.
+
+Tasa y plazo se definen por plan, no por usuario.
+
+Clientes Banca Desarrollo → tienen una tasa preferencial.
+
+Si no hay un plan válido → error de facturación.
+
+Toda modificación debe estar registrada y aprobada por Finanzas.
+
+:evergreen_tree:1f332🌲#C0B6F2Dudas (Dos Pinos): Conceptuales
+Las tasas y detalles los da por completo el SFA o se debe calcular algo manualmente en LDCOM?
+Esos detalles ya vienen del SFA? ej., para simular las cuotas como se calcula?
+
+R/ Los detalles de la tasa y rangos de plazo vienen del SFA, el plazo se elige en LDCOM y los cálculos se realizan en LDCOM
+
+
+Hay alguna implicación sobre “obras en proceso” y codigos 5000/6000?
+R/ “Obras en proceso” si podria ser distinto; ej., no llevar plazos
+
+Si el SFA lo permite, se puede facturar
+
+Se envía un indicador de condición de pago (o de “obra en proceso”)
+
+RETOMAR EN CDC DE OBRAS
+
+
+La clasificación de “banca/no banca” viene de datos maestros/SFA?
+R/ Si viene del SFA
+
+
+A qué se refieren con “Según haya sido calificado el asociado, un Ejecutivo de Servicios Financieros registrará el código de asociado (Deudor) en un “Plan de Financiamiento” o en otro” (pág. 17) ?
+R/ Se refiere a la categoría de Banca/No Banca, y es en el SFA
+
+
+Se crean planes distintos para “banca/no banca” o se especifica una tasa diferente para los beneficiarios de banca de desarrollo dentro del mismo plan?
+Solo varía la tasa de interés entre beneficiarios y no beneficiaros o algún otro dato?
+
+R/ Banca es un indicador del plan; puede variar otros detalles pero por el plan
+
+
+Los planes tienen fecha de vigencia? Debe haber una alerta o validación en el POS?
+R/ Si
+
+
+Hay alguna implicación sobre cambiar detalles de un plan cuando ya hay facturas creadas para dicho plan?
+Política de no modificar planes, solo crear(?)
+
+Se debe versionar los planes?
+
+R/ Si se pueden editar. No eliminar; inactivar
+
+
+Se menciona la funcionalidad de “consultar y modificar clientes en un plan”; sin embargo, los clientes referenciados corresponden únicamente a Banca / No Banca.
+¿Podrían confirmarnos si se deben incluir clientes específicos dentro del plan o si únicamente se debe indicar a cuál de los dos tipos de cliente (Banca o No Banca) aplica el plan?
+
+
+Adicionalmente, tenemos una consulta respecto a la definición del plazo al momento de crear el plan. Entendemos como referencia general un rango de 1 a 52 semanas; no obstante, en los CDC se muestran ejemplos donde se habla de planes con plazos de 1 a 4 semanas, 1 a 2 semanas, entre otros. En este contexto, nos gustaría confirmar cuál es el comportamiento esperado al crear el plan.
+Definir un plazo máximo (por ejemplo, 4 semanas), permitiendo que el cliente elija en la venta entre 1, 2, 3 o 4 semanas
+
+Definir un rango de plazo (por ejemplo, de 2 a 4 semanas), permitiendo que el cliente elija entre 2, 3 o 4 semanas.
+
+Definir opciones de plazo limitadas (por ejemplo, 2, 4 y 6 semanas), para que el cliente seleccione únicamente entre esas opciones al momento de la venta.
+
+
+Finalmente, tenemos una duda relacionada con la forma de agregar artículos al plan. En los CDC se menciona la selección por código; sin embargo, desde el análisis realizado con UX, quisiéramos confirmar qué tipo de filtros esperan que estén disponibles para la asociación de artículos al plan, considerando la necesidad de evitar la selección individual por artículos y entender cuáles clasificaciones del sistema LDCOM serían realmente requeridas.
+[LD] Se manejará a lo interno
+
+
+Módulo de Planes de Financiamiento
+Se debe crear un módulo externo a LDCOM con las siguientes funcionalidades:
+Catálogo de planes: código, nombre, tasa, rango de plazos (1–52 semanas), tipo cliente (banca/no banca), materiales asociados, estado (activo/inactivo)
+
+Asociación: 
+Cada plan vincula materiales restringidos (ninguno o múltiples).
+
+No se pueden asociar materiales a múltiples planes.
+
+Facilidad para buscar materiales por nombre, código, categoría, de forma masiva, etc.
+
+
+Bitácora de cambios (al crear, modificar o inactivan).
+
+Roles: 
+
+Rol/Permisos
+ | Crear planes de financiamiento con plazos y tasas de interés
+ | Consultar y modificar clientes en un plan
+ | Consultar planes desde el POS
+ | 
+Consultor de Cuenta por Cobrar
+ |  
+ |  
+ |  
+ | 
+Consultor Senior de Crédito Corporativo
+ |  
+ |  
+ |  
+ | 
+Ejecutivo de Servicios Financiero
+ |  
+ |  
+ |  
+ | 
+Vendedor
+ |  
+ |  
+ |  
+ | 
+Filtro por tipo de cliente (Banca / No Banca).
+
+Parámetro: indicador “restringido” (evita mezcla en factura).
+
+Detalles técnicos
+Contingencia
+Puedo utilizar planes sincronizados con más de N horas/días?
+R/ Sin restricción
+
+
+Si la interface está caída cómo se pueden validar los límites?
+R/ Pendiente (todo el flujo y limitantes de contingencia)
+
+
+En contingencia se podrían “enviar datos” al SFA/Dos Pinos obsoletos. Debe haber un tiempo máximo de tolerancia? Se debería bloquear la venta?
+R/ Sin bloquear nada; enviar un indicador de que la factura se hizo en contingencia
+
+
+Queda alguna bitácora cuando LDCOM entra en contingencia?
+R/ bitácora de apagones no. las facturas si indican si fueron hechas online.
+
+
+ 
+Auth
+La autenticación se maneja con Entra (Active Directory)?
+
+La autorización se manejará:
+Opción A: desarrollo a la medida: mucho más dev y esfuerzo
+
+EntraID (Active directory): roles más sencillos, pero governanza la tiene infra
+
+Interface con LDCOM/Dos Pinos: implicaría desarrollo para obtener roles de un usuario por API
+
+
+R/: La autenticación seria por medio de active directory, la seguridad seria administrada por el active directory.
+Almacenamiento
+Lleva una DB individual para la gestión de planes/bitácora?
+
+Algun requerimiento técnico sobre la DB, límites, tamaño de historial, etc?
+[LD 20-01-26]:  En sesión 20/01/2026 se aclaró que es requerida la gestión de una base de datos separada a la de LDCOM, siendo que no existen temas de límites de tamaño ya que no se visualiza un crecimiento considerable de la BD. La base de datos es requerido que se almacene en el Azure de Logical Data.
+Se compartió en sesión el stack de lenguajes de programación compartido por Dos Pinos y negocio se dejo el pendiente de verificar si hay alguna consideración técnica adicional. Stack_lenguajes_progamacion_DP 2.pptx
+
+
+R/ Pendiente de sesión para definir la arquitectura
+ [DP 15-1-26] R/Se esperaba una propuesta técnica de parte de LD, que ellos fueran los que propusieran la solución (requerimos una base de datos separada de la LD, pero dentro del mismo motor de BD de LD, revisar diseño que se presentó en la reunión con Temal)
+ 
+API-App
+¿Qué tipo de app debe ser? Web/Mobile/Winform?
+R/ Web. Dos Pinos va a compartir las especificaciones sobre qué debe llevar el módulo.
+
+[DP 15-1-26] R/Se debe desarrollar un aplicativo web
+
+
+¿Qué especificaciones técnicas requiere el módulo?
+[DP 15-1-26] Tomar en consideración el documento de requerimiento técnicos de desarrollo de Dos Pinos
+
+¿Debe llenar unit tests?
+[DP 15-1-26] R/ Si debe llevar pruebas unitarias
+
+
+¿Debe llevar algún versionamiento?
+[DP 15-1-26] R/ Si debe llevar versionamiento en DevOps Dos Pinos
+
+
+¿Algún requerimiento del API? Ej., microservicios, monolítico, serverless, etc.
+[DP 15-1-26] R/ Debe programarse con microservicios, serverless (NO Azure functions)
+
+
+
+¿Qué tipo de logs se espera o desea guardar?
+[DP 15-1-26] R/ Se requiere bitácoras básicas: usuario y fecha y hora de registro y de cambio, valor anterior y valor actual.
+
+
+¿Qué tanto se espera que evolucione el módulo? (para dimensionar)
+[DP 15-1-26] R/ Por el momento NO se espera mayores cambios
+
+
+  Respuesta: Pendiente de sesión con arquitectos 
+Infra
+¿En cuál ambiente va a existir el módulo? (azure de LD o Dos Pinos)
+[DP 15-1-26] R/ Azure DP
+
+
+¿Cuántos ambientes se necesitan? Respuesta: Pendiente de sesión arquictectura
+[DP 15-1-26] R/Tres ambientes Desarrollo, Calidad y Producción (DevOps)
+
+
+[LD]: Se aclaró en sesión del 20/Enero:
+1. Es requerido que se realice el desarrollo con Microservicios- serveless con contenedores.
+2. La seguridad se gestionaría por medio de Azure active directory
+3. La administración de los fuentes seria directamente en un Azure de Dos Pinos.
+
+Interfaces
+Cuál es el alcance de:
+LDCOM
+
+El módulo externo
+
+Dos Pinos
+
+[DP 15-1-26] R/Este módulo deberá integrarse por medio de APIs con LDCom en el momento de registrar una factura financiada a un asociado (ver gráfico y leer requerimiento)
+
+¿Quién tiene la fuente de la verdad? ¿Quién hace las reglas? ¿Qué pasa si el desarrollo de planes de financiamiento se cae?
+[DP 15-1-26] R/La fuente de la verdad la tiene este módulo de Planes de Financiamiento. Si se cae se activa el plan de contingencia trabajando en Local como lo hace LDCom.
+
+
+
+¿El desarrollo va a trabajar de forma aislada o debe interfazar algún dato con el SFA? 
+[DP 15-1-26] R/ El desarrollo va atrabajar interconectado únicamente con LDCom
+
+
+¿Qué alcance tendría dichas interfaces?
+
+Se ha hablado de que las ventas van a consolidarse. ¿El envío al SFA de cada venta también será en batch o será individual por factura?
+
+¿El nuevo desarrollo debe conectarse al monitor 360?
+[DP 15-1-26] R/NO, no debe conectarse al monitor 360
+
+
+¿Con qué frecuencia deben sincronizarse los límites de crédito (monto habilitado), estado de usuario (banca/no banca)?
+[DP 15-1-26] R/ No Aplica
+
+
+[LD]: Se aclaró en sesión del 20/Enero.
+ ¿Con qué frecuencia deben sincronizarse los límites de crédito (monto habilitado), estado de usuario (banca/no banca)?
+ Sobre esta duda se expuso en sesión por parte de cada que la frecuencia de sincronización de la información seria definida más adelante.
+
+
+note9b24b36f-49b2-4c00-ab29-c87dac2f05d4Esta funcionalidad requiere de análisis de UX para implementar la búsqueda de planes de manera efectiva
+
+Esta funcionalidad requiere de análisis de UX para implementar la búsqueda de planes de manera efectiva
+
+Simulador de cuotas
+Debe mostrarse la tabla de amortización cuando se selecciona el plan y plazo en semanas.
+Hay 2, el resumen y la tabla amplia.
+Resumen de cuotas
+Tabla de amortización
+Validaciones en POS
+Cuando se usa el módulo de Facturación de LDCOM se debe cumplir:
+Verificación automática: que el material seleccionado pertenezca al plan.
+
+Mostrar la tasa/plazo disponibles según cliente y plan.
+
+Simulación de cuota semanal (interés + amortización).
+
+Si se mezcla material restringido con libre: bloqueo con mensaje.
+
+Factura se marca con ID de plan y envía los datos a SFA.
+
+Datos a enviar a SFA
+ID Factura: Número único de la factura
+
+Cliente: Código de asociado
+
+Plan: Código del plan en SFA
+
+Tasa: % aplicable
+
+Plazo: Número de semanas
+
+Monto: Total de factura
+
+Fecha
+
+Tipo cliente: Banca / No Banca
+
+Tipo de factura: Venta, NC, o si es Obra en proceso (véase 14. Obras en proceso )
+
+:evergreen_tree:1f332🌲#C0B6F2Dudas (Dos Pinos)
+Manejo de errores si el código no existe tal cual en SFA, o si los detalles (tasa, plazo) no coinciden en SFA (ejemplo: al modificar un plan existente)
+Política de no modificar planes, solo crear(?)  Respuesta: Se abordará en sesión de contingencia, las facturas se deben incluir un indicador, diferencias que referencien a contingencia, se solicita que sea un C. Si se podrian crear o modificar planes, lo que no se podrian es eliminar planes solo inactivar planes.
+
+
+Datos de factura electrónica
+:evergreen_tree:1f332🌲#C0B6F2Dudas (Dos Pinos)
+Qué se envía en la factura electrónica? Respuesta: Se envia como una factura de crédito y se incluye el plazo 
+
+🪢 Interfaces
+Las interfaces están fuera del alcance de este proyecto. La integración y el detalle de estas interfaces se ve en X. Interfaces 
+Datos Maestros
+Los datos de los clientes ya incluyen la información del límite de crédito y si aplica para financiamiento
+:evergreen_tree:1f332🌲#C0B6F2Dudas (Dos Pinos)
+En LDCOM el monto disponible está en la información del cliente. Esto se mantendrá así (solucionándose en datos maestros) o se debe consultar en tiempo real? Respuesta: Se recibiria por medio de datos maestros, pendiente de definir en sesión de contingencia el manejo del limite de crédito cuando no hay conexión. 
+
+Transacciones
+Objetivo
+ | Origen
+ | Destino
+ | 
+Validación de límite de crédito (del plan de financiamiento)
+ | LDCOM
+ | Dos Pinos
+ | 
+Factura con plan de financiamiento
+ | LDCOM
+ | Dos Pinos
+ | 
+📈 Reportes
+Reporte
+ | Objetivo
+ | Columnas
+ | Lugar del reporte
+ | 
+Planes activos/inactivos
+ | Control de planes vigentes
+ | Código, nombre, estado, vigencia
+ | Se necesita exportar o con verlos en el monitor (del módulo a desarrollar) es suficiente? respuesta: Si son necesarios exportarlos.en el desarrollo a la medida
+ | 
+Materiales por plan
+ | Ver qué materiales aplican a cada plan
+ | Plan, material, descripción, tasa, plazo
+ | Se necesita exportar o con verlos en el monitor (del módulo a desarrollar) es suficiente? Respuesta: Si son necesarios exportarlos, este seria en LDCOM porque LDCOM es quien tiene las facturas
+ | 
+Facturas por plan
+ | Seguimiento operativo
+ | Plan, monto, cliente, sucursal, fecha
+ | Nuevo reporte en LDCOM Respuesta: Pendiente de definir por parte de Dos Pinos el formato del reporte, este reporte se crearía en el desarrollo a la medida.
+ | 
+Histórico de cambios
+ | Auditoría
+ | Usuario, fecha, acción, plan afectado
+ | Nuevo reporte en módulo a desarrollar Respuesta: Pendiente de Dos Pinos compartirnos el formato del reporte que requieren (campos), filtros
+ | 
+[DP 15-1-26]
+Reporte
+ | Brindar el detalle de los planes activos e inactivos 
+ | Código del Plan
+
+Nombre del Plan
+
+Materiales Asociados al plan
+
+Código del Material
+
+Tasa de interés del Plan
+
+Plazo del Plan
+
+Montos facturados por plan
+
+Lugar de Facturación
+
+Plan	
+
+Tasa
+
+Plazos	
+
+Materiales	
+
+Fecha de creación	Usuario	
+
+Fecha de modificación
+
+Tipo de modificación 
+
+Estado	
+
+Bitácoras
+
+ |  | 
+🚫 Fuera del alcance
+Suposiciones
+El módulo contable y cuentas por cobrar lo hace el SFA.
+
+No se manejan líneas de crédito para los planes, sino solo referenciar el plan y la tasa al facturar.
+
+No se realiza ninguna aprobación o formulario financiero de los procesos internos.
+
+El SFA se encarga de los cálculos de interés compuesto o tablas de amortización. Respuesta: LDCOM si hará cambios visualices en LDCOM, ya que se haran cálculos de intereses. Puede existir un escenario donde LDCOM cálculo una monto y en SFA se cálculo otro esto se hace administrativamente por medio de revisión y pruebas al cliente del motivo de la variación. En LDCOM el cálculo seria una simulación, los cálculos reales son hechos por el SFA.
+
+Durante una facturación puede cambiarse los detalles/plazos/tasas de un plan pero no entrarían en vigencia hasta que se sincronice localmente en el punto de venta.
+
+Cambios de otros proyectos
+N/A
+
+Fuera de contrato
+El GAP del contrato (56) es sobre la adaptación en LDCOM para elegir un plan de financiamiento en la factura, no para el desarrollo a la medida de un módulo externo, simulador de cuotas, etc.
+ 
+💪🏼 Cambios a implementar
+Catálogo de Planes
+Módulos: ⚡️ Desarrollo a la medida
+CRUD de planes de financiamiento con código, descripción, tasa, plazo, materiales, tipo de cliente y estado.
+
+Interface con Dos Pinos para obtener los tipos de cliente.
+
+Bitácora de cambios
+
+Criterios de aceptación
+Listá los criterios con los que este story se considera exitoso (evitar criterios redundantes).
+Facturación con planes
+Módulos: 💵 POS
+Elegir un plan de financiamiento que esté validado con los materiales ingresados en la factura.
+
+Simulador de cuota según el plan/tasa/plazo elegido.
+
+No permitir combinaciones indebidas.
+
+Validar la condición de Financiamiento del cliente para mostrar la forma de pago en el punto de venta.
+
+Criterios de aceptación
+No se puede incluir un material restringido o libre al facturar con un plan de financiamiento.
+
+Un plan solo se puede incluir si todos los items de la factura están asociados a dicho plan.
+
+Si se elige un plan de financiamiento y se agregan más items, se muestra una advertencia de que el plan se quitará. (validar el UX de esto)
+
+Solo se despliega la lista de planes de financiamiento disponibles según los materiales agregados.
+Hay un indicador por plan que muestre que no está disponible por los items agregados, parcialmente deshabilitado (porque alguno si permite pero no todos) y los que si están disponibles.
+
+
+Los datos de un plan (tasas, materiales, plazos, activo/inactivo) se actualizan hasta abrir la caja.
+
+La forma de pago Financiamiento no se puede combinar con ninguna otra forma.
+
+La forma de pago Financiamiento solo sale habilitada si el cliente tiene la condición.
+
+La forma de pago Financiamiento hace un retiro automático (en retiros/cierre de caja).
+
+Se puede desactivar Financiamiento como formas de pago desde el site administrativo. Si el cliente tiene la condición, pero la sucursal/caja no, no aparece la opción (esto será útil para desactivarlo mientras se implementa toda la funcionalidad).
+
+En contingencia no se valida el límite de crédito para asociar un plan.
+
+Consultar por los criterios y alcance de funcionalidad con UX y diseño
+Reportes de planes
+Módulos: 🛠️ Site admin
+Reporte de facturas por plan de financiamiento
+
+note68e80d92-1e9f-4954-9460-b41888cbbf91Confirmar qué reportes se quieren
+
+Confirmar qué reportes se quieren
+
+Criterios de aceptación
+Listá los criterios con los que este story se consideran exitosos (evitar criterios redundantes).
+Miro
+https://miro.com/app/board/uXjVJtaJhsA=/?moveToWidget=3458764656587082303&cot=14

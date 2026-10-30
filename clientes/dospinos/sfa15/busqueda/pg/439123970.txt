@@ -1,0 +1,1006 @@
+Inventario de casos de prueba · Review 3
+189 casos de prueba, agrupados por proyecto y módulo. Cada caso aparece una sola vez, con su resultado más concluyente. Forma parte del Informe QA .
+CO-696-0009 · Manejo de Dinámicas Comerciales (189 casos)
+(raíz del plan) (15 casos)
+Caso
+ | Escenario
+ | Grupo
+ | Resultado
+ | 
+1058
+ | Crear premiación con todos los campos válidos
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1059
+ | Crear premiación sin campos obligatorios
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1060
+ | Crear premiación con monto mínimo en 0 o negativo
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1061
+ | Crear premiación con fecha fin menor a fecha inicio
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1062
+ | Asociar un artículo a más de una premiación simultánea
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1063
+ | Verificar que el ID no es editable tras la creación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1064
+ | Editar todos los campos permitidos de una premiación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1065
+ | Inactivar una premiación vigente
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1066
+ | Crear premiación con vigencia de un solo día (fecha inicio = fecha fin)
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1067
+ | Crear premiación con cantidad máxima de premios igual a 0
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1068
+ | Crear premiación con nombre duplicado de una existente
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1069
+ | Reactivar una premiación previamente inactivada
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1070
+ | Editar una premiación con vigencia activa en curso
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1071
+ | Verificar que las premiaciones aplican a nivel empresa (todas las sucursales activas)
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1072
+ | Verificar que todos los campos (excepto ID) son editables sin restricción adicional
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+Base de Datos: Consultas de ayuda (1 caso)
+Caso
+ | Escenario
+ | Grupo
+ | Resultado
+ | 
+1208
+ | Consultas Bonificaciones
+ | Consultas
+ | Validado en pruebas manualesBlue
+ | 
+POS (53 casos)
+Caso
+ | Escenario
+ | Grupo
+ | Resultado
+ | 
+1038
+ | Factura cumple todas las condiciones de premiación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1039
+ | Factura no alcanza el monto mínimo requerido
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1040
+ | Factura no incluye artículos participantes
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1041
+ | Factura fuera del rango de vigencia de la premiación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1042
+ | Cliente no corresponde al tipo configurado en la premiación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1043
+ | Verificar contenido de la pantalla de ganador
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1044
+ | Verificar generación del tiquete de premiación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1045
+ | Premiación queda registrada y asociada a la factura
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1046
+ | Se respeta la cantidad máxima de premios configurada
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1047
+ | E2E: Configurar premiación en Site Admin y validar en POS
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1048
+ | Dos premiaciones activas simultáneas aplicables — el sistema aplica solo una
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1049
+ | Factura anulada después de otorgar premiación — verificar conteo de premios
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1050
+ | Mismo cliente gana dentro del período de frecuencia configurado
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1051
+ | Caja operando en modo fuera de línea — la premiación no aplica
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1052
+ | Factura con artículos mixtos — participantes y no participantes — que supera monto mínimo
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1053
+ | Factura con cliente sin tipo definido (consumidor final) — la premiación no aplica
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1054
+ | Premiación con cantidad máxima agotada — verificar estado en Site Admin
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1055
+ | Pantalla de ganador aparece únicamente al concluir el proceso de facturación
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1056
+ | El sorteo de premiación usa el consolidado a nivel empresa (múltiples sucursales y cajas)
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1057
+ | Premio otorgado queda disponible como forma de pago en factura futura del cliente
+ | —
+ | Validado en pruebas manualesBlue
+ | 
+1176
+ | Aplicar combo válido en POS — flujo exitoso completo
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1177
+ | El código del combo no es visible en la factura ni en el tiquete impreso
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1178
+ | Combo fuera de vigencia no aplica en POS
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1179
+ | Combo para sucursal no configurada no aplica en POS
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1180
+ | Combo no aplica en día/horario no configurado
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1181
+ | Combo no aplica con cantidad de artículos insuficiente
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1182
+ | Impedir modificación manual de precios/descuentos de artículos del combo
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1183
+ | Descuento del combo tiene prioridad sobre descuento del artículo
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1184
+ | Promoción de grupo tiene prioridad sobre combo (Supuesto S1a)
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1185
+ | Descuento manual tiene prioridad sobre descuento del combo (Supuesto S2)
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1186
+ | Tiquete de compra muestra artículos del combo con sus identificadores individuales
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1187
+ | Combo aplica en POS en modo fuera de línea — Contingencia (Cambio 21)
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1188
+ | E2E: Configurar combo en Site Admin y validar en POS y reporte
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+947
+ | Factura cumple todas las condiciones de premiación
+ | Premiaciones
+ | AprobadoGreen
+ | 
+948
+ | Factura no alcanza el monto mínimo requerido
+ | Premiaciones
+ | AprobadoGreen
+ | 
+949
+ | Factura no incluye artículos participantes
+ | Premiaciones
+ | AprobadoGreen
+ | 
+950
+ | Factura fuera del rango de vigencia de la premiación
+ | Premiaciones
+ | AprobadoGreen
+ | 
+951
+ | Cliente no corresponde al tipo configurado en la premiación
+ | Premiaciones
+ | AprobadoGreen
+ | 
+952
+ | Verificar contenido de la pantalla de ganador
+ | Premiaciones
+ | AprobadoGreen
+ | 
+953
+ | Verificar generación del tiquete de premiación
+ | Premiaciones
+ | AprobadoGreen
+ | 
+954
+ | Premiación queda registrada y asociada a la factura
+ | Premiaciones
+ | AprobadoGreen
+ | 
+955
+ | Se respeta la cantidad máxima de premios configurada
+ | Premiaciones
+ | AprobadoGreen
+ | 
+956
+ | E2E: Configurar premiación en Site Admin y validar en POS
+ | Premiaciones
+ | AprobadoGreen
+ | 
+1018
+ | Dos premiaciones activas simultáneas aplicables — el sistema aplica solo una
+ | Premiaciones
+ | No aplica
+ | 
+1019
+ | Factura anulada después de otorgar premiación — verificar conteo de premios
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1020
+ | Mismo cliente gana dentro del período de frecuencia configurado
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1021
+ | Caja operando en modo fuera de línea — la premiación no aplica
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1022
+ | Factura con artículos mixtos — participantes y no participantes — que supera monto mínimo
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1023
+ | Factura con cliente sin tipo definido (consumidor final) — la premiación no aplica
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1024
+ | Premiación con cantidad máxima agotada — verificar estado en Site Admin
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1025
+ | Pantalla de ganador aparece únicamente al concluir el proceso de facturación
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1026
+ | El sorteo de premiación usa el consolidado a nivel empresa (múltiples sucursales y cajas)
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+1027
+ | Premio otorgado queda disponible como forma de pago en factura futura del cliente
+ | Premiaciones
+ | RE-TESTPurpletrue
+ | 
+POS - PRE (14 casos)
+Caso
+ | Escenario
+ | Grupo
+ | Resultado
+ | 
+1121
+ | CP-BON-026 – Aplicación automática de bonificación vigente en Facturación POS
+ | Facturación › Funcionamiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1122
+ | CP-BON-027 – Carga de preventa en Facturación: revalidación cuando la bonificación ya venció
+ | Facturación › Funcionamiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1123
+ | CP-BON-028 – Carga de preventa en Facturación: revalidación cuando las condiciones aún están vigentes
+ | Facturación › Funcionamiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1124
+ | CP-BON-029 – Factura con cliente exonerado y bonificación: separación en dos facturas
+ | Facturación › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1125
+ | CP-BON-030 – Bonificación fuera de vigencia no aplica en Facturación
+ | Facturación › Funcionamiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1126
+ | CP-BON-031 – Solo aplica la bonificación de mayor prioridad según jerarquía en Facturación
+ | Facturación › Funcionamiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1127
+ | CP-BON-018 – Aplicación automática de bonificación vigente en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1128
+ | CP-BON-019 – No se aplica bonificación cuando la cantidad es menor al mínimo en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1129
+ | CP-BON-020 – Bonificación aplica sobre el tope máximo configurado en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1130
+ | CP-BON-021 – No se aplica bonificación a cliente con exoneración activa en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1131
+ | CP-BON-022 – No se aplica bonificación por falta de inventario del artículo bonificado en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1132
+ | CP-BON-023 – Alerta de bonificaciones duplicadas vigentes en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1133
+ | CP-BON-024 – No se puede eliminar manualmente el precio del artículo bonificado en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+1134
+ | CP-BON-025 – Bonificación fuera de vigencia no aplica en Preventa
+ | Preventa › Funcionamiento de Bonificaciones
+ | Validado en pruebas manualesBlue
+ | 
+Preventa (8 casos)
+Caso
+ | Escenario
+ | Grupo
+ | Resultado
+ | 
+1189
+ | Aplicar combo válido en Preventa — flujo exitoso completo
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1190
+ | Combo fuera de vigencia no aplica en Preventa
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1191
+ | Impedir modificación de precios/descuentos de artículos del combo en Preventa
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1192
+ | Descuento del combo tiene prioridad sobre descuento del artículo en Preventa
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1193
+ | Ticket de preventa/proforma NO refleja información del combo (Cambio 9, Consideración 4)
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1194
+ | Preventa con combo cargada en Facturación — revalidación automática con condiciones cambiadas
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1195
+ | Preventa con combo cargada en Facturación — combo aún vigente sin cambios
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+1196
+ | Combo aplica en Preventa en modo offline — Contingencia (Cambio 21)
+ | Funcionalidad de Combos
+ | Validado en pruebas manualesBlue
+ | 
+Site admin (98 casos)
+Caso
+ | Escenario
+ | Grupo
+ | Resultado
+ | 
+1157
+ | Carga masiva de configuración base exitosa con datos válidos
+ | Carga Masiva de Combos
+ | AprobadoGreen
+ | 
+1158
+ | Carga masiva con datos inválidos — validaciones de encabezado
+ | Carga Masiva de Combos
+ | AprobadoGreen
+ | 
+1159
+ | Carga masiva de artículos de combo exitosa (carga separada)
+ | Carga Masiva de Combos
+ | AprobadoGreen
+ | 
+1160
+ | Verificar cifras de control al finalizar la carga masiva (Gap ID 9)
+ | Carga Masiva de Combos
+ | AprobadoGreen
+ | 
+1161
+ | Validaciones de carga masiva son equivalentes a las del mantenimiento manual
+ | Carga Masiva de Combos
+ | AprobadoGreen
+ | 
+905
+ | Crear premiación con todos los campos válidos
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+906
+ | Crear premiación sin campos obligatorios
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+907
+ | Crear premiación con monto mínimo en 0 o negativo
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+908
+ | Crear premiación con fecha fin menor a fecha inicio
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+909
+ | Asociar un artículo a más de una premiación simultánea
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+910
+ | Verificar que el ID no es editable tras la creación
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+911
+ | Editar todos los campos permitidos de una premiación
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+912
+ | Inactivar una premiación vigente
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+970
+ | Crear premiación con vigencia de un solo día (fecha inicio = fecha fin)
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+971
+ | Crear premiación con cantidad máxima de premios igual a 0
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+972
+ | Crear premiación con nombre duplicado de una existente
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+973
+ | Reactivar una premiación previamente inactivada
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+974
+ | Editar una premiación con vigencia activa en curso
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+975
+ | Verificar que las premiaciones aplican a nivel empresa (todas las sucursales activas)
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+976
+ | Verificar que todos los campos (excepto ID) son editables sin restricción adicional
+ | Mantenimiento Premiaciones
+ | AprobadoGreen
+ | 
+1111
+ | CP-BON-001 – Creación exitosa de bonificación con todos los campos obligatorios
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1112
+ | CP-BON-002 – Creación de bonificación tipo «Por cliente y artículo»
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1113
+ | CP-BON-003 – Creación de bonificación tipo «Por lista de precios, centro y artículo»
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1114
+ | CP-BON-004 – Creación de bonificación tipo «Por lista de precios y artículo»
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1115
+ | CP-BON-005 – Creación de bonificación con múltiples artículos bonificados
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1116
+ | CP-BON-006 – Intento de guardar bonificación sin campos obligatorios
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1117
+ | CP-BON-007 – Intento de crear bonificación con fecha fin anterior a fecha inicio
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1118
+ | CP-BON-008 – Modificación de bonificación existente y registro en bitácora
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1119
+ | CP-BON-009 – Configuración y modificación de jerarquía global de bonificaciones
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1120
+ | CP-BON-010 – Usuario sin perfil autorizado no puede crear ni modificar bonificaciones
+ | Mantenimiento de Bonificaciones
+ | AprobadoGreen
+ | 
+1104
+ | CP-BON-011 – Carga masiva exitosa de encabezados de bonificaciones con archivo válido
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1105
+ | CP-BON-012 – Carga masiva con fecha fin anterior a fecha inicio
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1106
+ | CP-BON-013 – Carga masiva con nombre de bonificación duplicado
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1107
+ | CP-BON-014 – Carga masiva con estructura de archivo incorrecta
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1108
+ | CP-BON-015 – Carga masiva con archivo vacío
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1109
+ | CP-BON-016 – Carga masiva con formato de archivo no permitido
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1110
+ | CP-BON-017 – Carga masiva con registros mixtos (algunos válidos, algunos inválidos)
+ | Mantenimiento de Bonificaciones / Carga Masiva
+ | AprobadoGreen
+ | 
+1144
+ | Crear combo con todos los campos válidos
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1145
+ | Crear combo sin campos obligatorios
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1146
+ | Crear combo con fecha fin menor a fecha inicio
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1147
+ | Crear combo con vigencia de un solo día (fecha inicio = fecha fin)
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1148
+ | Configurar combo para días específicos de la semana
+ | Mantenimientos de Combos
+ | AprobadoGreen  
+ | 
+1149
+ | Configurar combo restringido a sucursales específicas
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1150
+ | Agregar múltiples artículos con cantidades distintas a un combo
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1151
+ | Intentar agregar artículo de combo a un Descuento Escalonado
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1152
+ | Editar todos los campos permitidos de un combo existente
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1153
+ | Editar un combo con vigencia activa en curso
+ | Mantenimientos de Combos
+ | Con hallazgo (reportado y corregido)Yellow
+ | 
+1154
+ | Inactivar un combo vigente
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1155
+ | Verificar que los descuentos del combo respetan filtros por UDN, ruta y cliente (Gap ID 10)
+ | Mantenimientos de Combos
+ | AprobadoGreen
+ | 
+1163
+ | Filtrar reporte por sucursal
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | AprobadoGreen
+ | 
+1164
+ | Filtrar reporte por cliente
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1165
+ | Filtrar reporte por combo específico
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1166
+ | Filtrar reporte por rango de fechas
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1167
+ | Filtros combinados (sucursal + cliente + combo + fecha)
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1168
+ | Generar reporte sin filtros aplicados
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1169
+ | Verificar todas las columnas del reporte
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1170
+ | Verificar que las devoluciones (notas de crédito) aparecen en el reporte
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1171
+ | Campo Número de Preventa se llena cuando la factura proviene de preventa
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1172
+ | Verificar exactitud de los datos del reporte contra la transacción real
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1173
+ | Exportar reporte de Facturas con Combos a Excel
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1174
+ | Exportar reporte vacío a Excel (sin resultados)
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+1175
+ | Usuario sin permiso no puede acceder al reporte de Facturas con Combos
+ | Reporte de Control de Cambios Comerciales (Ruta: Reportes-Ventas)
+ | Validado en pruebas manualesBlue
+ | 
+930
+ | Filtrar por tipo de agrupación: Descuentos Escalonados
+ | Reportes › Reporte Control Cambios
+ | AprobadoGreen
+ | 
+931
+ | Filtrar por tipo de agrupación: Bonificaciones
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+932
+ | Filtrar por tipo de agrupación: Premiaciones
+ | Reportes › Reporte Control Cambios
+ | AprobadoGreen
+ | 
+933
+ | Filtrar por tipo de agrupación: Combos
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+934
+ | Filtrar reporte por rango de fechas
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+935
+ | Filtrar reporte por artículo específico
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+936
+ | Filtrar reporte por sucursal
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+937
+ | Combinar múltiples filtros en el reporte
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+938
+ | Verificar columnas del reporte de Control de Cambios
+ | Reportes › Reporte Control Cambios
+ | AprobadoGreen
+ | 
+939
+ | Verificar registro de acción: Creación
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+940
+ | Verificar registro de acción: Modificación
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+941
+ | Verificar registro de acción: Eliminación
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+942
+ | Verificar exactitud del campo Fecha del Cambio
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+943
+ | Exportar reporte de Control de Cambios a Excel
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+944
+ | Exportar reporte de Control de Cambios vacío a Excel
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+945
+ | Usuario sin permiso no puede acceder al reporte de Control de Cambios
+ | Reportes › Reporte Control Cambios
+ | Validado en pruebas manualesBlue
+ | 
+918
+ | Filtrar reporte por sucursal
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+919
+ | Filtrar reporte por rango de fechas válido
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+920
+ | Filtrar reporte por premiación específica
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+921
+ | Generar reporte sin filtros aplicados
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+922
+ | Filtrar con rango de fechas sin resultados
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+923
+ | Verificar columnas del reporte de Ganadores
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+924
+ | Verificar que las devoluciones aparecen en el reporte
+ | Reportes › Reporte Ganadores Premiaciones
+ | No aplica
+ | 
+925
+ | Verificar exactitud de los datos del reporte
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+926
+ | Exportar reporte de Ganadores a Excel
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+927
+ | Exportar reporte vacío a Excel
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+928
+ | Usuario sin permiso no puede acceder al reporte de Ganadores
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+988
+ | Filtros combinados en reporte de Ganadores (sucursal + fecha + premiación)
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+989
+ | Verificar que facturas de cajas offline no aparecen en el reporte de Ganadores
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+990
+ | Verificar paginación o rendimiento del reporte con gran volumen de registros
+ | Reportes › Reporte Ganadores Premiaciones
+ | AprobadoGreen
+ | 
+914
+ | Usuario sin permisos no puede acceder, crear, editar o eliminar en el mantenimiento de premiaciones
+ | Seguridad
+ | AprobadoGreen
+ | 
+916
+ | Usuario con permisos puede acceder, crear, editar o eliminar en el mantenimiento de premiaciones
+ | Seguridad
+ | AprobadoGreen
+ | 
+961
+ | Permisos en mantenimiento con respecto a horarios-localización-permisos
+ | Seguridad
+ | AprobadoGreen
+ | 
+1198
+ | Permisos en mantenimiento con respecto a horarios-localización-permisos
+ | Seguridad
+ | Validado en pruebas manualesBlue
+ | 
+1199
+ | Usuario sin permisos no puede acceder, crear, editar o eliminar en el mantenimiento de combos
+ | Seguridad
+ | Validado en pruebas manualesBlue
+ | 
+1200
+ | Usuario con permisos puede acceder, crear, editar o eliminar en el mantenimiento de combos
+ | Seguridad
+ | Validado en pruebas manualesBlue
+ | 
+Cómo leer los resultados
+Resultado
+ | Significado
+ | 
+Aprobado
+ | El escenario se ejecutó y el sistema se comportó como se esperaba
+ | 
+Con hallazgo (reportado y corregido)
+ | El escenario detectó una desviación; se documentó como defecto y se gestionó su corrección
+ | 
+Validado en pruebas manuales
+ | El escenario se cubrió mediante pruebas manuales y exploratorias durante el sprint
+ | 
+En re-test
+ | Ejecutado y reabierto para volver a validarlo tras un cambio
+ | 
+En pausa
+ | Validación suspendida por una dependencia externa al caso
+ | 
+No aplica
+ | El escenario no resultó aplicable a la configuración final
+ | 

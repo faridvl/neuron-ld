@@ -1,0 +1,462 @@
+Informe QA: Proyecto Formas de Pago
+12falsenonelisttrue1. Proyecto/Feature 
+Véase detalles del proyecto en Formas de Pago
+Véase Feature en Devops en Link al DevOps
+🏹 Objetivo
+Este documento describe el alcance de pruebas, estrategia de validación y resultados QA
+para los cambios relacionados a las funcionalidades nuevas de Formas de Pago.
+
+⛳️ Alcance
+Se revisaron funcionalidades correspondientes a los cambios de Formas de Pago, contemplando las siguientes áreas:
+
+Administración de formas de pago
+Implementación del mantenimiento de “Otras Formas de Pago” en Site Administrativo:
+Creación de nuevas formas de pago.
+
+Edición y administración de formas de pago.
+
+Activación e inactivación de formas de pago.
+
+Identificador autogenerado.
+
+Configuración de disponibilidad por empresa.
+
+Parametrización de formas de pago por:
+Sucursal.
+
+Caja.
+
+Validaciones de disponibilidad:
+Formas activas a nivel sucursal.
+
+Formas activas a nivel caja.
+
+Herencia de validaciones estándar de LDCOM.
+
+
+Facturación y aplicación de pagos
+Implementación de nuevas formas de pago en el proceso de facturación:
+Uso de opción “Otras Formas de Pago”.
+
+Aplicación de múltiples formas de pago en una misma transacción.
+
+Validación del monto total pagado.
+
+Registro de referencias o números asociados a pagos.
+
+Visualización del desglose de pagos en el tiquete.
+
+Manejo de formas de pago:
+Efectivo.
+
+Crédito.
+
+Cheque.
+
+Transferencia.
+
+Tarjetas.
+
+Formas de pago dinámicas.
+
+Combinaciones de pago.
+
+Persistencia de información adicional:
+Número de cuenta bancaria.
+
+Banco asociado.
+
+Referencia transaccional.
+
+
+Devoluciones y notas de crédito
+Implementación de nuevas funcionalidades para devoluciones:
+Devoluciones en efectivo independientemente de la forma de pago original.
+
+Devoluciones utilizando la forma de pago original.
+
+Devoluciones mixtas.
+
+Devoluciones parciales.
+
+Devoluciones en cajas distintas a la factura original.
+
+Validaciones de devoluciones:
+Confirmación de disponibilidad de efectivo.
+
+Control de devoluciones por múltiples formas de pago.
+
+Validación de documentos sincronizados.
+
+Restricciones en modo contingencia/offline.
+
+Manejo de errores en anulaciones con Pinpad.
+
+Control y trazabilidad:
+Asociación con factura original.
+
+Asociación con caja y usuario.
+
+Registro de fecha y hora.
+
+Persistencia de formas de pago aplicadas.
+
+
+Cierre y retiros de caja
+Ajustes al proceso de cierre de caja:
+Consolidación automática de montos por forma de pago.
+
+Visualización acumulada por período operativo.
+
+Inclusión de nuevas formas de pago dinámicas.
+
+Impresión de detalle de formas de pago en cierre.
+
+Manejo de retiros:
+Retiros automáticos al cierre.
+
+Registro de depósitos en retiros de efectivo.
+
+Configuración de depósito obligatorio por sucursal.
+
+Control de retiros parciales y finales.
+
+Validaciones operativas:
+Control de montos acumulados.
+
+Separación de retiros por forma de pago.
+
+Cálculo automático de montos de retiro.
+
+
+Reportes y trazabilidad
+Incorporación de un nuevo reporte:
+Ruta: Site Admin - Reportes - Ventas Generales - Ventas por Transacción.
+Nombre: Ventas por Transacción
+
+
+Información incluida en reporte incorporado:
+Número de documento.
+
+Fecha y hora.
+
+Usuario.
+
+Caja.
+
+Cliente.
+
+Formas de pago utilizadas.
+
+Monto por forma de pago.
+
+Totales de factura.
+
+Número de pago.
+
+Cierre.
+
+Aprobaciones.
+
+Con desglose individual de:
+Otras formas de pago.
+
+
+Ajustes en reportes, donde se desglosen las otras formas de pago:
+Cierre detallado por forma de pago. 
+
+Cierre detallado por ventas.
+
+Retiro por cajero detallado.
+
+Retiros por sucursal.
+
+Retiros por cajero.
+
+Reporte de faltantes y sobrantes por caja.
+
+Reporte de ventas por caja. 
+
+Reporte de ventas por cajero.
+
+Reporte de devoluciones por cierre.
+
+
+Ajustes en reportes de devoluciones:
+Devoluciones por cajero.
+
+Devoluciones por cierre.
+
+Devoluciones por saldo.
+
+
+Configuración y parametrización operativa
+Validaciones y configuraciones operativas relacionadas con formas de pago:
+Habilitación dinámica de formas de pago.
+
+Configuración estándar heredada de LDCOM.
+
+Validaciones por tipo de caja.
+
+Configuración de sucursales operativas.
+
+Disponibilidad según contexto operativo.
+
+Parámetros contemplados:
+Depósito requerido en retiros.
+
+Formas de pago activas.
+
+Referencias obligatorias.
+
+Configuración de cajas habilitadas.
+
+
+Integración y operación del sistema
+Validaciones relacionadas con operación y comportamiento estándar del sistema:
+Manejo de operación offline/contingencia.
+
+Validaciones de sincronización.
+
+Persistencia temporal de documentos.
+
+Integración con procesos estándar de LDCOM.
+
+Compatibilidad con procesos de facturación y cierre.
+
+Control de operación:
+Trazabilidad de transacciones.
+
+Asociación de pagos y devoluciones.
+
+Control de sincronización de documentos.
+
+Validación de integridad operativa.
+
+
+Fuera de alcance
+No se considera dentro del alcance el comportamiento contable debido a que este
+proceso dependerá de las interfaces que deben desarrollarse
+
+La implementación y habilitación de formas de pago en el proceso de Preventa se
+encuentra fuera del alcance del presente proyecto, este alcance será considerado
+dentro del CDC de Facturación.
+
+🌳 Ambientes
+Ambiente
+ | Módulo
+ | URL / Ruta
+ | Versión
+ | Usuario usado
+ | 
+QA
+ | Site admin
+ | http://testing-iis/BETA/DOS_PINOS/ADMIN_LDCOM/
+ | v13.696.1.10434
+ | kbarquero29/kbarquero29
+ | 
+QA
+ | Facturación 
+ |  | v13.696.1.30393
+ | kbarquero29/kbarquero29
+ | 
+🕵🏼‍♀️ Casos de prueba
+Véase escenarios de prueba en [Link al documento] y [Link al documento]
+Escenario
+ | Estado QA
+ | Bugs relacionados
+ | Observaciones
+ | 
+Site Admin: Depósitos Automáticos - Mantenimiento Caja
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Site Admin: Otras Formas de Pago - Mantenimiento Otras Formas de Pago
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Site Admin: Otras Formas de Pago - Sucursal
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Site Admin: Otras Formas de Pago - Caja
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Site Admin: Reporte Nuevo Ventas por Transacción
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Site Admin: Reportes Existentes con Desglose de Otras Formas de Pago 
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Facturación: Depósitos Automáticos - Nuevo Modal
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Facturación: Otras Formas de Pago - Visualización y Utilización
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Facturación: Otras Formas de Pago - Funcionalidad Cierres y Retiros
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Facturación: Devoluciones
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+Facturación: Crédito
+ | ✅ Validado
+ | N/A
+ | N/A
+ | 
+🐞 Bugs reportados
+Nombre
+ | Módulo
+ | Resuelto en sprint
+ | Notas
+ | 
+699 - POS | No se están mostrando las opciones de otras formas de pago al facturar un documento
+ | Facturación
+ | ✅ Sí
+ |  | 
+750 - POS | El sistema permite realizar retiros parciales de otras formas de pago
+ | Facturación
+ | ✅ Sí
+ |  | 
+751 - POS | A nivel del ticket no se están mostrando las abreviaturas de las formas de pago que se parametrizan en el site
+ | Facturación
+ | ✅ Sí
+ |  | 
+753 - POS | En la reimpresión del ticket con otras formas de pago no se visualizan las abreviaturas
+ | Facturación
+ | ✅ Sí
+ |  | 
+782 - POS | Al intentar hacer un retiro parcial el sistema envía un mensaje de excepción no controlada
+ | Facturación
+ | ✅ Sí
+ |  | 
+752 - Site Admin | Bugs en mantenimiento de formas de pago
+ | Site Admin
+ | ✅ Sí
+ |  | 
+748 - Site Admin El mantenimiento de otras formas de pago está sin la seguridad estándar
+ | Site Admin
+ | ✅ Sí
+ |  | 
+792 - POS | La forma de pago por transferencia muestra una abreviatura incorrecta en el ticket
+ | Facturación
+ | ✅ Sí
+ |  | 
+797 - POS | Bugs en devoluciones
+ | Facturación
+ | ✅ Sí
+ |  | 
+676 - POS | Inconsistencias en devoluciones mixtas: duplicidad de transacción y error en acumulación en cierre_fp_tarjeta
+ | Facturación
+ | ✅ Sí
+ |  | 
+679 - POS | Falta de alerta por efectivo insuficiente en validación de caja
+ | Facturación
+ | ✅ Sí
+ |  | 
+680 - POS | Sistema permite realizar devoluciones en forma de pago sobre facturas de cierres distintos
+ | Facturación
+ | ✅ Sí
+ |  | 
+714 - POS Al devolver un artículo que tiene sugeridos, al momento de cargarlo el sistema muestra la pantalla de artículos sugeridos
+ | Facturación
+ | ✅ Sí
+ |  | 
+715 - POS Al intentar buscar una devolución para pagar con nota de crédito el sistema envía una alerta de excepción no controlada
+ | Facturación
+ | ✅ Sí
+ |  | 
+791 - Site admin | Reporte de clientes bloqueados, sugerencia de cambio de presentación de datos.
+ | Site Admin
+ | ✅ Sí
+ |  | 
+790 - POS | Bugs funcionales en bloqueo de clientes
+ | Facturación
+ | ✅ Sí
+ |  | 
+776 - POS | No se están solicitando depósitos al realizar retiros de caja
+ | Facturación
+ | ✅ Sí
+ |  | 
+777 - POS | BD Local: Sincronización de BD local no se está realizando correctamente
+ | Facturación
+ | ✅ Sí
+ |  | 
+780 - POS | Cierre de caja está siendo afectado por los retiros de parciales
+ | Facturación
+ | ✅ Sí
+ |  | 
+781 - POS | Pantalla de retiros de caja parcial, no contempla fondo de caja.
+ | Facturación
+ | ✅ Sí
+ |  | 
+783 - POS | Ajustes en flujo de retiros automáticos
+ | Facturación
+ | ✅ Sí
+ |  | 
+Pendiente Reportes con desglose de FP
+ | Site Admin
+ | ✅ Sí
+ |  | 
+827 - POS | Se deben de cargar automáticamente los montos de otras formas de pago en cierre de caja
+ | Facturación
+ | ✅ Sí
+ |  | 
+879 - POS | Devoluciones con otras formas de pago generan diferencias en cierre debido al retiro automático de montos
+ | Facturación
+ | ✅ Sí
+ |  | 
+801 - POS | Bug al traer crédito de distribuidor padre
+ | Facturación
+ | ✅ Sí
+ |  | 
+817 - Site | Falta de desglose de otras formas de pago en reportes Varios
+ | Site Admin
+ | ✅ Sí
+ |  | 
+📝 Observaciones de revisión
+note6e027cc8c85fPendiente desarrollar:
+Cambios de cierre en Inventario. (No estaba en el alcance del proyecto)
+
+
+Pendiente desarrollar:
+Cambios de cierre en Inventario. (No estaba en el alcance del proyecto)
+
+
+🚦 Estados de revisión QA
+Estado
+ | Descripción
+ | 
+✅ Validado
+ | Flujo revisado y validado sin hallazgos críticos
+ | 
+⚠️ Validado con observaciones
+ | Flujo validado con incidencias menores o ajustes pendientes
+ | 
+🚧 Parcial
+ | Validación incompleta por dependencias, bugs o funcionalidades pendientes
+ | 
+❌ Bloqueado
+ | No fue posible completar la validación
+ | 
+N/A
+ | No aplica para esta revisión
+ | 

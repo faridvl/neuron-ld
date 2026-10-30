@@ -1,0 +1,9 @@
+- plan 1 restaurado; plan 7 ->201; clientes 4000010/4000054 Tiene_Financiamiento=1 (revertir: 99-revertir.sh)
+- plan 25 -> 202 (orig RGA10280237-J2)
+- plan 3 -> 203 (orig ZZ_TEST_LD10_00299), plan 5 -> 204 (orig ZZ_TEST_LD10_002)
+- Web.config publicado: BD 3699 + TrustServerCertificate=True (solo carpeta publicada); diag runner-diag.js creo intento DIAG* en CreditValidationAttempt (sim solicitud 147)
+- IIS: pool dp-otros no puede extraer el Runner (bundle) en C:\WINDOWS\TEMP: carpeta publicada tiene Global.asax (DOTNET_BUNDLE_EXTRACT_BASE_DIR=C:\inetpub\wwwroot\dp\otros\runner-tmp) y runner-tmp con ACL Modify para IIS APPPOOL\dp-otros
+- 01:00 otro proceso re-sembro el evento (URL real Informatica, creds reales (no anotar valores)): una llamada POS (ref 00J040FHY3P002) llego al SFA real -> HTTP 400, no aplicado. Reaplicado 01-preparar.sh
+- 01:10 BD propia ZZ_QA3700_INTEGRATIONS (copia de 3699) porque otro proceso re-sembraba el evento; borrar al final (+ .bak en /var/opt/mssql/data)
+- 3699 DB: borrada mi fila STORE 001->19; evento dejado IsActive=0 (otro proceso lo habia reseteado a URL real activa)
+- simulador local node 7391 (SIN_SQL=1, README actual) porque el contenedor 7390 no trae el rango 30000-35000 (devuelve 500)

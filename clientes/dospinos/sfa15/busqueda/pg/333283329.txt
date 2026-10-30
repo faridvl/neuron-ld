@@ -1,0 +1,192 @@
+14. Adelanto de Ruta
+Objetivo general: Objetivo general a resolver en el proyecto
+  Enlaces y Anexos
+
+🎯 Objetivos
+
+📜 GAPs asociados
+
+📕 Contexto
+
+🪢 Interfaces
+
+📈 Reportes
+
+🔐 Seguridad
+
+🚫 Fuera del alcance
+
+💪🏼 Cambios a implementar
+
+  Enlaces y Anexos
+Controles de Cambio:
+Plantilla_Modelo_To_Be_ Adelanto de Rutas
+
+Requerimiento Adelanto de Rutas AV compras Asociados ProductoresRevisado
+
+Matriz proceso Adelantos de Ruta
+
+Documentos:
+Ofertas:
+CO-696-0025 Adelanto de Ruta v1
+
+CO-696-0025 Adelanto de Ruta v2
+
+CO-696-0025 Adelanto de Ruta v3
+
+CO-696-0025 Adelanto de Ruta v4
+
+
+Requerimientos:
+Pegar el Link de Requerimientos de cada versión.
+
+
+Guías de Usuario:
+Pegar el Link de Guias de usuario de cada versión.
+
+
+Estimaciones:
+CO-696-0025 Adelanto de Ruta
+
+
+Diseños:
+Miro:
+CDC: Pegar el Link de CDC de Miro.
+
+Planning: Pegar el Link de Planning de CDC de Miro.
+
+
+Figma: https://www.figma.com/design/1vbz7M7JzzsLCZ6a8czs5l/Dos-Pinos?node-id=3541-30 
+
+Matrices de Cambio:
+As Is - To Be: Pegar el Link de Matriz AS-IS TO-BE.
+
+Propuesta de Solución: Pegar el Link de Matriz Propuesta Solución.
+
+  Enlaces y Anexos
+Documentos:
+CDC: 
+
+Ofertas: 
+
+
+Estimaciones:
+Tiempos: CO-696-0025 Adelanto de Ruta v1
+
+Diseños
+CDC: Pegar el Link de CDC de Miro.
+
+Planning: Pegar el Link de Planning de CDC de Miro.
+
+UX: Pegar el Link de Figma de cada versión.
+
+Matrices de Cambio
+As Is - To Be: Pegar el Link de Matriz AS-IS TO-BE.
+
+Propuesta de Solución: Pegar el Link de Matriz Propuesta Solución.
+
+🎯 Objetivos
+Definir el manejo de la facturación especial por adelanto de rutas, asegurando control del crédito, trazabilidad y continuidad operativa.
+Generar la facturación especial en un ambiente controlado (roles y permisos).
+
+Parametrizar en el sistema la facturación especial y su impacto en crédito, cobro e intereses.
+
+Asegurar la trazabilidad de las facturas especiales
+
+
+📜 GAPs asociados
+Copie y pegue el link de la vista específica de los GAPs a mostrar: https://logicaldata.atlassian.net/wiki/spaces/DP/database/13860865
+📕 Contexto
+Ocurre en situaciones excepcionales (feriados, bloqueos en carreteras, clima, etc.) donde la ruta de entrega se ejecuta antes de lo planificado.
+
+Para poder despachar, se requiere una facturación especial desde los almacenes para Asociados Productores, dentro de AV Retail y SFA.
+
+Nota importante
+Cualquier información a resaltar en el documento
+Nota relevante a resaltar de temas discutidos previamente, o funcionalidades que tenga o no LDCOM.
+:note:atlassian-note#EAE6FFDudas (Interno)
+Escribir dudas a resolver de manera interna
+:evergreen_tree:1f332🌲#C0B6F2Dudas (Dos Pinos)
+Escribir dudas a consultarle al equipo de Dos Pinos  
+:technologist:1f9d1-200d-1f4bb🧑‍💻#E6FCFFDeveloper Note
+Escribir notas relevantes para el equipo de desarrollo
+🪢 Interfaces
+Las interfaces están fuera del alcance de este proyecto. La integración y el detalle de estas interfaces se ve en 98. Interfaces
+Datos Maestros
+Mencionar información de datos necesarios que se deben sincronizar, relevantes al alcance de este proyecto (aunque no se desarrollen en este proyecto).
+Transacciones
+Mencionar transacciones relevantes que se deben sincronizar, relevantes al alcance de este proyecto (aunque no se desarrollen en este proyecto).
+Objetivo
+ | Origen
+ | Destino
+ | 
+Descripción de la transacción
+ | LDCOM
+ | Dos Pinos
+ | 
+📈 Reportes
+Listar que reportes son necesarios para cubrir este proyecto
+🔐 Seguridad
+Temas de seguridad necesarios para aplicar en este proyecto
+🚫 Fuera del alcance
+Supuestos y Restricciones
+El modo Adelanto de Ruta NO puede activarse sin credenciales de un rol autorizado.
+
+La habilitación NO se sincroniza entre cajas; cada caja debe activarse de forma independiente.
+
+LDCOM NO aprueba crédito ni puede modificar los límites definidos por SFA.
+
+Cambios previamente acordados
+Listá los puntos mencionados en el CDC que ya se acordaron hacer de manera distinta, o porque se utilizarán alternativas de LDCOM u operativas.
+
+Cambios de otros proyectos
+Listá los puntos que se tomarán en el alcance de otro proyecto.
+
+Fuera de contrato
+Listá los puntos que no están dentro del contrato
+
+ 
+💪🏼 Cambios a implementar
+Listar cambios que se deben implementar en LDCOM. Aproximar lo más posible a “user stories”, con detalles puntuales de que se debe cambiar/agregar. Incluir los criterios de aceptación puntuales que no estén tan claros de entender. 
+Funcionalidad a implementar
+Módulos: LD Punto de Venta
+Cambio 1. Indicador Adelanto de Ruta
+Se requiere incorporar un nuevo parámetro que permita habilitar o deshabilitar el modo de facturación especial por Adelanto de Ruta en punto de venta. En donde cuanto el indicador se encuentre activo el sistema:
+Aplica únicamente a documentos de “Tipo de Crédito” (Planes de financiamiento)
+
+Solicita la aprobación de un rol autorizado.
+
+La factura de crédito generada queda identificada como facturas con adelanto de ruta.
+
+La habilitación aplica única y exclusivamente a la caja donde se activa (no se replica a otras cajas).
+
+Se muestra un indicador visual en pantalla mientras el modo “Adelanto de Ruta” esté activo.}
+
+Consideraciones: 
+LDCOM no realiza cálculos financieros asociados al adelanto:
+No calcula intereses.
+
+No maneja fechas de cobro.
+
+No modifica saldos.
+
+Solo envía el indicador a SFA.
+
+
+El modo Adelanto de Ruta aplica única y exclusivamente para Clientes de tipo Asociados.
+
+Módulos: LDSite Administrativo
+Cambio 2. Indicador Adelanto de Ruta
+Se requiere desarrollar un nuevo reporte que permita identificar y dar seguimiento a las facturas generadas bajo el modo de Adelanto de Ruta.
+Filtros:
+a)	Sucursal
+b)	Rango de fechas 
+
+Detalle
+a)	Sucursal: ID y Nombre de la sucursal en la que se generó la factura
+b)	Fecha: fecha de  
+c)	Número de Factura: Número de la factura generada.
+d)	Cliente: ID y Nombre del cliente (asociado).
+e)	Monto: monto total de la factura
+Formato: Libro de Excel (.xlsx). 
+

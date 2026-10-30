@@ -1,0 +1,59 @@
+Integración LDCOM Dos Pinos
+Objetivo
+Definir los flujos de integración entre el ERP y los sistemas del cliente, así como las interfaces técnicas necesarias para su implementación.
+Alcance
+La integración cubre:
+Sincronización de datos maestros (productos, clientes, precios)
+
+Notificación de eventos transaccionales (preordenes, ventas, devoluciones)
+
+Operaciones financieras síncronas (autorización y consulta de crédito)
+
+Operaciones de inventario (traslados, órdenes de compra)
+
+Modelo de integración
+Se utilizan cuatro patrones principales:
+Tipo
+ | Descripción
+ | 
+Datos maestros 
+ | LDCOM consume APIs de Dos Pinos mediante sincronización programada
+ | 
+Webhooks 
+ | LDCOM notifica eventos a Dos Pinos 
+ | 
+Callbacks 
+ | Dos Pinos envía confirmaciones o actualizaciones a LDCOM
+ | 
+Transacciones síncronas 
+ | LDCOM depende de respuesta inmediata de Dos Pinos 
+ | 
+Volumen estimado
+Por definir
+Flujos contractuales: ~25–30
+
+Interfaces técnicas reales: ~8–15 endpoints
+
+Principios de diseño
+Un endpoint puede soportar múltiples flujos contractuales
+
+Los contratos de datos están en estado progresivo (draft → validado)
+
+Idempotencia obligatoria en eventos y transacciones críticas
+
+Separación entre modelo interno de LDCOM y contratos externo de LDCOM
+
+Estados de definición
+🟢 Definido
+
+🟡 En validación
+
+🔴 Pendiente definición
+
+Riesgos actuales
+Definición incompleta de datos maestros
+
+Ambigüedad en reglas de crédito
+
+Dependencia de disponibilidad de APIs externas
+

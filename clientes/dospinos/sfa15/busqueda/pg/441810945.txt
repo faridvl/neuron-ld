@@ -1,0 +1,277 @@
+LD-10 Crear tipos de crédito
+POST /api/credit-types
+Historial de cambios
+Fecha
+ | Descripción
+ | Autor
+ | 
+10/Septiembre/2026
+ | Primer borrador y base del endpoint.
+ | fvillacis@ld.co.cr
+ | 
+9/Octubre/2026
+ | startDate y endDate pasan a ser opcionales (por defecto 1900-01-01 y 2099-12-31 23:59:59).
+ | fvillacis@ld.co.cr
+ | 
+Descripción
+Registra en LDCOM uno o varios tipos de crédito (planes de financiamiento) con sus datos generales y sus plazos, para que Facturación y Preventa puedan ofrecerlos como forma de pago y calcular la simulación de cuotas.
+El cuerpo es siempre una lista, aunque se envíe un solo tipo de crédito. Un registro que falla no detiene a los demás: se procesa el resto. La respuesta lista los que sí entraron; el detalle de los rechazados (posición en la lista y motivo) solo viene cuando no entra ninguno (500).
+El endpoint registra el encabezado del tipo de crédito. La asociación de artículos y de clientes no forma parte del flujo normal: se hace después desde el mantenimiento de tipos de crédito. Aun así, items y customers se aceptan como campos opcionales para poder cargarlos de una sola vez cuando convenga.
+Contexto de uso
+Trigger
+Dos Pinos (DP): se crea, modifica o inactiva un tipo de crédito y se envía a LDCOM para que quede disponible en el punto de venta.
+
+Reglas y validaciones
+Reglas de negocio
+El creditTypeExternalId es obligatorio y es el código del tipo de crédito en el sistema de origen. LDCOM lo almacena para poder devolverlo en cada factura financiada.
+
+items y customers son opcionales. El flujo normal es crear el tipo de crédito sin ellos y asociarlos después desde el mantenimiento.
+
+Los plazos no son un tope ni un rango abierto: se envía el conjunto cerrado de plazos que el cajero podrá elegir en la venta (termsInWeeks). Es el único de los tres conjuntos que sí es requerido, porque sin plazos no se puede calcular la cuota.
+
+customers solo se acepta cuando appliesTo = SPECIFIC_CUSTOMERS. Con los otros valores el plan aplica por clasificación y debe omitirse o enviarse vacío. Al revés sí se permite: un plan de clientes específicos puede crearse sin clientes.
+
+Los tipos de crédito no se eliminan, se inactivan (active = false).
+
+Cada factura puede estar asociada a un solo tipo de crédito. No se permite combinar artículos de tipos de crédito distintos en una misma transacción. Esta validación es de Facturación, no de este endpoint.
+
+Modo asíncrono
+Por defecto el llamado es síncrono: se procesa el lote completo y se devuelve el resultado.
+Agregando el parámetro ?async=true el lote se acepta y se procesa en segundo plano, respondiendo 202 de inmediato con la cantidad recibida. Es la opción para lotes grandes, donde esperar el procesamiento completo puede agotar el tiempo de espera del cliente.
+El 202 confirma que el lote se recibió, no que se guardó. Si un registro falla, el rechazo queda en la bitácora interna de LDCOM y hoy no hay forma de consultarlo desde afuera: hay que solicitarlo a Logical Data. Para lotes donde importe saber qué entró y qué no, usar el modo síncrono.
+Resolución de artículos y clientes
+Este endpoint no requiere mapeo previo en el Catálogo de Interfaces para artículos ni para clientes. La validación se hace contra LDCOM directamente.
+Campo en request
+ | Cómo se resuelve
+ | 
+items[].itemExternalId
+ | Si un artículo no existe se rechaza con ITEM_NOT_FOUND.
+ | 
+customers[].customerExternalId
+ | LDCOM confirma que el cliente exista antes de grabar; si no existe, o si el código no es numérico, se rechaza con CUSTOMER_NOT_FOUND.
+ | 
+Enviar siempre el código con el que Dos Pinos identifica el artículo o el cliente. No hace falta coordinar previamente ninguna configuración de catálogo para poder usar este endpoint.
+Idempotencia
+Si se recibe un creditTypeExternalId ya registrado en LDCOM, no se crea un duplicado: se actualiza el tipo de crédito existente con los datos recibidos. La respuesta lo refleja con wasCreated: true en las altas y wasCreated: false en las actualizaciones, dentro de creditTypes[].
+Los plazos (termsInWeeks) se reemplazan por completo con los que vengan en el envío: siempre se manda la lista entera como debe quedar.
+Vigencia
+startDate y endDate son opcionales. Si no se envían (campo ausente, null o vacío) el tipo de crédito queda vigente sin límite: inicio 1900-01-01T00:00:00 y fin 2099-12-31T23:59:59. Si se envían, se graban tal cual.
+Los valores por defecto son fijos: reenviar el mismo tipo de crédito sin fechas deja siempre el mismo resultado.
+
+Al actualizar un tipo de crédito, las fechas se graban con lo que traiga el envío, o con los valores por defecto si no las trae.
+
+La respuesta devuelve las fechas que quedaron grabadas.
+
+Funcionalidades excluidas
+Administración de artículos y clientes del tipo de crédito: asociar y desasociar artículos y clientes es trabajo del mantenimiento de tipos de crédito. Este endpoint los acepta como campos opcionales para una carga inicial, pero no ofrece operaciones parciales de agregar o quitar.
+
+Consulta del resultado de un lote asíncrono: no existe un endpoint de estado. El resultado del procesamiento en segundo plano solo queda en la bitácora interna de LDCOM.
+
+Bitácora de cambios: el histórico de creación, modificación e inactivación de tipos de crédito no forma parte de este endpoint.
+
+Cálculo de la tabla de amortización: LDCOM la calcula en el punto de venta como simulación, a partir de la tasa y el plazo almacenados. El cálculo real es del sistema de crédito. No se envía ni se almacena por este endpoint.
+
+Límite de crédito y clasificación banca / no banca del cliente: llegan por la interfaz de datos maestros de clientes, no por acá.
+
+Indicador de subdocumento de financiamiento: la marca que distingue los créditos generados por un tipo de crédito se configura en el mantenimiento de subdocumentos.
+
+Consulta y borrado de tipos de crédito: este endpoint solo registra y actualiza. No hay GET ni DELETE.
+
+Códigos de error
+Los rechazos son por registro, no del llamado completo. El detalle viene en errors.failures[] (índice que ocupaba en la lista enviada, código externo y motivo) cuando no entra ninguno del lote (500); si al menos uno entra, la respuesta es 200 y los rechazados quedan en la bitácora interna de LDCOM.
+Código
+ | Descripción
+ | 
+INVALID_APPLIES_TO
+ | appliesTo con valor no válido. Válidos: BANK, NO_BANK, BOTH, SPECIFIC_CUSTOMERS
+ | 
+INVALID_TERM
+ | termsInWeeks vacío, con plazos fuera del rango 1 a 52, o con plazos repetidos
+ | 
+INVALID_INTEREST_RATE
+ | interestRate negativo o mayor a 100
+ | 
+INVALID_DATE_RANGE
+ | endDate anterior o igual a startDate, contando los valores por defecto cuando alguna de las dos no se envía
+ | 
+CUSTOMERS_NOT_ALLOWED
+ | Se envió customers con un appliesTo distinto de SPECIFIC_CUSTOMERS
+ | 
+DUPLICATE_ITEM
+ | El mismo itemExternalId viene más de una vez en el registro
+ | 
+DUPLICATE_CUSTOMER
+ | El mismo customerExternalId viene más de una vez en el registro
+ | 
+ITEM_NOT_FOUND
+ | Uno o más itemExternalId no existen en LDCOM
+ | 
+CUSTOMER_NOT_FOUND
+ | Uno o más customerExternalId no existen en LDCOM, o no son numéricos
+ | 
+EXTERNAL_SYSTEM_ERROR
+ | Falla al grabar el registro en LDCOM
+ | 
+Request
+Query parameters
+Parámetro
+ | Tipo
+ | Requerido
+ | Descripción
+ | 
+async
+ | boolean
+ | ❌
+ | Si es true, el lote se acepta y se procesa en segundo plano: responde 202 sin el resultado. Omitirlo procesa el lote en el momento. Default: false.
+ | 
+Body
+Ejemplo — flujo normal, solo encabezados
+Es la forma esperada: se crean los tipos de crédito con sus datos generales y sus plazos, y los artículos y clientes se asocian después desde el mantenimiento.
+wide760jsonEjemplo — con asociaciones opcionales
+Solo si se quiere cargar todo de una vez. customers únicamente se acepta con appliesTo = SPECIFIC_CUSTOMERS.
+wide760jsonEjemplo — sin vigencia
+Sin startDate ni endDate: el tipo de crédito queda vigente del 1900-01-01 al 2099-12-31 23:59:59.
+wide760jsonDescripción de campos
+Cada tipo de crédito de la lista
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+creditTypeExternalId
+ | string
+ | 30
+ | ✅
+ | Código del tipo de crédito en el sistema de origen. Usado para idempotencia y devuelto en cada factura financiada.
+ | 
+name
+ | string
+ | 100
+ | ✅
+ | Nombre o descripción del tipo de crédito, visible en el punto de venta.
+ | 
+interestRate
+ | number
+ | 9,4
+ | ✅
+ | Tasa de interés anual en porcentaje (ej. 5.05 = 5,05 %). LDCOM la divide entre 52 para la cuota semanal.
+ | 
+appliesTo
+ | enum
+ | N/A
+ | ✅
+ | A quién aplica: BANK (banca), NO_BANK (no banca), BOTH (ambos), SPECIFIC_CUSTOMERS (clientes específicos).
+ | 
+restricted
+ | boolean
+ | N/A
+ | ❌
+ | Si true, los artículos de este tipo de crédito no se pueden mezclar con artículos libres en una factura. Default: false.
+ | 
+startDate
+ | string (ISO 8601)
+ | 33
+ | ❌
+ | Inicio de vigencia del tipo de crédito. Si no se envía (o viene vacío) se graba 1900-01-01T00:00:00.
+ | 
+endDate
+ | string (ISO 8601)
+ | 33
+ | ❌
+ | Fin de vigencia. Fuera de este rango el tipo de crédito no se ofrece en el punto de venta. Si no se envía (o viene vacío) se graba 2099-12-31T23:59:59.
+ | 
+active
+ | boolean
+ | N/A
+ | ❌
+ | Estado del tipo de crédito. Default: true. Para retirarlo se envía false (no se elimina).
+ | 
+termsInWeeks
+ | array de number
+ | N/A
+ | ✅
+ | Conjunto cerrado de plazos en semanas entre los que el cajero puede elegir. Valores de 1 a 52, sin repetir. No es un tope ni un rango.
+ | 
+items
+ | array
+ | N/A
+ | ❌
+ | Artículos financiables con este tipo de crédito. Opcional: lo normal es omitirlo y asociarlos después desde el mantenimiento.
+ | 
+customers
+ | array
+ | N/A
+ | ❌
+ | Clientes puntuales del plan. Opcional, y solo se acepta cuando appliesTo = SPECIFIC_CUSTOMERS. Lo normal es omitirlo.
+ | 
+items[]
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+itemExternalId
+ | string
+ | 100
+ | ✅
+ | Código externo del artículo. Debe existir en LDCOM.
+ | 
+customers[]
+Campo
+ | Tipo
+ | Longitud
+ | Requerido
+ | Descripción
+ | 
+customerExternalId
+ | string
+ | 100
+ | ✅
+ | Código con el que Dos Pinos identifica al cliente. Debe ser numérico y existir en LDCOM.
+ | 
+Response
+200 OK — al menos uno del lote entró
+Devuelve processedCount (cuántos entraron de verdad) y creditTypes[] con el tipo de crédito completo tal como quedó grabado — los mismos campos del request, más creditTypeId (el interno de LDCOM) y wasCreated, que sí genera el servidor. items/customers solo aparecen si se enviaron. Si el tipo de crédito se envió sin fechas, startDate y endDate vienen con los valores por defecto (1900-01-01T00:00:00 y 2099-12-31T23:59:59).
+Un registro que falla no aborta el lote, pero tampoco aparece acá. Si mandás 3 y uno falla, processedCount es 2 y creditTypes[] trae solo esos 2 — el que falló no tiene ni índice ni motivo visible por esta vía, queda únicamente en la bitácora interna de LDCOM.
+wide760json202 Accepted — modo asíncrono (?async=true)
+El lote se aceptó y se encoló para procesar en segundo plano. received es cuántos se recibieron, no cuántos se guardaron — no hay forma de consultar el resultado después por esta vía.
+wide760json400 Bad Request
+Tres casos posibles: la lista vino vacía, algún campo no pasó la validación de forma ([Required]/[MaxLength]), o una fecha no viene en ISO 8601. Se rechaza antes de llegar a las reglas de negocio.
+wide760jsonwide760json500 Internal Server Error — EXTERNAL_SYSTEM_ERROR, ninguno del lote entró
+Si todos los registros del lote fallan, no hay nada que devolver en 200 con una lista vacía silenciosa — se trata como una falla del lote completo. Acá sí vienen los motivos, dentro de errors.failures[], con index, creditTypeExternalId, code y message.
+wide760jsonCampos del response
+Campo
+ | Descripción
+ | 
+processedCount
+ | Cuántos tipos de crédito del lote sí se guardaron (altas + actualizaciones).
+ | 
+creditTypes[]
+ | Uno por cada tipo de crédito guardado, completo — mismos campos que se enviaron, más creditTypeId y wasCreated.
+ | 
+creditTypes[].creditTypeId
+ | Identificador interno del plan en LDCOM.
+ | 
+creditTypes[].wasCreated
+ | true si fue una alta nueva; false si actualizó un plan que ya existía con ese creditTypeExternalId.
+ | 
+received
+ | Solo en modo asíncrono: cantidad de tipos de crédito recibidos y encolados. No implica que se hayan guardado.
+ | 
+errors.failures[].index
+ | Solo en el 500: posición del registro en la lista enviada, empezando en 0.
+ | 
+errors.failures[].code
+ | Solo en el 500: motivo del rechazo. Es el valor a usar para tomar decisiones automáticas, no el message.
+ | 
+Notas de implementación
+Enviar siempre la lista completa de plazos como debe quedar: se reemplaza por completo.
+
+Un mismo lote puede mezclar altas y actualizaciones: cada elemento de creditTypes[] trae su propio wasCreated.
+
+Para retirar un tipo de crédito se envía active = false. No hay borrado.
+
+Fechas, cuando se envían, en ISO 8601: con hora y timezone UTC (2026-09-01T00:00:00Z, recomendado) o solo la fecha (2026-09-01, se toma la medianoche). Un formato distinto (p. ej. 01/09/2026) se rechaza con 400.
+

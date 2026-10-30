@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <connectionStrings>
+    <!--DEV-->
+    <add connectionString="server=localhost,1433;database=LDCOM_DOS_PINOS_STAGING_DOCKER;uid=logical;password=4974996110497610949761084976116;timeout=30" name="LD.AccesoDatos.My.MySettings.LDOPERACION" />
+    <add connectionString="server=localhost,1433;database=LDCOM_DOS_PINOS_STAGING_DOCKER;uid=logical;password=4974996110497610949761084976116;timeout=0" name="LD.AccesoDatos.My.MySettings.LDGENERAL" />
+    <add connectionString="server=172.177.16.230;database=LD_GESTION_OPERACION;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDGOP" />
+    <add connectionString="server=172.177.16.230;database=LDFAS_WEB;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDFAS" />
+    <add connectionString="server=172.177.16.230;database=LDFAS_WEB;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDFASCATALOGO" />
+    <add connectionString="Server=172.177.16.230;Database=LEALTAD13_CA_ESTANDAR_DESARROLLO;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDLEALTAD" />
+    <add connectionString="Server=172.177.16.230;Database=ECOMMERCE13_CA_ESTANDAR_DESARROLO;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=60" name="LD.AccesoDatos.My.MySettings.LDECOMMERCE" />
+    <add connectionString="Server=localhost,1433;Database=LDCOM_LD11_FE_DOCKER;uid=logical;password=4974996110497610949761084976116;timeout=60" name="LD.AccesoDatos.My.MySettings.LDFACTURAELECTRONICA" />
+    <add connectionString="Server=localhost,1433;Database=LDCOM_DOS_PINOS_INTEGRATIONS_STAGING_DOCKER;uid=logical;password=4974996110497610949761084976116;timeout=60" name="LD.AccesoDatos.My.MySettings.LDDPINTEGRATIONS" />
+    <!--QA-->
+    <!--<add connectionString="server=TESTINGSQL\SQL2022;database=LDCOM_DOS_PINOS_NEW;uid=logical;password=4974996110497610949761084976116;timeout=0" name="LD.AccesoDatos.My.MySettings.LDOPERACION" />
+    <add connectionString="server=TESTINGSQL\SQL2022;database=LDCOM_DOS_PINOS_NEW;uid=logical;password=4974996110497610949761084976116;timeout=0" name="LD.AccesoDatos.My.MySettings.LDGENERAL" />
+    <add connectionString="server=172.177.16.230;database=LD_GESTION_OPERACION;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDGOP" />
+    <add connectionString="server=172.177.16.230;database=LDFAS_WEB;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDFAS" />
+    <add connectionString="server=172.177.16.230;database=LDFAS_WEB;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDFASCATALOGO" />
+    <add connectionString="Server=172.177.16.230;Database=LEALTAD13_CA_ESTANDAR_DESARROLLO;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=0" name="LD.AccesoDatos.My.MySettings.LDLEALTAD" />
+    <add connectionString="Server=172.177.16.230;Database=ECOMMERCE13_CA_ESTANDAR_DESARROLO;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=60" name="LD.AccesoDatos.My.MySettings.LDECOMMERCE" />
+    <add connectionString="Server=testingsql;Database=LDCOM_LD11_FE;uid=logical;password=4974996110497610949761084976116;timeout=60" name="LD.AccesoDatos.My.MySettings.LDFACTURAELECTRONICA" />
+    <add connectionString="Server=172.177.16.230;Database=LDCOM13_CR_DOS_PINOS_INTEGRATIONS;uid=logical;password=449446611561174996101611661056112611161084976114611661156117464;timeout=60" name="LD.AccesoDatos.My.MySettings.LDDPINTEGRATIONS" />-->
+  </connectionStrings>
+  <!-- Configuracion con la que NEGOCIO llama al Runner de integraciones (TCatalogo.vb). En los
+       ambientes la fija pipelines\scripts\releases\sync-integration-settings.ps1. -->
+  <appSettings>
+    <add key="IntegrationStage" value="TESTING" />
+    <add key="IntegrationTenant" value="DOS_PINOS" />
+  </appSettings>
+  <system.web>
+    <!-- Backend: va en-US, NO en es-MX como los modulos de UI. No tiene interfaz, y en numeros
+         en-US y es-MX son identicos ('.' decimal), asi que no se pierde nada. Se queda en en-US
+         para mantener el acuerdo con el POS (que se fuerza en-US en codigo, RUTINAS/TRutinas.vb)
+         y con el login de SQL, que esta en us_english/mdy en los tres servidores.
+         Antes no se declaraba y se heredaba del web.config de Framework64 del servidor: funcionaba
+         por casualidad, y en un servidor nuevo sin ese archivo cambiaba en silencio. -->
+    <globalization culture="en-US" uiCulture="en-US" />
+    <compilation debug="true" strict="false" explicit="true" targetFramework="4.7.2" />
+    <httpRuntime targetFramework="4.7.2" />
+    <pages controlRenderingCompatibilityVersion="4.0" />
+  </system.web>
+  <system.serviceModel>
+    <bindings>
+      <basicHttpBinding>
+        <binding name="cfmx.ModuloIntegracion.Componentes.Extraccion.Extraccion_Ldcom_WebServices.cfcSoap11Binding" />
+        <binding maxBufferPoolSize="2147483647" maxReceivedMessageSize="2147483647" maxBufferSize="2147483647">
+          <readerQuotas maxDepth="200" maxStringContentLength="8388608" maxArrayLength="16384" maxBytesPerRead="2147483647" maxNameTableCharCount="16384" />
+          <!--Usado con https-->
+          <!--<security mode="Transport"/>-->
+        </binding>
+      </basicHttpBinding>
+      <customBinding>
+        <binding name="cfmx.ModuloIntegracion.Componentes.Extraccion.Extraccion_Ldcom_WebServices.cfcSoap12Binding">
+          <textMessageEncoding messageVersion="Soap12" />
+          <httpTransport />
+        </binding>
+      </customBinding>
+    </bindings>
+    <client>
+      <endpoint address="http://192.168.2.18:8505/cfmx/ModuloIntegracion/Componentes/Extraccion/Extraccion_Ldcom_WebServices.cfc" binding="basicHttpBinding" bindingConfiguration="cfmx.ModuloIntegracion.Componentes.Extraccion.Extraccion_Ldcom_WebServices.cfcSoap11Binding" contract="Sif_WebService.cfmxModuloIntegracionComponentesExtraccionExtraccion_Ldcom_WebServicescfcPortType" name="cfmx.ModuloIntegracion.Componentes.Extraccion.Extraccion_Ldcom_WebServices.cfcHttpSoap11Endpoint" />
+      <endpoint address="http://serversap2/WS_FE/FacturaElectronica.svc" binding="basicHttpBinding" contract="WCF_FE.IFacturaElectronica" name="BasicHttpBinding_IFacturaElectronica" />
+      <endpoint address="http://localhost/LDCOM13/ServiciosWCF_LEALTAD/WCFPlanLealtad.svc" binding="basicHttpBinding" contract="WCF_PlanLealtad.IWCFPlanLealtad" name="BasicHttpBinding_IWCFPlanLealtad" />
+    </client>
+    <behaviors>
+      <serviceBehaviors>
+        <behavior>
+          <serviceMetadata httpGetEnabled="true" httpsGetEnabled="True" />
+          <serviceDebug includeExceptionDetailInFaults="true" />
+        </behavior>
+      </serviceBehaviors>
+    </behaviors>
+    <serviceHostingEnvironment aspNetCompatibilityEnabled="true" multipleSiteBindingsEnabled="true" />
+  </system.serviceModel>
+  <system.webServer>
+    <modules runAllManagedModulesForAllRequests="true" />
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="2147483647" maxQueryString="2147483647" maxUrl="2147483647" />
+      </requestFiltering>
+    </security>
+  </system.webServer>
+  <runtime>
+    <AppContextSwitchOverrides value="Switch.System.Net.DontEnableSystemDefaultTlsVersions=false" />
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-10.0.0.0" newVersion="13.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="FlexCell" publicKeyToken="6f86587eb70ee309" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.4.5.0" newVersion="3.4.5.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Runtime.CompilerServices.Unsafe" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-6.0.1.0" newVersion="6.0.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Numerics.Vectors" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.1.5.0" newVersion="4.1.5.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Buffers" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.4.0" newVersion="4.0.4.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Memory" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.2.0" newVersion="4.0.2.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Text.Json" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-9.0.0.5" newVersion="9.0.0.5" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>
+<!--ProjectGuid: 24B8159A-A7A1-408D-8B4D-3C4B5AF391C1-->

@@ -1,0 +1,5 @@
+hosts abiertos
+T5a PRIMERA llamada del cliente, servidor tarda 40 s: OK Estado=Autorizado tras 40227 ms
+T5b tras otra operacion (canal abierto), servidor tarda 40 s: EXCEPCION TimeoutException: The request channel timed out while waiting for a reply after 00:00:09.9989991. Increase the timeout value passed to the call to Request or increase t tras 10024 ms
+T5c operacion normal de 12 s tras la validacion: EXCEPCION TimeoutException tras 10006 ms (esperado: corta ~10 s)
+T5d control cliente nuevo, operacion normal 12 s: EXCEPCION TimeoutException tras 10020 ms

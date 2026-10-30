@@ -1,0 +1,820 @@
+Datos Maestros: Propuesta Solución CO-696-0021 API LDCOM y sincronización de datos maestros
+noneINSUMOS INTERNOS
+Comentarios DP sobre oferta
+N
+ | Sección
+ | Comentario DP
+ | Comentario PO
+ | Comentario Hans
+ | 
+1
+ | Interfaces incluidas en la propuesta
+Maestro de CECO's
+ | El aréa funcional estará sacando el volumen para validar si la integración se desarrolla o no.
+ | (una opción es dejarlo en el alcance con la consideración de que si no se desarrolla de lado DP entonces nosotros tampoco lo incluimos)
+ |  | 
+2
+ | Arquitectura LDCOM - Dos Pinos
+ | ¿Donde veriamos el error por un evento fallido de un job?
+Hay alertas proactivas de obtener error sin tener que entrar manualmente.
+ | (Sería un nuevo requerimiento ya que solo se considera la consulta manual al monitor para ver los eventos fallidos)
+ |  | 
+3
+ | Cambio 3. Configuración de Catálogos de Interfaces
+ | ¿Como generar proactividad antes errores vía correo u otra forma? 
+ | (Mismo requerimiento que solicitan en comentario 2) 
+ |  | 
+4
+ | Cambio 4. Monitor de eventos - Histórico de datos
+ | ¿Podemos realizar el borrado definitivo de la tabla histórica después de 90 días?
+ | (Sería un nuevo requerimiento)
+ |  | 
+5
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de materiales
+Consideraciones especiales
+ | Ver comentario de arriba de como ser proactivos si algún campo no está completo
+ | (Mismo requerimiento que solicitan en comentario 2) 
+ |  | 
+6
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de Clientes
+Datos Mínimos
+Campo: Indicador de si es una exoneración total o parcial
+ | (?)
+DP tiene duda de a que se refiere el campo
+ |  
+ |  | 
+7
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de Clientes
+Datos Mínimos
+Campo: Fecha de vigencia del cliente en el MAG
+ | (?)
+DP tiene duda de a que se refiere el campo
+ |  
+ |  | 
+8
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de Clientes
+Datos Mínimos
+Campo: Condición de crédito
+ | (?)
+DP tiene duda de a que se refiere el campo
+ |  
+ |  | 
+9
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de Clientes
+Datos Mínimos
+Campo: Precio por kilogramo para el cálculo de fletes
+ | No es de datos maestros. Es una carga por finca que solicitó Ivannia
+
+ |  (Considerar sacarlo del alcance)
+ |  | 
+10
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de Clientes
+Catálogos que deben configurarse previamente
+ | Mismo comentario de arriba, ser proactivos ante errores
+ |  (Mismo requerimiento que solicitan en comentario 2) 
+ |  | 
+11
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de proveedores
+Catálogos que deben configurarse previamente
+ | Mismo comentario de arriba, ser proactivos ante errores
+ |  (Mismo requerimiento que solicitan en comentario 2) 
+ |  | 
+12
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de Tipo de cambio
+Catálogos que deben configurarse previamente
+ | Mismo comentario de arriba, ser proactivos ante errores
+ |  (Mismo requerimiento que solicitan en comentario 2) 
+ |  | 
+13
+ | Cambio 6. Sincronización de Datos Maestros
+Datos maestros de CECO's
+ | El aréa funcional estará sacando el volumen para validar si la integración se desarrolla o no.
+ | (Misma consideración del comentario 1)
+ |  | 
+14
+ | Cambio 7. Integración al monitor 360
+Objetivo y Funcionalidad
+ | Se debe notificar cualquier evento fallido o exitoso
+ | (consideramos solo notificar fallos, sería ajustar la oferta para incluir también eventos exitosos) 
+ |  | 
+15
+ | Supuestos y Restricciones
+Infraestructura
+Ambientes Dos Pinos
+ | Solo se cuenta con 2 ambientes, uno productivo y uno no productivo
+ |  (Esto relacionado a la suposición que pusimos al respecto de los ambientes DP) 
+Se asume en esta oferta que existirá un ambiente de desarrollo y uno de pruebas estable para integraciones, además del ambiente de producción. Dos Pinos brindará la documentación, llaves y accesos para conectarnos a cada ambiente.
+ |  | 
+Descripción del Cambio
+Creación de una plataforma de integración en LDCOM para sincronizar catálogos de datos maestros de Dos Pinos, así como la parametrización de políticas de integración, catálogos y monitoreo de eventos.
+Insumos enviados por Dos Pinos
+No aplica
+Pendientes
+Pendientes
+ | Fecha Solicitud
+ | Estado
+ | Notas
+ | Correo
+ | 
+ |  |  |  |  | 
+Identificar y homologar los valores y parámetros entre los sistemas para asegurar la correcta sincronización de datos maestros
+ |  |  | Sobre esta actividad aún no es posible realizar la sesión en conjunto conversada, debido a que previo son requeridas las actividades conversadas en sesión donde negocio determine los campos que si tienen, los campos que no tienen y deben ser creados y los campos que requieren, pero de nuestro lado no existen a fin de determinar el manejo en conjunto que se dará.
+ |  | 
+Determinar si la carga inicial de catálogos como unidades y categorías se realizará mediante integración o carga de datos, y definir qué elementos serán relevantes para el sistema
+ |  |  | Este tema está ligado al punto anterior, ya que dependiendo de los campos que nos enviaran por interfaz se determinará si es algo que vendrá desde la interfaz o se hará la carga inicial por medio de carga de datos que se hace durante el proceso de implementación.
+ |  | 
+Generar un documento que describa cada campo técnico, indique dónde se visualiza en el sistema y proporcione ejemplos de uso para que las áreas operativas determinen su relevancia
+ |  |  |  |  | 
+Agregar ejemplos prácticos en el archivo Excel para explicar el uso de cada campo y facilitar la validación operativa
+ |  |  |  |  | 
+Enviar versiones parciales del archivo Excel conforme se completen las hojas para que el equipo pueda avanzar en la revisión
+ |  |  |  |  | 
+PROPUESTA DE SOLUCIÓN
+Servicios de Informática Lexington S.A. ofrece a Cooperativa De Productores De Leche Dos Pinos, R.L. la presente propuesta de solución para la creación de un componente base de integraciones, enfocado inicialmente en la gestión de datos maestros que LDCOM debe solicitar de forma diaria a Dos Pintos.
+PRIMERA: DESCRIPCIÓN DE LOS REQUERIMIENTOS
+SITUACIÓN ACTUAL 
+Actualmente no existe un mecanismo centralizado y parametrizable que permita la comunicación entre sistemas Dos Pinos y LDCOM, gestionar frecuencias de sincronización de forma independiente o monitorear el flujo de datos en tiempo real.
+SOLUCIÓN REQUERIDA 
+Se requiere el desarrollo de una capa de integración (API) y mantenimientos de configuración en LDCOM para que sirva de base en estas y demás interfaces. Este API debe permitir la gestión de interfaces, la configuración de catálogos con equivalencias entre sistemas, la configuración de frecuencia para sincronizar datos maestros y un monitor para asegurar la consistencia de los datos.
+Interfaces incluidas en el alcance 
+Código Contrato
+ | Nombre
+ | Dueño de los datos
+ | Tipo
+ | 
+POS-01
+ | Maestro de Materiales
+ | Dos Pinos
+ | Datos Maestros
+ | 
+POS-02
+ | Maestro de Clientes
+ | Dos Pinos
+ | Datos Maestros
+ | 
+POS-03
+ | Maestro de Proveedores (Transportistas)
+ | Dos Pinos
+ | Datos Maestros
+ | 
+POS-04
+ | Tipo de Cambio
+ | Dos Pinos
+ | Datos Maestros
+ | 
+POS-XX
+ | Maestro de CECO’s
+ | Dos Pinos
+ | Datos Maestros
+ | 
+Arquitectura LDCOM - Dos Pinos
+Este diagrama ejemplifica de forma general como interactúan todas las capas y sistemas entre Dos Pinos y LDCOM. En esta oferta se detalla la creación de la capa llamada “Integraciones” que incluya una base de datos de eventos, un job de sincronización y la lógica para interactuar con ambos sistemas.
+Diagrama general de integraciones entre LDCOM-Dos Pinos
+Más adelante se detallan los cambios a realizar en LDCOM para que ambos sistemas se puedan comunicar de forma efectiva. Este diagrama ejemplifica el flujo general de sincronización, en donde LDCOM tendrá un proceso que estará obteniendo los datos maestros de Dos Pinos según las políticas de integración definidas (Véase cambio 2 https://logicaldata.atlassian.net/wiki/spaces/DP/pages/134250511/Datos+Maestros+Propuesta+Soluci+n+CO-696-0021+API+LDCOM+y+sincronizaci+n+de+datos+maestros#2.-Configuraci%C3%B3n-de-APIs-Dos-Pinos).
+Flujo general de sincronización de datos maestros. Se puede visualizar un ejemplo de como se utiliza el catálogo de interfaces para convertir una entidad “Currency” a “Moneda”. 
+PROPUESTA DE SOLUCIÓN TÉCNICA
+1. API LDCOM
+Se desarrollará un REST API intermediario entre LDCOM y Dos Pinos, que también tendrá el monitoreo de eventos, configuración de catálogos y flujos de sincronización de datos maestros.
+Objetivo: establecer una plataforma base, centralizada y estandarizada que facilite todas las comunicaciones e integraciones entre el LDCOM y los sistemas de Dos Pinos.
+
+Funcionalidades generales:
+Abstracción y Estandarización: El API será el puente de comunicación entre LDCOM y las interfaces Dos Pinos, permitiendo intercambiar información de forma clara, segura y sin depender de los detalles internos de cada sistema.
+
+API REST: El API proveerá el acceso a todos los endpoints requeridos por las futuras integraciones para obtener información de LDCOM.
+
+Bitácora de eventos: El API llevará un registro automático de cada evento que pase através del API, el cual permite dar un monitoreo en tiempo real (Véase cambio 4 https://logicaldata.atlassian.net/wiki/spaces/DP/pages/134250511/Datos+Maestros+Propuesta+Soluci+n+CO-696-0021+API+LDCOM+y+sincronizaci+n+de+datos+maestros#4.-Monitor-de-Eventos)
+
+Sincronización de Datos Maestros: El API se conectará a las interfaces de datos maestros para sincronizar la información automáticamente, según las reglas de ejecución configuradas (Véase cambio 5 https://logicaldata.atlassian.net/wiki/spaces/DP/pages/134250511/Datos+Maestros+Propuesta+Soluci+n+CO-696-0021+API+LDCOM+y+sincronizaci+n+de+datos+maestros#5.-Sincronizaci%C3%B3n-de-Datos-Maestros).
+
+Reintentos de Sincronización: El API ejecutará reintentos de eventos que no fueron exitosos, según la pólitica de reintentos parametrizada para cada interface (Véase cambio 2 https://logicaldata.atlassian.net/wiki/spaces/DP/pages/134250511/Datos+Maestros+Propuesta+Soluci+n+CO-696-0021+API+LDCOM+y+sincronizaci+n+de+datos+maestros#Ejemplo-de-configuraci%C3%B3n-por-dato-maestro). 
+
+
+2. Configuración de APIs Dos Pinos
+Se contará con un mantenimiento de configuración que permitirá definir los datos de acceso al API de Dos Pinos y políticas de sincronización, necesarios para realizar las integraciones de datos maestros.
+Objetivo: Centralizar las configuraciones necesarias para el acceso al API de Dos Pinos y la sincronización automatizada de Datos Maestros.
+
+Ubicación: Se integrará en LDCOM en una ruta por definir.
+
+Funcionalidades: 
+Configuraciones generales
+URL del API de Dos Pinos.
+
+API Key para autenticar con el API de Dos Pinos.
+
+Email de notificación de error en conexión al Monitor 360. 
+
+
+Por cada integración de datos maestros se puede parametrizar:
+Frecuencia de sincronización, utilizando el formato “AWS CRON Syntax Summary”. Este formato permite especificar con total detalle la frecuencia de cuándo se ejecuta el job para sincronizar los datos maestros. El formato CRON Syntax Summary es un string con 5 campos para definir: 
+(minuto 0-59) (hora 0-23) (día del mes 1-31) (mes 1-12) (día de la semana 0-6) y donde se pueden especificar carecteres especiales como * (cualquier valor), , (separador de valores), - (rango de valores) o / (dividir el valor). Véase ejemplos abajo en Ejemplo de configuración por dato maestro
+
+Cantidad máxima de reintentos.
+
+Tiempo de espera para reintentos (conocida como “backoff policy”)
+
+Código de interfaz en Dos Pinos (para auditoría)
+
+Política de notificación al monitor 360, se puede indicar si debe notificar o no eventos fallidos y eventos exitosos.
+
+
+Opción para ejecutar manualmente la sincronización de cada uno de los catálogos de datos maestros.
+
+El acceso a este mantenimiento estará restringido mediante permisos de usuario configurables en LDCOM.
+
+
+Ejemplo de configuración por dato maestro
+Proceso
+ | Frecuencia
+Editable, en formato “AWS CRON Syntax Summary”
+ | Cantidad de reintentos
+Editable
+ | Tiempo de espera para reintentos, en segundos
+Editable
+ | Código de interfaz
+Editable
+ | 
+Sincronización de artículos
+ | 0 */4 * * *
+Una vez cada 4 horas
+ | 3
+ | 120
+ | POS-01
+ | 
+Sincronización de clientes
+ | 0 */12 * * 1,2,3,4,5
+Una vez cada 12 horas en días entre semana, excepto sábado/domingo.
+ | 5
+ | 60
+ | POS-02
+ | 
+Sincronización de proveedores
+ | 0 3 * * *
+Cada día a las 03:00am
+ | 2
+ | 30
+ | POS-03
+ | 
+Sincronización de tipo de cambio
+ | */10 8-17 * * *
+Cada diez minutos entre las 8am y 5pm
+ | 5
+ | 60
+ | POS-04
+ | 
+Sincronización de CECOs
+ | 30 2 1 * *
+A las 2:30am el primero de cada mes
+ | 2
+ | 60
+ | POS-X1
+ | 
+Sincronización de saldo de crédito
+(ejemplo; no está incluído en este proyecto)
+ | * * * * *
+Cada minuto
+ | 0
+ | 0
+ | POS-X2
+ | 
+noteb11761bfe3b3En esta sección se podrán configurar las políticas de ejecución y errores para todas las futuras interfaces
+
+En esta sección se podrán configurar las políticas de ejecución y errores para todas las futuras interfaces
+
+3. Mantenimiento de Catálogos de Interfaces
+Se contará con un módulo centralizado y configurable que permitirá mapear y traducir datos entre los sistemas externos (SAP, Oracle, SFA, etc.) y LDCOM.
+Objetivo: Homologar IDs entre sistemas. Por ejemplo, si Dos Pinos identifica un tipo de cliente Distribuidor con el código distro-01, y LDCOM identifica ese mismo tipo de cliente con el ID 1, el API de LDCOM utilizará este catálogo de interfaces para realizar la conversión automática en cada transacción, en ambas vías.
+
+Ubicación: Se integrará en LDCOM en una ruta por definir.
+
+Funcionalidad: 
+El usuario podrá seleccionar entre los distintos catálogos de LDCOM que participen en los procesos con las interfaces (ej. Monedas, Tipos de Cliente, Sucursales). 
+
+Al seleccionar el catálogo a mapear, el sistema cargará un listado con los valores actuales registrados en LDCOM para ese catálogo.
+
+Por cada valor, se contará con un campo editable donde podrá asignarle su correspondiente "ID Externo" con el que se reconoce el registro dentro de la interfaz. 
+
+Cada catálogo puede definir, de forma opcional, un valor por defecto para usarse cuando un dato no esté homologado.
+Ej., se podrá crear una “Marca” genérica y definirla como valor “por defecto” en el catálogo de interfaces. De este modo todos los artículos que no tengan una “marca” asociada en datos maestros quedaría asociado a esta marca genérica.
+
+
+Si un catálogo no tiene un valor por defecto parametrizado, generará un error al sincronizar datos si su homologación no está configurada en el catálogo.
+Ej., será posible parametrizar el catálogo de monedas sin indicar ningún valor por defecto, homologando únicamente los registros del catálogo.
+Si una sincronización requiere recibir el código de moneda, será necesario que el código esté homologado en el catálogo de interfaces para que la sincronización sea exitosa
+
+En caso de recibir un código de moneda no homologado, la sincronización será fallida.
+
+
+
+El acceso a este mantenimiento estará restringido mediante permisos de usuario configurables en LDCOM.
+
+
+Ejemplo de catálogo de interfaces
+Los valores del catálogo de interfaces será parametrizable desde LDCOM.
+La inclusión de catálogos (Ej., agregar “Moneda” o “Tipo de cliente” si se hace directamente por base de datos y puede aumentar o disminuir durante el desarrollo de este y demás proyectos.
+Catálogo
+ | Valor en LDCOM
+Catálogo de LDCOM
+ | Código en Dos Pinos
+Campo editable
+ | 
+Tipo de cliente
+ | Distribuidor
+ | Z004
+ | 
+Asociado productor
+ | Z002
+ | 
+Valor por defecto
+ | Público general
+ | 
+ |  | 
+Entradas y salidas de inventario
+ | Entrada de viáticos
+ | VIA-002
+ | 
+Salida de efectivo
+ | SAL-004
+ | 
+Moneda
+ | Colón
+ | CR
+ | 
+Dólar
+ | USD
+ | 
+Valor por defecto
+ | {Vacío}
+ | 
+Se pueden configurar todos los catálogos que sean requeridos para todas las integraciones. 
+Las entidades que no son catálogos, sino una identidad, como un Cliente, un Artículo o un Proveedor no estarán en este catálogo parametrizable, sino que se usará una propiedad en común que los identifique entre ambos sistemas. Ej., en los Clientes, el campo Código de cliente que se usa en SAP también existirá en LDCOM.
+4. Monitor de Eventos
+Se desarrollará un monitor de eventos, el cual permitirá visualizar el estado de todos los eventos que pasan a través del API de LDCOM al recibir o enviar datos al API Dos Pinos. Este monitor tendrá los eventos de todas las interfaces en este proyecto y las interfaces futuras a desarrollar.
+Objetivo: brindar trazabilidad total, diagnóstico de errores y control operativo sobre todo el flujo de datos relacionado a las integraciones de interfaces entre LDCOM y Dos Pinos.
+
+Ubicación: Se integrará en LDCOM en una ruta por definir.
+
+Funcionalidad: 
+El usuario podrá visualizar desde el monitor y de forma detallada cada evento que ocurra en las interfaces, permitiendo visualizar información clave tales como:
+Evento: Nombre de la acción realizada (ej. sincronización de materiales o notificación de preventa).
+
+Origen y Destino: Identificación de qué componente envió la información y quién la recibió.
+
+Fecha y Hora: Registro exacto del momento de ejecución del evento.
+
+Contador de intentos: Visualización de cuántas veces el componente ha tratado de procesar el evento.
+
+Estado: Visualización clara que indique si el evento fue exitoso o si presentó un error.
+
+Detalle del evento: Una consulta de "detalle" para mostrar la respuesta completa recibida o enviada al momento de ejecutarse el evento, sea exitosa o fallida.
+
+Usuario/servicio: Nombre del usuario o servicio que inició el proceso, sea automático, ejecutado manualmente o mediante el API de LDCOM.
+
+
+El monitor permitirá al usuario ejecutar acciones tales como:
+Búsqueda y filtrado: Consulta y filtrado de los eventos para mostrar en el monitor los eventos requeridos. Filtros disponibles:
+Fecha inicial y final
+
+Estado
+
+Origen
+
+Tipo de evento (Ej., Sincronización de proveedores, Preventa de granel nueva, etc.) 
+
+
+Exportación de eventos: Opción para que el usuario pueda exportar a formato Excel el listado de eventos consultado.
+
+
+Periodicidad de los datos:
+Al ser una tabla con muchos eventos transaccionales, y para preservar el rendimiento del sistema, se almacenarán solo los eventos de los últimos 90 días según lo requerido por Dos Pinos para resguardo de auditoría. En el monitor solo se podrán ver, filtrar o exportar eventos con fecha no mayor a 90 días.
+
+Cualquier evento mayor a 90 días se eliminará de la tabla y ya no será posible consultar en el monitor. 
+
+
+El acceso a este monitor estará restringido mediante permisos de usuario configurables en LDCOM
+
+
+5. Sincronización de Datos Maestros
+Se desarrollarán los flujos de sincronización para insertar o actualizar en LDCOM los catálogos de datos maestros obtenidos desde el API de Dos Pinos. 
+Objetivo: Sincronizar de forma automatizada los catálogos de datos maestros en LDCOM con los catálogos de Dos Pinos.
+
+Ubicación: Los flujos se ejecutarán automáticamente, según las políticas de sincronización, dentro del API de LDCOM. 
+
+Funcionalidad:
+Por cada registro consultado en el API de Dos Pinos se creará o actualizará el registro en LDCOM si cumple las validaciones para procesar el registro.
+
+En caso de uno o más registros no cumplan con las validaciones, el registro no será procesado y se registrará un error en la bitácora del componente.
+
+Los registros válidos no existentes en LDCOM serán creados en el catálogo correspondiente. 
+
+Los registros válidos existentes en LDCOM serán actualizados en el catálogo correspondiente.
+
+El proceso de sincronización es individual por cada catálogo y se ejecuta según la frecuencia parametrizada en la configuración del API (Véase cambio 2. Configuración de APIs Dos Pinos).
+
+Cada proceso de sincronización se va a reintentar según la política de reintentos definida en la configuración del API (Véase cambio 2. Configuración de APIs Dos Pinos).
+
+
+Consideraciones
+Para sincronizar los datos maestros se necesitan todos los catálogos de LDCOM correctamente creados en la carga inicial. Este proceso se realiza en la fase de implementación.
+
+Una vez creados todos los catálogos, su homologación debe ser parametrizada en el catálogo de interfaces para que la sincronización sea efectiva (Véase cambio 3. Mantenimiento de Catálogos de Interfaces).
+
+Se recomienda que los endpoints para obtener los catálogos de Dos Pinos tengan parámetros para filtrar por una fecha de modificación y de paginación de resultados. De este modo, al sincronizar cada día, no se tienen que traer todos los registros por completo sino solo los modificados y poder flexibilizar la consulta mediante páginas en caso de que lleguen a ser muchos datos.
+
+Aunque en LDCOM se pueden modificar los datos maestros (si el usuario tuviese los permisos suficientes), la sincronización de datos maestros va a reemplazar todos los valores cada vez que se ejecuta el proceso. Ejemplo: Si se modifica manualmente en LDCOM el nombre del cliente con el código 123, este será reemplazado al siguiente día con el valor que tenga el catálogo de Dos Pinos. Lo mismo aplica para todos los valores de todos los datos maestros acá mencionados.
+
+
+Datos maestros de artículos
+Código de interfaz
+ | Maestro de Materiales POS-01
+ | 
+Identificador
+ | Código del material Dos Pinos
+ | 
+Datos mínimos
+ | Información básica del artículo
+Código del material, SKU
+
+Nombre/descripción, nombre corto
+
+Estado: Activo/Inactivo
+
+Estado de venta: Activo/Inactivo
+
+Estado editable (permite editarse el precio en el punto de venta sin necesidad de permisos)
+
+Unidad
+
+Decimales: permite vender o no con decimales.
+
+Clasificación ABC
+Valor de la clasificación
+
+Indicador de si calcula ABC automático según ventas
+
+
+Artículo restringido: Indicador si necesita permisos o no.
+
+Observaciones
+Indicador de debe solicitar observaciones (Ej., solicitar una receta o alguna nota de un producto)
+
+
+Lote: Indicador de si se solicita en entradas y salidas
+
+Pertenencia del artículo
+Tipo de artículo (bien o servicio)
+
+Código de la casa (código y nombre)
+
+Código de categoría (código y nombre)
+
+Departamento (código y nombre)
+
+Marca (código y nombre)
+
+Datos tributarios
+Código CAByS
+
+Aplica para devolver IVA
+
+Datos por sucursal
+Lista de sucursales donde está activo/inactivo
+
+Costo bruto y neto.
+
+Descuento o porcentaje de descuento
+
+Monto y porcentaje de impuesto
+
+ 
+ | 
+Datos opcionales
+Estos campos no se necesitan en LDCOM para funcionar pero pueden brindar más opciones si el endpoint de Dos Pinos brinda la información.
+ | Información básica del artículo
+Fecha de vigencia (inicio/fin)
+
+Cantidad mínima de compra
+
+Observaciones del producto
+
+Modelo (código y nombre)
+
+Garantía
+Indicador de si ofrece garantía
+
+Tiempo de la garantía
+
+
+Cálculo de ABC (Si no se indican, se usa la definida para la sucursal)
+Rotación en días.
+
+Rotación máxima y mínima.
+
+Puede especificarse la clasificación por sucursal
+
+
+Artículos compuestos
+Indicador de si el artículo es compuesto
+
+Indicador de cuál es el artículo padre
+
+
+Sueltos (Ej., una caja de acetaminofén se puede vender en 12 pastillas “sueltas”)
+Indicador de cuál es el artículo padre
+
+Factor unitario (Ej., 1 si es un suelto o 12 si es una caja con 12 pastillas)
+
+
+Equivalentes: Lista de códigos SKUs equivalentes
+
+Código de subcategoría (código y nombre. Hay 4 niveles de subcategorías, todas opcionales.)
+
+Vencimiento:
+Indicador de si el artículo tiene vencimiento
+
+Cantidad de días mínima a evaluar el vencimiento
+
+
+Datos tributarios
+Tipo de precio: Fijo o por margen de costo (usa “Fijo” por defecto)
+
+Registro sanitario (opcional)
+
+Forma farmacéutica (opcional)
+
+Fecha de vencimiento del registro sanitario (opcional)
+
+Registro fiscal (opcional)
+
+Datos por sucursal
+Estado: Activo/Inactivo (si no existe, se usa el del artículo)
+
+Estado de venta: Activo/Inactivo (si no existe, se usa el del artículo)
+
+ | 
+Validaciones
+ | Si el mismo código del artículo ya existe, se reemplazan los datos.
+
+ | 
+Catálogos que deben configurarse previamente
+ | Tipo de artículo
+
+Unidad
+
+Categorías
+
+Subcategorías
+
+Casa
+
+Cadena
+
+Sucursal
+
+Marca
+
+Modelo
+
+Si no están configurados estos catálogos, ni están definidos los valores por defecto, el proceso de sincronización fallará y quedará registrado el error.
+ | 
+Consideraciones especiales
+ | Varias propiedades pueden ser asociados a un valor “genérico” en caso de que no exista del lado de Dos Pinos. Ej., si en Dos Pinos no se usa “Casa”, se puede crear en LDCOM como “Casa genérica” y asociar todos los productos a este mediante el valor “por defecto” en el catálogo de interfaces (Véase el punto d. en 3. Mantenimiento de Catálogos de Interfaces > Funcionalidades).
+ | 
+Campos que no se envían en datos maestros
+ | Flete externo: Indicador de si el artículo es un flete externo el cual debe solicitar el transportista.
+
+Flete granel: Indicador para etiquetar al artículo que debe calcular el precio automático según el “precio por kg” del cliente.
+
+ | 
+Datos maestros de clientes
+Catálogo LDCOM
+ | Maestro de Clientes POS-02
+ | 
+Identificador
+ | Código del cliente Dos Pinos
+ | 
+Datos mínimos
+ | Información básica del cliente
+Código, número y tipo de identificación.
+
+Nombre, razón social, dirección, teléfono, correo, etc.
+
+Estado: Activo/Inactivo/Bloqueado
+
+Relación de tipos de cliente
+Tipo de cliente (conocido en Dos Pinos como “Lista de precio”)
+
+Código del padre (Ej., el padre de una Finca es el Asociado. En un Distribuidor “hijo” su “padre” es el Distribuidor “central”) 
+
+Lista de autorizados
+
+Datos tributarios
+Condición de REA
+
+Grupo de impuesto (conocido en Dos Pinos como “Grupo de precio”)
+
+Lista de documentos de exoneración
+Todos los datos de un documento de exoneración.
+
+Fecha de vigencia de un documento de exoneración
+
+
+Datos financieros
+Condición de Pago (indicador si puede o no realizar documentos de crédito).
+
+Condición de financiamiento.
+
+Saldo máximo y saldo disponible.
+
+Indicador de “Banca” o “No banca”
+
+ | 
+Validaciones
+ | Si el mismo código de cliente ya existe, se reemplazan los datos.
+
+La lista de autorizados debe ser clientes que ya existan en el catálogo.
+
+El código del padre debe ser un cliente que ya exista.
+
+ 
+ | 
+Catálogos que deben configurarse previamente
+ | Tipo de identificación
+
+Tipo de cliente
+
+Grupo de impuesto
+
+Sucursales
+
+Si no están configurados estos catálogos, ni están definidos los valores por defecto, el proceso de sincronización fallará y quedará registrado el error.
+ | 
+Consideraciones especiales
+ | El cliente será asociado al precio parametrizado en su tipo de cliente. Ej., Si el tipo de cliente “Distribuidor” se asoció al “Precio 3”, cuando se sincronice un cliente de tipo “Distribuidor” este usará ese mismo “Precio 3”. No hay excepciones de precio por cliente desde datos maestros (desde el Site Admin en LDCOM si se puede sobreescribir).
+
+
+ | 
+Campos que no se envían en datos maestros
+ |  | 
+Datos maestros de proveedores
+Catálogo LDCOM
+ | Maestro de Proveedores POS-03
+ | 
+Identificador
+ | Código del proveedor Dos Pinos
+ | 
+Datos mínimos
+ | Información básica del proveedor
+Código del proveedor
+
+Nombre, Razón social, tipo y número de identificación.
+
+Moneda
+
+Estado: Activo/inactivo
+
+ | 
+Datos opcionales
+Estos campos no se necesitan en LDCOM para funcionar pero pueden brindar más opciones si el endpoint de Dos Pinos brinda la información.
+ | Información básica del proveedor
+Código GLN
+
+Dirección, Correo, Teléfono, URL
+
+Categoría y subcategoría del proveedor
+
+País e indicador de si el proveedor es extranjero
+
+Tipo de compra para los sugeridos: Ambos, solo CEDI o solo sucursales.
+
+Ordenes de compra: Cantidad de días para el vencimiento de una orden de compra
+
+Lista de agencias de un proveedor (siempre se crea una como mínimo para cada cliente)
+
+ | 
+Validaciones
+ | Si el mismo código de cliente ya existe, se reemplazan los datos.
+
+La lista de autorizados debe ser clientes que ya existan en el catálogo.
+
+El código del padre debe ser un cliente que ya exista.
+
+ 
+ | 
+Catálogos que deben configurarse previamente
+ | Pais
+
+Moneda
+
+Categoría de proveedor
+
+Subcategoría de proveedor
+
+Tipo de identificación
+
+Sucursales
+
+Si no están configurados estos catálogos, ni están definidos los valores por defecto, el proceso de sincronización fallará y quedará registrado el error.
+ | 
+Consideraciones especiales
+ |  | 
+Datos maestros de tipo de cambio
+Catálogo LDCOM
+ | Tipo de Cambio POS-04
+ | 
+Identificador
+ | Código de moneda
+ | 
+Datos mínimos
+ | Moneda
+
+Monto de cambio
+
+Fecha
+
+ | 
+Validaciones
+ | El monto tiene que ser mayor a 0
+
+ 
+ | 
+Catálogos que deben configurarse previamente
+ | Moneda
+
+Si no están configurados estos catálogos, ni están definidos los valores por defecto, el proceso de sincronización fallará y quedará registrado el error.
+ | 
+Datos maestros de CECOs
+Catálogo LDCOM
+ | Maestro de CECOs POS-XX
+ | 
+Identificador
+ | Código de CECO
+ | 
+Datos mínimos
+ | Código de CECO
+
+Nombre
+
+ | 
+Validaciones
+ | N/A 
+ | 
+Catálogos que deben configurarse previamente
+ | N/A 
+ | 
+6. Integración al Monitor 360
+Se desarrollará una integración al Monitor 360 de Dos Pinos para la notificación de errores durante el envío o recibo de datos por parte del componente de integración LDCOM.
+Objetivo: asegurar que cualquier fallo que ocurra en los procesos de interfaz quede debidamente registrado en los sistemas de supervisión de Dos Pinos.
+
+Ubicación: El API de LDCOM será el encargado de comunicarse con el Monitor 360 para la correspondiente notificación siempre que se detecte un registro de fallo. 
+
+Funcionalidad: 
+Cuando ocurre un evento (exitoso o fallido) en cualquier proceso de envío o solicitud de datos de alguna de las interfaces, el API LDCOM deberá enviar una notificación al Monitor 360 según su política de notificación.
+
+Cada interfaz tendrá su propia política de notificación que será parametrizada en la configuración del API en LDCOM, para definir si se envían notificaciones fallida, exitosas o ambas. (Véase cambio 2 Configuración de APIs Dos Pinos)
+
+Se utilizará el código de interfaz brindado por Dos Pinos y parametrizado en la configuración del API en LDCOM (Véase cambio 2 Configuración de APIs Dos Pinos)
+
+Si el API LDCOM no es capaz de comunicarse con el Monitor 360, se deberá enviar un correo electrónico de notificación a las cuentas de correo parametrizadas en LDCOM. (Véase cambio 2 Configuración de APIs Dos Pinos)
+
+
+SUPUESTOS Y RESTRICCIONES
+Alcance de Interfaces Dos Pintos: Esta oferta incluye en el alcance únicamente las interfaces de catálogos maestros (POS-01, POS-02, POS-03, POS-04). La interface de CECOs no tiene código definido previamente. Las demás interfaces se consideran para fases posteriores.
+
+Sesiones para certificación de integración: Se deberán coordinar sesiones de certificación para validar el flujo completo de sincronización de datos maestros. 
+
+Reportes: Esta oferta no incluye en el alcance la creación de reportes en LDCOM. Lo que si se puede exportar es la bitácora de eventos de los últimos 30 días (Véase cambio 5. Monitor de Eventos)
+
+Autenticación: Se asume que la autenticación con el API de Dos Pinos se realiza mediante un API Key, enviado en algún encabezado o parámetro del request. Este API Key será parametrizable desde LDCOM (si se cuenta con los permisos necesarios) y se guardará de forma segura. Si durante el desarrollo se define otra forma de autenticación, podría quedar sujeto a cambios de alcance en esta oferta.
+
+Infraestructura
+Se asume en esta oferta que todas las integraciones hacia Dos Pinos van a un API con el mismo dominio y autenticado de la misma forma (o sea, cada endpoint o interface comparte la misma URL base. Ej., https://api.dospinos.com/v1/…). Por tanto la configuración de la URL y el API Key es única para todas las interfaces (Véase cambio 2. Configuración de APIs Dos Pinos). Si durante el desarrollo se define algo distinto, podría quedar sujeto a cambios de alcance en esta oferta.
+
+Se asume en esta oferta que existirá un ambiente de desarrollo y un ambiente de producción.
+Dos Pinos brindará la documentación, llaves y accesos para conectarnos a cada ambiente.
+
+El desarrollo y certificación de esta oferta y de las próximas integraciones se realizarán utilizando la conexión al ambiente de Desarrollo Dos Pinos.
+
+
+La documentación de las interfaces se realizará mediante herramientas por definir, como Postman.
+
+
+Desarrollo del API
+Los flujos de sincronización en LDCOM se van a desarrollar hasta que Dos Pinos haya compartido los ambientes y la documentación de cada endpoint. Si durante esta fase, Dos Pinos desarrolla algo distinto a lo acordado, podría quedar sujeto a cambios de alcance en esta oferta.
+
+
+Flujo de datos
+Por razones de integridad de datos, los flujos de sincronización solo insertan o actualizan registros; No se pueden eliminar desde datos maestros. En LDCOM si se pueden eliminar manualmente los datos que no tengan transacciones relacionadas.
+
+Se asume en esta oferta que el API de Dos Pinos brindará parámetros en los endpoints de catálogos grandes (como clientes, proveedores o artículos) para filtrar por fecha de modificación y paginación. Si los endpoints de Dos Pinos no pueden ofrecer estos parámetros la sincronización podría ser más lenta y saturar más los servicios. Si esto no es posible a la hora de integrarse, queda sujeto a cambios en el alcance de esta oferta.
+
+Los contratos (conocidos como “schemas”) de cada endpoint aún no se han definido por parte de Dos Pinos e irán detallándose en el transcurso del proyecto. La cantidad de campos o endpoints podría variar. Sin embargo, si durante esta fase se cambia el desarrollo de forma que involucre un aumento significativo en el alcance, como cambios en la parametrización, creación de catálogos nuevos, o cambios significativos en los “contratos de cada endpoint” una vez se esté implementando, podría quedar sujeto a cambios en esta oferta.
+
+

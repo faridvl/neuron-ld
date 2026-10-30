@@ -1,0 +1,558 @@
+12. Obras en proceso
+Objetivo general: Facturación progresiva asociado a un proyecto de un cliente (OBP, “Obra en Proceso”).
+11falsenonelisttruePendientes
+Dos pinos
+Reportes: definir filtros por reporte
+
+Reportes: Hace sentido unificar en un solo reporte?
+
+Reportes: Se debe agregar una bitácora de ajustes a una OBP? visualizar los originales o los de la última modificación en “preventa”? o con los reportes de OBPs es suficiente
+
+  Enlaces y Anexos
+Controles de Cambio:
+15. To_Be_Obras en Proceso Versión 001
+
+15. To_Be_Obras en Proceso Versión 002
+
+15. To_Be_Obras en Proceso Versión 003
+
+Documentos:
+Ofertas:
+CO-696-0015 Obras en Proceso
+
+CO-696-0015 Obras en Proceso v2
+
+CO-696-0015 Obras en Proceso v3 
+
+CO-696-0015 Obras en Proceso v4
+
+CO-696-0015 Obras en Proceso v5
+
+
+Requerimientos:
+Pegar el Link de Requerimientos de cada versión.
+
+
+Guías de Usuario:
+Pegar el Link de Guias de usuario de cada versión.
+
+
+Estimaciones:
+CO-696-0015 Obras en Proceso
+
+
+Diseños:
+Miro:
+CDC: https://miro.com/app/board/uXjVJwCACMU=/?moveToWidget=3458764646837711941&cot=14
+
+Planning: https://miro.com/app/board/uXjVJwCACMU=/?moveToWidget=3458764652903399373&cot=14 
+
+
+Figma: https://www.figma.com/design/1vbz7M7JzzsLCZ6a8czs5l/Dos-Pinos?node-id=2266-32 
+
+Matrices de Cambio:
+As Is - To Be: Matriz AS-IS TOBE Obras en Proceso
+
+Propuesta de Solución: Pegar el Link de Matriz Propuesta Solución.
+
+🎯 Objetivos
+Creación de proformas de OBPs
+
+Facturación y NCs asociadas a un OBP
+
+Reportes de facturas por OBP
+
+📜 GAPs asociados
+https://logicaldata.atlassian.net/wiki/spaces/undefined/database/298483713?savedViewId=01b301e9-dca8-4003-954f-b5309be7cdd1📕 Contexto
+https://logicaldata.atlassian.net/wiki/spaces/undefined/database/31653905?savedViewId=2109c305-1c7f-4cd6-a699-9b9d23a67909Obra en proceso (OBP)
+Es un proyecto de un asociado, como una instalación o reparación en su finca, que lleva un financiamiento aprobado y se va facturando por etapas.
+Tienen un plazo máximo de 120 días, y al final se consolida como una sola deuda en el SFA.
+No es un pedido
+
+No se reserva inventario
+
+No es un proceso de logística
+
+Es una factura que se va ampliando en el tiempo
+Funcionalidades
+1. Crear proformas de OBP
+Es como una proforma de 120 días (máximo). Con posibilidad de modificar la fecha con aprobación (por roles?)
+
+Se puede escoger el tipo de oferta
+Cuáles tipos hay?
+
+
+Incluye el asociado, materiales y servicios estimados.
+
+No reserva inventario ni cambia el crédito.
+
+Solo hay un set de materiales disponibles para que entren en una OBP
+Se pueden visualizar de algún modo cuales eran los items originales de la proforma
+
+Puede incluir
+Materiales del inventario AV
+
+Materiales externos (código 6000 / SNF)
+
+Horas hombre (as is)
+
+Kilometraje (as is)
+
+Servicios
+
+
+notea9881d23-3e01-4358-b094-105bfe31a0e1VERIFICAR EN CDC
+"La oferta o proforma para OBP deberá tener un campo para escoger el tipo de oferta”: Cuáles tipos de proforma existen?
+R/ Se refiere a tipo de oferta “normal” vs tipo de oferta de OBP.
+
+R/ Se necesitan roles para este tipo de oferta OBP
+
+
+Cuando dice que no cambia crédito significa que si el cliente no tiene límite disponible no debe mostrarse e igual permite guardar la OBP? 
+R/ No se valida nada a este punto al crear la proforma. El financiamiento se valida al crear cada factura. 
+
+R/ Se puede elegir el plan de financiamiento desde la proforma, y solo deben salir los planes que aplican a los materiales dentro de la misma (véase 4. Tipos de Crédito (Financiamiento) )
+
+
+Se menciona que las OBP pueden incluir códigos 6000, SNF, horas hombre, kilometraje, materiales y servicios. “Código 6000 se manejará por medio de lógica Dos Pinos interfazado a SFA.” (pag 24), “Trazabilidad en los registros de facturas, SNF Y NC de Obras en Proceso.” (pag. 26)
+Varios se mencionan en el AS-IS pero asumo que no irían en LDCOM (como las horas hombre, SNF, código 6000, kilometraje. pag.26) puesto que no se han mencionado en la lista de materiales en otras sesiones. Confirmar este punto.
+R/ No se incluyen
+
+horas hombre, kilometraje, servicios: son un material con su propio código
+
+
+Los SNF (servicios no facturados) se van a integrar en ldcom? Porque también se menciona "Código 6000 se manejará por medio de lógica Dos Pinos interfazado a SFA.”
+R/ No. Cuando se facturan código 5000/6000 desde dos pinos, lo que se va a enviar es una factura por un “material” de comisión (la comisión es otro material de servicio)
+
+
+
+Según el texto: "se creará una oferta o proforma desde el sistema de facturación, la cual hará referencia a la cotización firmada por el asociado”
+La proforma creada en LDCOM será la cotización en sí misma? O la cotización es otro documento externo al cual se necesita referenciar durante la creación de la proforma? 
+
+R/ La cotización si es un documento externo que crea otro equipo. En LDCOM No hay un campo específico para esto pero se puede incluir en el campo de “Observaciones” 
+
+
+**Se menciona en pag.25 “se solicitará la creación de al menos 3 sub-bodegas, con el fin de gestionar los materiales relacionados con cada OBP de manera individual”: Se debería mover los productos de proforma en una OBP a una bodega específica de forma automática?
+Se menciona que esos materiales deben tener un estado de “bloqueado”/”no libre utilización”. (INTERNO: si se mueve de bodega ya quedaría “bloqueado” para facturación, cierto?)
+
+Cuántas sub bodegas máximo?
+
+R/ Es operativo; se hacen las bodegas manualmente y se trasladan los materiales segun necesiten.
+
+
+
+VERIFICAR EN CDC
+"La oferta o proforma para OBP deberá tener un campo para escoger el tipo de oferta”: Cuáles tipos de proforma existen?
+R/ Se refiere a tipo de oferta “normal” vs tipo de oferta de OBP.
+
+R/ Se necesitan roles para este tipo de oferta OBP
+
+
+Cuando dice que no cambia crédito significa que si el cliente no tiene límite disponible no debe mostrarse e igual permite guardar la OBP? 
+R/ No se valida nada a este punto al crear la proforma. El financiamiento se valida al crear cada factura. 
+
+R/ Se puede elegir el plan de financiamiento desde la proforma, y solo deben salir los planes que aplican a los materiales dentro de la misma (véase 4. Tipos de Crédito (Financiamiento) )
+
+
+Se menciona que las OBP pueden incluir códigos 6000, SNF, horas hombre, kilometraje, materiales y servicios. “Código 6000 se manejará por medio de lógica Dos Pinos interfazado a SFA.” (pag 24), “Trazabilidad en los registros de facturas, SNF Y NC de Obras en Proceso.” (pag. 26)
+Varios se mencionan en el AS-IS pero asumo que no irían en LDCOM (como las horas hombre, SNF, código 6000, kilometraje. pag.26) puesto que no se han mencionado en la lista de materiales en otras sesiones. Confirmar este punto.
+R/ No se incluyen
+
+horas hombre, kilometraje, servicios: son un material con su propio código
+
+
+Los SNF (servicios no facturados) se van a integrar en ldcom? Porque también se menciona "Código 6000 se manejará por medio de lógica Dos Pinos interfazado a SFA.”
+R/ No. Cuando se facturan código 5000/6000 desde dos pinos, lo que se va a enviar es una factura por un “material” de comisión (la comisión es otro material de servicio)
+
+
+
+Según el texto: "se creará una oferta o proforma desde el sistema de facturación, la cual hará referencia a la cotización firmada por el asociado”
+La proforma creada en LDCOM será la cotización en sí misma? O la cotización es otro documento externo al cual se necesita referenciar durante la creación de la proforma? 
+
+R/ La cotización si es un documento externo que crea otro equipo. En LDCOM No hay un campo específico para esto pero se puede incluir en el campo de “Observaciones” 
+
+
+**Se menciona en pag.25 “se solicitará la creación de al menos 3 sub-bodegas, con el fin de gestionar los materiales relacionados con cada OBP de manera individual”: Se debería mover los productos de proforma en una OBP a una bodega específica de forma automática?
+Se menciona que esos materiales deben tener un estado de “bloqueado”/”no libre utilización”. (INTERNO: si se mueve de bodega ya quedaría “bloqueado” para facturación, cierto?)
+
+Cuántas sub bodegas máximo?
+
+R/ Es operativo; se hacen las bodegas manualmente y se trasladan los materiales segun necesiten.
+
+
+ 
+
+2. Facturar sobre la proforma
+Cada despacho genera una factura independiente
+
+Queda asociado a la proforma
+
+Consume materiales de la proforma para irlos eliminando de la OBP
+
+Si es venta de silo, se factura desde el CEDI Coyol.
+Sigue la lógica de sacos/graneles donde en la misma sucursal se debe hacer “switch” a la sucursal de CEDI coyol para crear la preventa desde ahí. (habilidad para crear preventas a cualquier sucursal pero desde el almacén donde se creó la proforma)
+
+
+Por interface se puede crear una preventa por comisión (por código 6000)
+Comisión debe existir como SKU (si existe)
+
+Esa preventa no se asocia a la OBP ni edita la OBP
+
+
+:evergreen_tree:1f332🌲#C0B6F2Dudas (Dos Pinos)
+Se pueden agregar o quitar materiales durante todo el OBP?
+R/ Se puede modificar de la proforma OBP. No se pueden agregar otros materiales que no existen en la OBP
+
+
+Cuando se liquide/despache el último material de la OBP:
+Se cierra automáticamente la OBP o debe cerrarse manualmente?
+R/ Se puede “cerrar” o concluir manualmente una OBP (al editar una proforma)
+
+R/ Cuando se despache el último item se puede finalizar automáticamente
+
+
+Se imprime algo extra?
+R/ No
+
+
+
+Sobre el vencimiento de una OBP:
+Qué pasa si vence y ya se había despachado materiales? (o sea, quedan pendientes)
+R/ No se puede facturar más si la proforma está vencida. Se tiene que ampliar el plazo o finalizar la proforma.
+
+
+Se puede extender la vigencia?
+R/ Si se puede, por roles, y en la proforma.
+
+
+R/ Se pueden “revivir” OBPs
+
+
+Es obligatorio haber creado una OBP para realizar una factura en una OBP? O se pueden crear de inmediato con una primera factura?
+R/ No, se tuvo que crear la proforma primero
+
+
+Puede haber más de una OBP por asociado?
+R/ si
+
+
+Cualquier tipo de vendedor puede crear OBPs?
+R/ Proformas de OBP solo por roles. Facturas de una OBP si puede cualquier vendedor.
+
+
+Cómo se identifica una OBP? 
+Tendría un consecutivo aparte?
+No es necesario siempre y cuando se puedan identificar en un reporte.
+
+
+Al crearse la proforma debe imprimirse algún número de OBP?
+R/ Lo que imprima la proforma
+
+
+Ese número debe imprimirse en cada factura/NC asociada?
+R/ No
+
+
+
+Sobre el financiamiento y formas de pago:
+Sólo se puede pagar con financiamiento? Se permiten otras formas de pago de contado? 
+R/ No. Solo el plan de financiamiento seleccionado en la proforma.
+
+
+Se pueden realizar pagos parciales en facturas durante un OBP? (Ejemplo, una OBP con 5 facturas de las cuales 1 fue en contado)
+R/ No, todas van en el mismo plan de financiamiento
+
+
+Qué pasa si el límite de financiamiento se agota durante media OBP?
+R/ Flujo normal de crédito. Si ya no hay crédito disponible mostraría el mensaje de que ya alcanzó el límite.
+
+
+
+Puede incluir graneles/sacos en un OBP?
+R/ No
+
+
+El OBP debe solicitar datos extra del proyecto? (Ejemplo, subir documentos, referencias, cotizaciones, etc)
+R/ No
+
+
+Pag. 34: “No existirá dependencia entre la oferta y la factura para facturar los despachos de materiales.”: dependencia en qué sentido?
+R/ Se referían a una ventaja operativa al implementar esto. No es un cambio solicitado.
+
+
+Se necesita cambiar el estado de una OBP desde otro lugar diferente al módulo de facturación? (Ejemplo: un monitor de OBPs en el site admin para editarlas o cerrarlas manualmente) 
+R/ No
+
+
+Bajo qué criterios se busca una OBP en el punto de venta? (Ejemplo, código de cliente, número de OBP, etc)
+R/ ID cliente, número OBP, cédula del cliente
+
+R/ En LDCOM se busca por número de proforma, por cliente (nombre) y por rango de fechas.
+
+
+Qué tiene dif de una proforma OBP vs una normal?
+R/ todo lo mencionado previamente
+
+
+“No todos los materiales se pueden facturar en una OBP”
+R/ Es un tema operativo; los planes de financiamiento limitarían los materiales a incluir
+
+
+Se pueden facturar OBPs de otra sucursal?
+R/ No
+
+
+Las cantidades de devoluciones no se retornan a la proforma
+R/ No
+
+
+3. Integración con SFA
+Cada factura/nota de crédito/SNF se debe enviar al SFA
+Indicar que pertenecen a una OBP
+
+Indicar el plan de financiamiento (véase 4. Tipos de Crédito (Financiamiento) )
+
+
+SFA se encarga de consolidar todas las facturas de una OBP
+
+4. Devoluciones
+Las notas de crédito son como cualquier otra
+
+Se asocian a la OBP
+
+No se compensan automáticamente en el SFA
+
+note78b4b3f4-7b82-442c-9b3a-1023630633f1No se envía del todo al SFA? o el SFA se encarga de no compensarla automáticamente?
+R/ Se manda. El tema de compensar o no es lógica interna de dos pinos.
+
+
+No se envía del todo al SFA? o el SFA se encarga de no compensarla automáticamente?
+R/ Se manda. El tema de compensar o no es lógica interna de dos pinos.
+
+
+🪢 Interfaces
+Las interfaces están fuera del alcance de este proyecto. La integración y el detalle de estas interfaces se ve en X. Interfaces 
+Datos Maestros
+Materiales
+
+Clientes y tipos de cliente
+
+Transacciones
+Objetivo
+ | Origen
+ | Destino
+ | 
+Creación de documento OBP en SFA
+ | LDCOM
+ | Dos Pinos
+ | 
+Validación de límite de SFA
+ | LDCOM
+ | Dos Pinos
+ | 
+notea92f6321-e0ec-4616-a084-7b6753d70e2eEl envío de estos documentos a SFA será en vivo o consolidado al final del día junto al resto?
+
+El envío de estos documentos a SFA será en vivo o consolidado al final del día junto al resto?
+
+📈 Reportes
+Reporte
+ | Campos
+ | Filtros
+ | Notas
+ | 
+Proformas de OBPs 
+activas o finalizadas
+”sin vencer”
+
+ | ID Deudor
+
+Monto
+
+Fecha creación
+
+Fecha vencimiento
+
+Días de vigencia
+
+Unidad productiva (finca)
+
+AV
+
+Usuario
+
+Tipo de oferta
+
+Código de materiales
+
+Cantidades
+
+ | Plazo
+Asociado
+Finca
+Estado
+Rango de fechas
+(incluye activas, vencidas y finalizadas)
+“Unidad productiva = finca”
+ | Puede ser un ajuste al reporte existente de reportes de proformas
+ | 
+Reporte de facturación
+Validar existencias facturadas asociadas a un OBP
+ | ID Deudor
+
+Monto
+
+Código de materiales
+
+Unidad productiva
+
+Cantidades
+
+Fecha creación
+
+Plan de financiamiento
+
+Código de la proforma
+
+ | ?
+ | No mencionan:
+Usuario
+
+Estado (activo/finalizado)
+
+Número de factura
+
+Sucursal
+
+ | 
+Reporte de facturas por OBPs
+Campos
+ID Deudor
+
+Número de OBP
+
+Número de factura
+
+Monto
+Original de proforma?
+
+Despachado?
+
+Pendiente?
+
+
+Estado: Activo/Cerrado
+
+Código, nombre y cantidad de materiales facturados
+
+Código, nombre y cantidad de materiales pendientes
+
+Fecha de creación
+
+Fecha de vencimiento
+
+Días de vigencia
+
+Unidad productiva
+
+Sucursal
+
+Usuario
+
+Tipo de oferta
+Si es proforma OBP o no
+
+
+Filtros
+Por sucursal
+
+Por asociado
+
+Por unidad productiva 
+
+Por número de OBP?
+
+Reporte de facturas por OBPs (sugerido)
+Validar existencias facturadas al asociado relacionadas a un OBP
+Campos
+ID Deudor
+
+Número de OBP
+
+Número de factura
+
+Monto
+Original de proforma?
+
+Despachado?
+
+Pendiente?
+
+
+Código, nombre y cantidad de materiales facturados
+
+Código, nombre y cantidad de materiales pendientes
+
+Fecha de creación
+
+Fecha de vencimiento
+
+Días de vigencia
+
+Unidad productiva (finca)
+
+Sucursal
+
+Usuario
+
+Tipo de oferta
+Qué tipos?
+
+
+Filtros
+Por sucursal
+
+Por asociado
+
+Por unidad productiva 
+
+Por estado (activa/vencida/cerrada)
+
+Por número de OBP?
+
+🚫 Fuera del alcance
+Suposiciones
+La consolidación, cobro y gestión del crédito se realiza en el SFA.
+
+No hay que manejar logística de entrega, planificación de obra, aprobaciones, firmas o liquidacíon.
+
+Cambios previamente acordados
+TBD
+
+Cambios de otros proyectos
+TBD
+
+Fuera de contrato
+TBD
+
+ 
+💪🏼 Cambios a implementar
+Proformas y facturación de OBPs 
+Módulos: 🛠️ Site admin | 💵 POS
+Crear proformas de OBPs
+
+Buscador de OBPs abiertas para facturación
+
+Facturar y asociar facturas a una OBP
+
+Asociar una proforma a una preventa
+
+Criterios de aceptación
+Cuando se crea una preventa de una proforma, se actualiza el saldo de la proforma
+
+Cuando se elimina una preventa de una proforma, se retornan las unidades al saldo de la proforma.
+
+Funcionalidad a implementar 
+Módulos: 🛠️ Site admin | 💵 POS
+Describí o listá los cambios que se deben implementar en este story.
+Criterios de aceptación
+Listá los criterios con los que este story se consideran exitosos (evitar criterios redundantes).

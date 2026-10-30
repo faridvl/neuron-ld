@@ -1,0 +1,23 @@
+monto 1 -> HTTP 200 | -/- | 181 ms | HttpStatus=200 numSolicitud=147 numCredito=25093 monDisponible=170125082.62
+monto 9999.99 -> HTTP 200 | -/- | 7 ms | HttpStatus=200 numSolicitud=148 numCredito=25094 monDisponible=170115083.63
+monto 10000 (limite) -> HTTP 200 | -/- | 8 ms | HttpStatus=200 numSolicitud=149 numCredito=25095 monDisponible=170115083.62
+monto 10000.01 -> HTTP 400 | Funcional/SFA15-F01 | 4 ms | HttpStatus=400 detalle=["La identificación no se encuentra relacionada a un cliente válido.","No se pudo validar la identidad del solicitante.","La solicitud de crédito no fue procesada."]
+monto 15000 (limite) -> HTTP 400 | Funcional/SFA15-F01 | 4 ms | HttpStatus=400 detalle=["La identificación no se encuentra relacionada a un cliente válido.","No se pudo validar la identidad del solicitante.","La solicitud de crédito no fue procesada."]
+monto 15000.01 (timeout) -> HTTP 504 | Timeout/SFA15-TO1 | 2007 ms | HttpStatus=504 detalle=["Se agotó el tiempo de espera de la transacción."]
+monto 20000 (limite) -> HTTP 504 | Timeout/SFA15-TO1 | 2016 ms | HttpStatus=504 detalle=["Se agotó el tiempo de espera de la transacción."]
+monto 20000.01 -> HTTP 500 | Conectividad/SFA15-C01 | 5 ms | HttpStatus=500 detalle=["No se pudo establecer conexión con el sistema de créditos."]
+monto 0 -> HTTP 400 | Funcional/SFA15-F01 | 7 ms | HttpStatus=400 detalle=["monSolicitud debe ser un número mayor que cero."]
+monto "abc" -> HTTP 400 | Funcional/SFA15-F01 | 8 ms | HttpStatus=400 detalle=["monSolicitud debe ser un número mayor que cero."]
+cuerpo {} -> HTTP 400 | Técnico/HTTP_400 | 5 ms | HttpStatus=400 detalle=["El cuerpo de la solicitud es requerido."]
+sin credenciales -> HTTP 400 | Seguridad/SFA15-S01 | 5 ms | HttpStatus=400 detalle=["Usuario o contraseña incorrectos."]
+credenciales malas -> HTTP 400 | Seguridad/SFA15-S01 | 7 ms | HttpStatus=400 detalle=["Usuario o contraseña incorrectos."]
+sin codCliente ni tipo/num id -> HTTP 400 | Funcional/SFA15-F01 | 3 ms | HttpStatus=400 detalle=["Debe informarse codCliente o la combinación codTipoId y numId."]
+codCliente solo (OK) -> HTTP 200 | -/- | 2 ms | HttpStatus=200 numSolicitud=150 numCredito=25096 monDisponible=170125082.62
+indUsaLinea X -> HTTP 400 | Funcional/SFA15-F01 | 3 ms | HttpStatus=400 detalle=["indUsaLinea debe ser S o N."]
+numLinea 5 -> HTTP 400 | Funcional/SFA15-F01 | 5 ms | HttpStatus=400 detalle=["El valor permitido de numLinea es 0."]
+campos faltantes (3) -> HTTP 400 | Funcional/SFA15-F01 | 3 ms | HttpStatus=400 detalle=["El campo codEmpresa es requerido.","El campo nomAutorizado es requerido.","El campo codUsuario es requerido."]
+cuerpo vacio -> HTTP 400 | Técnico/HTTP_400
+JSON roto -> HTTP 400 | Técnico/HTTP_400
+registro: 20 llamadas; contrasena en el registro: enmascarada
+GET / (pagina existente) -> HTTP 200, titulo igual
+POST /subscriptions/x/data sin autenticacion -> HTTP 401

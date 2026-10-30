@@ -1,0 +1,607 @@
+1. Formas de Pago
+Objetivo general: Seleccionar múltiples formas de pago en una factura, de contado o crédito
+11falsenonelisttrue  Enlaces y Anexos
+Controles de Cambio: 
+9. To_Be_Métodos de Pago Versión 001
+
+9. To_Be_Métodos de Pago Versión 002
+
+9. To_Be_Métodos de Pago Versión 004
+
+Documentos:
+Ofertas: 
+CO-696-0004 Gestión de Formas de Pago
+
+CO-696-0004 Gestión de Formas de Pago v2
+
+CO-696-0004 Gestión de Formas de Pago v2.1
+
+CO-696-0004 Gestión de Formas de Pago v3
+
+
+Requerimientos:
+RQ-696-0002 Gestión de Formas de Pago v1
+
+
+Guías de Usuario:
+Guía de Usuario - Gestión de Formas de Pago
+
+
+Estimaciones:
+CO-696-0004 Gestión de Formas de Pago en Punto de Venta
+
+
+Diseños:
+Miro:
+CDC: https://miro.com/app/board/uXjVJwCACMU=/?moveToWidget=3458764646853075196&cot=14 
+
+Planning: https://miro.com/app/board/uXjVJtaJhsA=/?moveToWidget=3458764650890578115&cot=14 
+
+
+Figma: https://www.figma.com/design/1vbz7M7JzzsLCZ6a8czs5l/Dos-Pinos?node-id=1041-331 
+
+Matrices de Cambio:
+As Is - To Be: Matriz AS-IS TO-BE Entradas y salidas de caja
+
+Propuesta de Solución: Propuesta Solución Gestión formas de pago
+
+Ajustes de Cambio:
+Estos ajustes corresponden a nuevos cambios de la oferta inicial
+Ajustes en Sprint Review # 1: 
+88.A. Ajustes en Sprint Review # 1 
+
+🎯 Objetivos
+Dos Pinos tiene muchas formas de pago y se debe replicar en LDCOM.
+
+Hay formas de pago asociadas al tipo de documento.
+
+No se puede combinar métodos de pago en crédito.
+
+Utilizar crédito del distribuidor padre cuando factura un distribuidor hijo
+
+📜 GAPs asociados
+https://logicaldata.atlassian.net/wiki/spaces/DP/database/298483713?savedViewId=e74133f6-ed87-403b-8aa4-e3568860e204 
+📕 Contexto
+https://logicaldata.atlassian.net/wiki/spaces/undefined/database/31653905?savedViewId=5bd26691-4793-4c35-9c9b-4b8a40e22ec7En Dos Pinos existen aproximadamente 20 formas de pago, de las culés solo están utilizando  las siguientes formas de pago:
+Código
+ | Nombre
+ | Existe en LDCOM?
+ | Afecta caja
+ | Debe mostrarse en el POS?
+ | 
+BO01
+ | Bonos Asamblea DP
+ | ❌ 
+ | ✅
+ | ✅
+ | 
+CERT
+ | Certificado de Regalo ATS/AV
+ | ❌Se prefiere mantener separado
+ | ✅
+ | ✅ 
+ | 
+CHEQ
+ | Cheque
+ | ✅
+ | ✅
+ | ✅
+ | 
+DEPT
+ | Depósito o transferencia
+ | ✅
+ | ✅
+ | ✅
+ | 
+EFEC
+ | Efectivo
+ | ✅
+ | ✅
+ | ✅
+ | 
+SIN1
+ | SINPE
+ | ✅
+ | ✅
+ | ✅
+ | 
+TEXP
+ | Tarjeta Express (E-commerce / Televentas)
+ | ❌ 
+ | ❌ (cobra online)
+ | ❓(se necesita?)
+ | 
+THOT
+ | Otras tarjetas
+ | ✅ (Tarjeta)
+ | ✅
+ | ✅
+ | 
+MIXTO
+ | Combinación de pagos (sin crédito)
+ | ✅
+ | ✅
+ | ✅
+ | 
+CRÉDITO
+ | Crédito Asociado / Distribuidor
+ | ❌ 
+ | ❌
+ | ✅
+ | 
+GAPs
+Estos métodos se deben crear desde cero:
+Bonos Asamblea DP 
+
+Certificado de Regalo
+
+Tarjeta Express
+
+Crédito
+
+Crear nuevas formas de pago dinámicas
+
+Para detalles de factura electrónica y como se asocia cada formas de pago, véase 99. Interfaces: Externos 
+Las formas de pago se van a seguir habilitando por sucursal/caja.
+Se necesita dejar abiertas las formas de pago por si se crean más en el futuro.
+Flujos de crédito
+Cuando un cliente tiene la condición de Crédito debe ir a validar el límite en SAP (véase 98. Interfaces ).
+Cuando un cliente tiene la condición de Financiamiento puede elegir entre planes (véase 4. Tipos de Crédito (Financiamiento)) y valida el límite desde el SFA (véase 98. Interfaces ).
+Las formas de pago de Crédito o Financiamiento se habilitan si el cliente tiene la condición marcada desde datos maestros; no depende del tipo de cliente sino del maestro.
+Formas de pago por documento
+Tipo de Documento
+ | Descripción
+ | Tipo de pago
+ | 
+Factura de contado
+ | Venta directa en caja
+ | Todas, excepto combinar con crédito ni planes de financiamiento
+ | 
+Factura de crédito
+ | Solo para asociados y distribuidores con condición de  línea de crédito (desde datos maestros).
+Puede bloquearse un usuario de crédito (ejemplo: cuando está en deuda). Ahí no se puede vender de ningún modo.
+ | Sólo crédito
+ | 
+Factura de plan de financiamiento
+ | Solo para asociados productores cuando traen la condición de cliente F.
+ | Sólo crédito mediante un plan de financiamiento
+ | 
+Nota de crédito (contado)
+ | Al hacer una nota se puede devolver en otra forma de pago.
+ | Se necesita devolver la forma de pago de origen, o permitir efectivo.
+ | 
+Nota de crédito (crédito)
+ | Devolución sobre una factura realizada a crédito.
+ | Internamente se hace un movimiento en SFA/SAP
+ | 
+Servicios no facturados (SNF)
+ | Código 5000/6000
+ | Sólo crédito
+ | 
+En LDCOM se permiten devoluciones por la forma de pago original, excepto: Transferencia/ Nota crédito (nota de reconocimiento) / Monedero / Tarjeta (si sigue el pinpad en caja) / Efectivo.
+Al facturar, Transferencia no da vuelto.
+PENDIENTE DE DISCUTIR INTERNAMENTE (DP)
+GAP Nuevo
+Habilitar la devolución en efectivo (pendiente de discusión en DP)
+
+Formas de pago por canal de venta
+Canal de venta
+ | Características
+ | Roles
+ | Tipo de pago
+ | 
+AV Autoservicio
+ | El cajero tiene su propia caja
+ | Cajero
+ | Todas
+ | 
+AV Mostrador
+ | Los vendedores no tienen caja, solo hacen preventa. 
+El cliente pasa a una “caja” donde lo atiende un financiero.
+ | Vendedor / Financiero / Televenta
+ | Vendedor: Tarjeta/Crédito
+Financiero: Todos
+ | 
+Televenta
+ | Hace preventas por llamadas. 
+ | Televentas
+ | Todos (pero no se usa porque son solo preventas)
+ | 
+Se plantea quitar el rol de cajero financiero en AV Mostrador y darle una caja al vendedor. Pero el proyecto se tomará sin tomar ese cambio en cuenta.
+Los métodos de pago se pueden configurar por sucursal y por caja, pero no se puede desglosar la forma de pago “Otros” (o sea, se activan o desactivan todos los subtipos de “Otros”)
+En Preventa no se usan métodos de pago. Podrían contratar el módulo LDExpress.
+Forma de pago por tipo de usuario
+Los clientes podrán hacer uso de las formas de pago configuradas en cada caja. La única excepción a la regla son las formas de págo de crédito las cuales dependen de la condición con la que venga el dato maestro (si puede hacer Credito y/o Financiamiento) en cuyo caso se habilita la opción también (véase https://logicaldata.atlassian.net/wiki/spaces/DP/pages/13959169/1.+Formas+de+Pago#Flujos-de-cr%C3%A9dito)
+Véase más detalle de los tipos de clientes en 2. Tipos de Clientes 
+Devoluciones
+Documento/Forma de pago original
+ | Formas de pago para devoluciones
+ |  | 
+Contado: Cualquier forma de pago
+ | Forma de pago original
+
+Efectivo
+
+No recordamos si son todas las formas de pago habilitadas y parametrizadas, o solo la forma original. Jenni va a revisar llamadas
+ |  | 
+ |  |  | 
+🪢 Interfaces
+Las interfaces están fuera del alcance de este proyecto. La integración y el detalle de estas interfaces se ve en 98. Interfaces 
+Datos Maestros
+No aplica ningún dato maestro. Los métodos de pago se configuran en LDCOM.
+Transacciones
+Objetivo
+ | Origen
+ | Destino
+ | 
+Consolidado de ventas con cada método de pago utilizado, usando el código de cada forma de pago Dos Pinos
+ | LDCOM
+ | Dos Pinos
+ | 
+Consulta de límite de crédito/bloqueo
+(Véase en proyecto 4. Tipos de Crédito (Financiamiento) )
+ | Dos Pinos
+ | LDCOM
+ | 
+Factura electrónica
+Para detalles de factura electrónica y como se asocia cada formas de pago, véase 99. Interfaces: Externos 
+📈 Reportes
+Reportes existentes:
+No existe ningún reporte en LDCOM específico por forma de pago, o uno general donde incluya todas las ventas, pero se puede derivar de otros.
+Se menciona que se debe auditar: usuario, fecha, método de pago, monto y autorización del POS.
+Reporte necesario
+Reporte de pagos por caja que incluya:
+Tipo de documento (Factura / NC / SNF)
+
+Número de factura
+
+Número de factura origen (en notas de crédito)
+
+ID Cliente
+
+Fecha / Hora
+
+Monto
+
+Método de pago
+
+Asignación
+Número de transferencia bancaria/cheque/sinpe móvil
+
+Número de autorización del pinpad
+
+
+Usuario
+
+Punto de venta
+
+Pagador (código del cliente que maneja el crédito)
+
+Autorizado / Finca
+
+
+GAP Alert
+Hacer ajuste de columnas al reporte de ventas por caja
+
+Reporte existente en LDCOM
+Reporte detallado de cierres. Se filtra por sucursal.
+Reporte de devoluciones
+Ajustes a los reportes de devoluciones para incluir la forma de pago de efectivo o la respectiva.
+Referenciar a los reportes de BM para ajustes en reportes de devoluciones con efectivo
+🔐 Seguridad
+Ninguno
+🚫 Fuera del alcance
+Los cierres contables son algo interno de Dos Pinos; LDCOM envía las ventas con cada método de pago y ahí se resuelve el resto (cuentas contables, asientos, etc).
+
+Los cierres de caja con otras formas de pago afectan solo a los cierres locales en el punto de venta, no trastienda. 
+
+Cambios previamente acordados
+Los cierres contables son algo interno de Dos Pinos; LDCOM envía las ventas con cada método de pago y ahí se resuelve el resto (cuentas contables, asientos, etc).
+
+Cambios de otros proyectos
+Todos los puntos relacionados al sistema de financiamiento se realizarán en el proyecto 4. Tipos de Crédito (Financiamiento). Algunos mencionados:
+No permitir el método de pago crédito cuando el cliente no tiene disponible (online u offline)
+
+Usar el último valor cacheado del límite de crédito
+
+
+Los servicios no facturados está en el proyecto Y. Servicios No Facturados (SNF) 
+
+Fuera de contrato
+Creación de formas de pago dinámicas está fuera del contrato
+
+💪🏼 Cambios a implementar
+Formas de pago dinámicas ✅
+Módulos: 🛠️ Site admin | 📦 Inventario Web | 💵 POS
+Se deben registrar múltiples formas de pago desde el site administrativo para crear, modificar, activar/desactivar formas de pago y que se muestren en el módulo de Punto de Venta.
+
+Se puede ingresar un número de referencia opcional.
+
+Cada forma de pago afecta al cierre de cajas y los retiros dinámicos son calculados automáticamente.
+
+Se debe incluir en los cierres de caja trastienda en Inventario Web.
+
+Incluir el menú (Empresa > Otras formas de pago) en las tablas de Permisos.
+
+Criterios de aceptación
+Las “otras formas de pago” se crean a nivel de empresa.
+
+Cada forma de pago se puede activar/desactivar desde sucursal y caja, como se hace actualmente con las otras formas de pago.
+
+Deben seguir las formas de pago actuales:
+Efectivo
+
+Tarjeta
+
+Cupones
+
+Cheque
+
+Extranjera
+
+Nota
+
+Monedero
+
+Gift Card
+
+Transferencia
+
+El campo de Otra no existiría sino cada forma creada dentro de “Otros” se desglosa como si fuera igual al resto.
+
+
+En el punto de venta no se retira la forma de pago dinámica manualmente, sino automático.
+
+El campo de “número de referencia” es opcional al facturar y se guarda con el resto de datos.
+
+Reportes ⚠️
+Módulos: 🛠️ Site admin 
+Nuevo reporte “Por transacción”
+Se puede filtrar por sucursal/fecha.
+
+Incluye los campos:
+Tipo de documento (Factura / NC / SNF)
+
+Número de documento
+
+Número de factura (cuando es una nota de crédito)
+
+Fecha / Hora
+
+Usuario cajero
+
+Sucursal
+
+Caja
+
+Código cliente
+
+Nombre cliente
+
+Código Pagador (“código y nombre de cliente padre -Asociado/Distribuidor/Empleado-”)
+
+Nombre Pagador
+
+Autorizado (“código y nombre del autorizado”)
+
+Finca (“código y nombre de la finca”)
+
+Monto
+
+Método de pago
+
+Asignación
+Número de transferencia bancaria/cheque/sinpe móvil
+
+Número de autorización del pinpad
+
+
+
+
+Desglosar las formas de pago “Otros” para que salgan individual en los siguientes reportes:
+Cierre detallado por forma de pago
+
+Cierre detallado por ventas
+
+Retiro por cajero detallado
+
+Retiros por sucursal
+
+Retiros por cajero
+
+Reporte de faltantes y sobrantes por caja
+
+Reporte de ventas por caja
+
+Reporte de ventas por cajero
+
+Reporte de devoluciones por cierre
+
+
+Criterios de aceptación
+Debe exportarse a Excel más los formatos existentes
+
+Crédito de distribuidores ✅
+Módulos: 💵 POS | ⏳ Preventa
+Utilizar el límite de crédito del Distribuidor padre cuando factura un Distribuidor hijo (véase 2. Tipos de Clientes ).
+
+Criterios de aceptación
+Si el Distribuidor es el padre (no tiene relación de hijos con otros distribuidores) se usa su propio límite de crédito.
+
+Si el Distribuidor tiene un padre, se verifica el límite del padre.
+
+Si el Distribuidor padre tiene el crédito bloqueado, también lo tendrán bloqueados los hijos.
+
+Devoluciones en efectivo
+Módulos: 🛠️ Site admin | 💵 POS
+Seleccionar múltiples formas de pago en las devoluciones
+
+
+Permitir la devolución de efectivo siempre
+
+Indicador de devoluciones ya realizadas al buscar documentos
+
+
+Advertencia para revisar el efectivo en caja cuando se hace una devolución en efectivo.
+
+Ajuste a los reportes de devoluciones para incluir las formas de pago (más de 6 reportes de cierres y formas de pago)
+
+Referenciar a los reportes de BM para ajustes en reportes de devoluciones con efectivo
+Criterios de aceptación
+Siempre se habilita la opción de efectivo
+
+Cuando se elige devolver en efectivo se muestra un modal de confirmación para revisar el efectivo en caja.
+
+Siempre se puede devolver en la forma de pago original (una o varias).
+
+Cuando un documento ya tuvo alguna devolución parcial, se debe visualizar la cantidad devuelta en una columna en la pantalla de búsqueda. 
+
+Cuando la forma de pago original es Monedero | Puntos, no se debe impedir que se devuelva en efectivo.
+Si fue un documento pagado mixto con Monedero | Puntos, y se decide devolver la forma de pago original, solo parte de Monedero | Puntos se reintegra ahí, y el resto se sigue devolviendo en las formas correspondientes.
+
+
+Bloqueo de crédito ✅
+Módulos: 🛠️ Site admin | 💵 POS
+Estado para bloquear un cliente (similar al activo/inactivo). Esto se guarda asi en nube.
+
+Validar el estado de bloqueo al facturar. No permitiría documentos de ningún tipo. Proformas si se permiten.
+
+Además del estado del cliente en la nube, un cliente se puede bloquear desde el punto de venta, y solo local (no se sincroniza el estado hacia arriba).
+
+Cada vez que se bloquea o desbloquea se guarda en bitácora.
+
+Se debe guardar una bitácora y subirla al server por cada cambio de bloqueo/desbloqueo.
+
+Reportes
+Bitácora con cada bloqueo/desbloqueo en los puntos de venta.
+Campos:
+Qué cliente
+
+Sucursal/caja
+
+Cuál cajero
+
+Quién autorizó
+
+Estado que se actualizó
+
+Fecha/hora
+
+
+Filtros
+Fecha
+
+Sucursal 
+
+
+
+Reporte de clientes bloqueados (la lista de todos los clientes)
+Campos:
+Código/nombre del cliente
+
+Tipo de bloqueo: En línea/Local
+Cuando es bloqueo local: Sucursal/caja
+
+
+Usuario que autorizó el bloqueo (podría ser el usuario de sistema)
+
+Fecha/hora
+
+
+Ejemplo
+
+
+
+Cliente
+ | fecha de ultimo bloqueo
+ | user que bloquó
+ | tipo de bloqueo
+ | sucursal/caja bloqueo local
+ | 
+pepito 
+ | fecha de bloqueo: 12/02/2025
+ | user bloqueó: 
+karen
+ | tipo bloqueo:
+en linea
+ |  | 
+carlos
+ | fecha de bloqueo: 12/02/2025
+ | user bloqueó: 
+karen
+ | tipo bloqueo:
+local
+ | sucursal/caja de bloqueo local:
+alajuela caja1
+ | 
+carlos
+ | fecha de bloqueo: 12/02/2025
+ | user bloqueó: 
+karen
+ | tipo bloqueo:
+local
+ | sucursal/caja de bloqueo local:
+alajuela caja2
+ | 
+
+Criterios de aceptación
+Si el cliente está bloqueado, no permite transacciones de venta (contado, crédito, regalías, preventas, planes de financiamiento).
+
+Si permite crear devoluciones, movimientos de caja y proformas.
+
+El bloqueo es local. Si se bloquea en una caja nunca debe propagarse a la nube (o sea, no se propaga a otras cajas o sucursales)
+
+Cambiar el estado de bloqueo desde el servidor si propaga el cambio a las sucursales. O sea, sobrescribe el estado de bloqueo que exista en una sucursal.
+
+El estado de bloqueo local se va a actualizar con el valor de la nube si ese cliente se actualizó posteriormente a la última fecha de sincronización.
+
+Si el cliente se bloquea local, pero no en la nube, el estado seguirá siendo bloqueado hasta que se desbloquee localmente o se actualice cualquier valor.
+
+Visuales
+El botón de "bloqueado" en el mantenimiento cambia el texto si está actualmente bloqueado o desbloqueado.
+
+
+Reporte
+Los reportes se exportan en excel.
+
+Reporte de clientes bloqueados
+Un cliente bloqueado en línea se muestra una sola vez. No se muestra si está bloqueado localmente.
+
+Se muestran los clientes bloqueados localmente si están desbloqueados en línea. Muestra la sucursal y caja donde sigue bloqueado.
+
+
+
+Depósitos automáticos
+Módulos: 💵 POS
+Crear un depósito automático al generar un retiro.
+
+Se solicita un número de depósito y banco.
+
+Parámetro por caja para configurar si el depósito se debe solicitar durante el retiro.
+
+Criterios de aceptación
+Si el parámetro de la caja para solicitar el depósito está activo, se muestra la pantalla siempre durante el retiro.
+
+El depósito va en la misma transacción del retiro; o sea, si falla el depósito, no se concluye el retiro.
+
+Es requerido llenar la información del depósito.
+
+La pantalla de depósito solo se muestra si hubo retiro de efectivo, cheque o moneda extranjera.
+
+El retiro se hace automáticamente con los montos de efectivo + cheque + moneda extranjera, todo en colones.
+
+Integración con BAC Credomatic
+Mover a otro proyecto
+Revisar con Joselin qué sucede cuando existe un timeout donde se efectúa la anulación/transacción en el pinpad pero no llegó a guardarse en LDCOM.
+Módulos: 💵 POS
+Desarrollar escenarios de error en devoluciones: https://www.figma.com/design/1vbz7M7JzzsLCZ6a8czs5l/Dos-Pinos?node-id=1063-442&t=g4dHkT4bpsLyaMdv-0 
+
+Criterios de aceptación
+Cuando una anulación de tarjeta con pinpad integrado falla, se muestra un modal de error con la opción de devolver en efectivo o cerrar el documento.
+Cuando se devuelve en efectivo, se finaliza e imprime la devolución inmediatamente
+
+Cuando se elige devolver en efectivo, se muestra un modal de confirmación para revisar el efectivo en caja.
+
+Cuando se elige “cerrar”, se limpia la factura por completo.
+
+

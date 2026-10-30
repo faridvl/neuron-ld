@@ -1,0 +1,561 @@
+[No Usar] v3  Propuesta de solución CO-696-0007
+Actualización de Oferta
+Actualización
+ | Versión
+ | Fecha
+ | 
+Nueva Propuesta 
+ | 3
+ | 09/03/2026
+ | 
+PROPUESTA DE SOLUCIÓN (Módulo Nuevo + LDCOM)
+SITUACIÓN ACTUAL
+Actualmente, Dos Pinos administra los Tipos de Crédito mediante líneas de crédito configuradas en SAP para los asociados Estas líneas definen los artículos autorizados, tasas de interés, plazos y restricciones de uso según la clasificación del cliente (Banca de Desarrollo o No Banca).
+ Sin embargo, no existe una opción unificada que permita la administración integral de los Tipos de Crédito, ni dispone de mecanismos formales de bitácoras, reportería o validaciones avanzadas en el Punto de Venta (POS). Esto limita el control operativo y la trazabilidad, y genera la necesidad de un desarrollo que centralice la información y se integre entre LDCOM y SAP para soportar la facturación financiada de manera consistente.
+ Por lo que requiere un desarrollo que centralice la configuración y administración de los Tipos de Crédito, y comunique al Punto de Venta con los Tipos de Crédito definidos, para soportar de manera consistente y controlada la facturación financiada.
+GAPS CONTRATO INCLUIDOS EN ESTA PROPUESTA
+1. GAPS asociados al Contrato
+Tipo
+ | Id
+ | Proyecto CT
+ | CDC
+ | 
+GAP Contrato
+ | 58
+ | Cotizar contar con la forma de pago de financiamientos hacia nuestros Asociados y empleados de acuerdo a la hoja ""Forma Pago Finan. Inter"
+ | Modelo To_Be_Financiamiento Versión 002
+ | 
+2. Nuevas Necesidades identificadas
+Tipo
+ | Proyecto CT
+ | CDC
+ | 
+GAP Nuevo
+ | Reporte de Facturación por Tipos de Crédito.
+ | Modelo To_Be_Financiamiento Versión 002
+ | 
+PROPUESTA DE SOLUCIÓN TIPOS DE CRÉDITO.
+Site Admin
+Ruta: Por definir
+Cambio 1. Mantenimiento Tipos de Crédito
+ | 
+Módulo Tipos de Crédito: se requiere crear un nuevo mantenimiento que permita la gestión y administración de Tipos de Crédito.
+ 
+Este mantenimiento contemplará las siguientes funcionalidades:
+Permitirá únicamente la consulta de Tipos de Crédito (el origen de esta información proviene de la interfaz correspondiente de Dos Pinos).
+
+ Cada Tipo de Crédito podrá contar con la siguiente información:
+Id Tipo de Crédito.
+
+Descripción Tipo de Crédito.
+
+Tasa de interés.
+
+Plazo (en semanas): Se manejará un conjunto de plazos posibles por cada plan (tipo de crédito); el plazo no será abierto ni funcionará como un tope máximo.
+
+Aplica para:
+Banca para Desarrollo.
+
+No Banca para Desarrollo.
+
+Ambos.
+
+Cliente específico.
+
+
+Vigencia
+Fecha Inicio.
+
+Fecha Fin.
+
+
+Estado.
+
+
+
+Asignación de Artículos: Esta funcionalidad permitirá la administración de los artículos asociados a cada Tipo de Crédito considerando lo siguiente:
+Un artículo podrá estar asociado a uno o más Tipos de Créditos.
+
+Un plan podrá tener uno, varios o ningún artículo asociado.
+
+
+
+ Asignación de Clientes: Esta funcionalidad permitirá la administración de los clientes asociados a cada Tipo de Crédito, considerando el parámetro denominado “Aplica para”.
+
+
+El comportamiento será el siguiente:
+Banca: el plan aplicará a todos los clientes clasificados como banca.
+
+No banca: el plan aplicará a todos los clientes clasificados como no banca.
+
+Ambos: el plan aplicará a todos los clientes, sin distinción de clasificación.
+
+Cliente específico: el sistema permitirá asociar un cliente puntual por Tipo de Crédito; en este caso, la selección de clientes se validará contra el valor configurado en “Aplica para”.
+Solo debe Mostrarse la Asignación de Artículos, y debe ocultarse la Asignación de Clientes.
+
+
+ 
+Consideraciones:
+Los tipos de Crédito serán creados y configurados desde Ldcom.
+
+Esta opción podrá ser controlada por la seguridad del sistema, limitando los accesos de modificación de tipos de crédito.
+
+ | 
+ 
+Base de Datos LDCOM
+Ruta: Por definir
+Cambio 2. Almacenamiento Tipos de Crédito
+ | 
+Base de Datos: Se requiere incluir en la Base de Datos de LDCOM nuevas estructuras que permitan:
+ 
+Almacenar la información de los Tipos de Crédito, de forma que se habiliten consultas eficientes durante los procesos de facturación y preventa.
+
+Registrar los artículos asociados a cada Tipo de Crédito.
+
+Mantener la fecha y hora de la última sincronización de la información proveniente de sistemas externos.
+
+Garantizar la consistencia entre la información externa sincronizada y los datos utilizados por los módulos operativos de LDCOM.
+
+ 
+Esta arquitectura permitirá que LDCOM continúe operando aun cuando el API externo no esté disponible temporalmente, utilizando la información sincronizada localmente.
+ | 
+ 
+Site Admin
+Ruta: Catálogo - Clientes- Cliente
+Cambio 3. Límites de Tipos de Crédito y Límites de Crédito del Cliente
+ | 
+Límites de Tipos de Crédito: Se requiere incluir dos nuevos campos en el mantenimiento de clientes que permitirán la visualización de información financiera relevante, incluyendo el límite de crédito y el límite de Tipo de Crédito del cliente.
+ 
+Estos campos serán de consulta únicamente, sin posibilidad de edición, y estarán disponibles para apoyar los procesos operativos y de validación.
+ | 
+ 
+Site Admin
+Ruta: Catálogo - Clientes- Cliente
+Cambio 4. Clasificación Cliente Banca y No Banca
+ | 
+Clasificación: Se requiere incluir nuevos parámetros de categorización de clientes que permitirá clasificar a cada cliente como banca para desarrollo, no banca para desarrollo o ambos.
+ 
+Esta clasificación será utilizada por el sistema para la aplicación de reglas y validaciones asociadas a los Tipos de Crédito.
+ | 
+ 
+Site Admin
+Ruta: Catálogo - Empresa - Ventas - Subdocumentos
+Cambio 5. Indicadores Subdocumentos
+ | 
+Subdocumentos: Se debe crear un nuevo indicador en los subdocumentos de crédito, que permitirá identificar y diferenciar los créditos generados mediante Tipos de Crédito.
+ 
+El indicador permitirá:
+Clasificar el documento como Crédito por Financiamiento.
+
+Aplicar reglas de negocio específicas según el Tipo de Crédito
+
+Habilitar el manejo de información asociada a tasas, plazos, cuotas.
+
+ | 
+ 
+Preventa
+Ruta: Preventa
+Cambio 6. Validación de Tipos de Crédito
+ | 
+Validación: Se requiere modificar el proceso de preventas a fin de validar, que al seleccionar un documento de Tipo de Crédito, si este corresponde a un subdocumento financiamiento (Tipo de Crédito), aplicando reglas y validaciones especificas definidas para este tipo de transacción.
+ 
+Consideraciones:
+El sistema deberá validar el límite de crédito del cliente antes del ingreso de los artículos a la factura.
+
+Cuando un Tipo de Crédito esté configurado para un cliente específico, este solo se mostrará para dicho cliente, independientemente de su clasificación como banca o no banca.
+
+Cada factura podrá estar asociada únicamente a un Tipo de Crédito de financiamiento.
+No se permitirá la combinación de distintos Tipos de Crédito dentro de una misma transacción.
+
+
+Para que un Tipo de Crédito se muestre como disponible, todos los artículos del documento deberán pertenecer al mismo Tipo de Crédito.
+
+El sistema validará que todos los artículos incluidos en la factura pertenezcan Tipos de Crédito seleccionado.
+Si existe una mezcla de artículos asociados a distintos Tipos de Crédito, el sistema no mostrará opciones de Tipos de Crédito disponibles.
+
+
+No se permitirá completar la preventa con Tipos de Crédito de artículos restringidos o libres.
+
+Los datos de los Tipos de Crédito (tasas, artículos asociados, plazos, estado activo/inactivo) se actualizarán al momento de abrir la caja.
+
+Al seleccionar Tipo de Crédito como forma de pago:
+No se permitirá la combinación con ninguna otra forma de pago.
+
+Será obligatoria la captura de la información del Tipo de Crédito, del asociado y de las condiciones aplicadas.
+
+
+La forma de pago Tipo de Crédito solo estará habilitada si el cliente cuenta con la condición correspondiente.
+
+La forma de pago Tipo de Crédito realizará un retiro automático en los procesos de retiro y/o cierre de caja.
+
+El sistema permitirá desactivar la forma de pago Tipo de Crédito desde el site administrativo.
+Si el cliente cuenta con la condición, pero la sucursal o la caja no, la opción no deberá mostrarse.
+
+Esta funcionalidad permitirá deshabilitar temporalmente el financiamiento.
+
+
+12.  Se permitirá cambiar el tipo de documento de crédito a contado sin necesidad de reiniciar la preventa.
+
+13.  El sistema deberá recalcular automáticamente el documento considerando las nuevas condiciones.
+
+ | 
+ 
+Preventa
+Ruta: Preventa
+Cambio 7. Pantalla Principal
+ | 
+Modificar pantalla principal: Se requiere modificar la pantalla principal a fin de poder incorporar la nueva funcionalidad de Tipos de Crédito.
+ | 
+ 
+Preventa
+Ruta: por definir
+Cambio 8. Pantalla Simulador de Cuotas
+ | 
+Simulador de Cuotas: Se requiere incluir una funcionalidad que permita visualizar el cálculo del Tipos de Crédito, considerando:
+ 
+Simulador de cuotas:
+Tabla de amortización.
+
+Cálculo de intereses.
+Visualización del detalle por semana, incluyendo cuota, interés, saldo y semana de pago.
+
+
+
+ | 
+ 
+Preventa
+Ruta: Preventa - FX Imprimir Documento - Imprimir
+Cambio 9. Impresión de tiquetes de Tipos de Crédito
+ | 
+Tiquete: Se requiere crear un nuevo tiquete que incluya la siguiente información:
+ 
+Encabezado.
+Detalle de los artículos.
+
+Tipos de Crédito.
+Tipo de Crédito.
+
+Plazo de financiamiento.
+
+
+
+ | 
+ 
+Punto de Venta
+Ruta: Punto de Venta
+Cambio 10. Validación de Tipos de Crédito
+ | 
+Validación: Se requiere modificar el proceso de facturación a fin de validar, que al seleccionar un documento de crédito, si este corresponde a un subdocumento financiamiento (Tipo de Crédito), aplicando reglas y validaciones especificas definidas para este tipo de transacción.
+ 
+Consideraciones:
+El sistema deberá validar el límite de crédito del cliente antes del ingreso de los artículos a la factura.
+
+Cuando un plan esté configurado para un cliente específico, este solo se mostrará para dicho cliente, independientemente de su clasificación como banca o no banca.
+
+Cada factura podrá estar asociada únicamente a un Tipo de Crédito.
+No se permitirá la combinación de distintos Tipos de Crédito dentro de una misma transacción.
+
+
+Para que un Tipo de Crédito se muestre como disponible, todos los artículos del documento deberán pertenecer al mismo Tipo de Crédito.
+
+El sistema validará que todos los artículos incluidos en la factura pertenezcan al Tipo de Crédito seleccionado.
+Si existe una mezcla de artículos asociados a distintos Tipos de Crédito, no se ofrecerá ningún Tipo de Crédito.
+
+
+No se permitirá facturar con financiamiento (Tipo de Crédito) artículos restringidos o libres.
+
+Los datos del Tipo de Crédito (tasas, artículos asociados, plazos, estado activo/inactivo) se actualizarán al momento de abrir la caja.
+
+Al seleccionar Tipo de Crédito como forma de pago:
+No se permitirá la combinación con ninguna otra forma de pago.
+
+Será obligatoria la captura de la información del Tipo de Crédito, del asociado y de las condiciones aplicadas.
+
+
+La forma de pago Tipo de Crédito solo estará habilitada si el cliente cuenta con la condición correspondiente.
+
+La forma de pago Tipo de Crédito realizará un retiro automático en los procesos de retiro y/o cierre de caja.
+
+El sistema permitirá desactivar la forma de pago Tipo de Crédito desde el site administrativo.
+Si el cliente cuenta con la condición, pero la sucursal o la caja no, la opción no deberá mostrarse.
+
+Esta funcionalidad permitirá deshabilitar temporalmente el financiamiento.
+
+
+Se permitirá cambiar el tipo de documento de crédito a contado sin necesidad de reiniciar la factura.
+
+El sistema deberá recalcular automáticamente el documento considerando las nuevas condiciones.
+
+ | 
+ 
+Punto de Venta
+Ruta: Punto de Venta
+Cambio 11. Pantalla Principal
+ | 
+Modificar pantalla principal: Se requiere modificar la pantalla principal a fin de poder incorporar la nueva funcionalidad de Tipos de Crédito.
+ | 
+ 
+Punto de Venta
+Ruta: Punto de Venta
+Cambio 12. Pantalla Simulador de Cuotas
+ | 
+Simulador de Cuotas: Se requiere incluir una funcionalidad que permita visualizar el cálculo del financiamiento, considerando:
+ 
+Simulador de cuotas.
+Tabla de amortización.
+
+Cálculo de intereses.
+Visualización del detalle por semana, incluyendo cuota, interés, saldo y semana de pago.
+
+
+
+ | 
+ 
+Punto de Venta
+Ruta: Punto de Venta
+Cambio 13. Impresión de tiquetes de Tipos de Crédito
+ | 
+Tiquete: Se requiere crear un nuevo tiquete que incluya la siguiente información:
+ 
+Encabezado.
+Detalle de los artículos.
+
+Tipos de Crédito.
+Tipo de Crédito.
+
+Plazo de financiamiento.
+
+
+
+ | 
+ 
+Punto de Venta
+Ruta: Punto de Venta - FX Cargar Preventa
+Cambio 14. Cargar Preventa
+ | 
+Cragar Preventa: Se requiere la creación de una nueva funcionalidad que permita obtener la información del Tipo de Crédito asociado a la preventa, con el fin de visualizar dicha información en el punto de venta y, a partir de ella, permitir la continuidad del proceso de facturación.
+ | 
+ 
+Punto de Venta
+Ruta: Punto de Venta - Devoluciones
+Cambio 15. Devoluciones Facturas con Tipos de Crédito
+ | 
+Devoluciones: Se requiere extender la funcionalidad de devoluciones para que el sistema acepte facturas con Tipo de Crédito.
+ 
+El cambio permitirá registrar correctamente las devoluciones asociadas a facturas financiadas y reflejar dicha condición en la impresión del tiquete de devolución, asegurando consistencia con la información del Tipo de Crédito aplicado.
+ | 
+ 
+Site Admin
+Ruta: por definir
+Cambio 16. Reporte de Facturación por Tipo de Crédito
+ | 
+Reporte Tipos de Crédito: Se requiere incluir un nuevo reporte que permita consultar, analizar y consolidar todas las facturas generadas utilizando un Tipo de Crédito el cual deberá incluir los siguientes datos:
+ 
+Filtro:
+Sucursal.
+
+Plan.
+
+Estado.
+
+Rango de fechas.
+
+
+ 
+Detalle
+Id Sucursal: Identificador de la sucursal.
+
+Nombre Sucursal: Nombre de la sucursal.
+
+Caja: Caja donde se realizó la facturación.
+
+Id Cajero: Identificador del cajero.
+
+Cajero: Nombre del cajero.
+
+Fecha de Factura: Fecha de emisión de la factura.
+
+Número de Factura: Número único de la factura.
+
+Id Cliente: Identificador del cliente.
+
+Nombre del Cliente: Nombre del cliente.
+
+10.  Id Tipo de Crédito: corresponde al identificador del Tipo de Crédito.
+
+11.  Descripción Tipo de Crédito: Nombre o descripción del Tipo de Crédito.
+
+12.  Tasa de Interés: Tasa de interés aplicada.
+
+13.  Plazo: Duración del Tipo de Crédito expresada en semanas.
+
+14.  Monto Total Facturado: Monto total de la factura.
+
+
+ 
+Formato: Libro de Excel (.xlsx).
+
+ | 
+ 
+ 
+Site Admin
+Ruta: Por definir
+Cambio 17. Reporte Tipos de Crédito
+ | 
+Reporte Tipos de Crédito: Se requiere incluir un nuevo reporte que permita consultar y analizar la información de los Tipos de Crédito, el cual deberá incluir los siguientes datos:
+ 
+Filtro:
+Aplica para:
+
+Banca para Desarrollo.
+
+No Banca para Desarrollo.
+
+Ambos.
+
+Cliente específico.
+
+
+Detalle
+Id Tipo de Crédito: corresponde al identificador del Tipo de Crédito.
+
+Descripción Tipo de Crédito: Nombre o descripción del Tipo de Crédito.
+
+Tipo: Condición o regla de aplicación del Tipo de Crédito (Banca, No Banca, Ambos, Cliente específico).
+
+Tasa de Interés: Porcentaje de interés aplicado al Tipo de Crédito.
+
+Plazo (en semanas): Duración del Tipo de Crédito expresada en semanas.
+
+Fecha Inicio: Fecha de inicio de vigencia del Tipo de Crédito.
+
+Fecha Fin: Fecha de fin de vigencia del Tipo de Crédito.
+
+Id Cliente: Identificador del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+Nombre Cliente: Nombre del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+10.  Id Artículo: Identificador del artículo asociado al Tipo de Crédito.
+
+11.  Descripción Artículo: Descripción del artículo asociado al Tipo de Crédito.
+
+
+ Formato: Libro de Excel (.xlsx).
+ | 
+ 
+Site Admin
+Ruta: Por definir
+Cambio 18. Reporte de Bitácora de Cambios de Tipos de Crédito
+ | 
+Bitácora de Cambios Planes: Se requiere incluir un nuevo reporte que permita consultar y analizar la información de los Tipos de Crédito, el cual deberá incluir los siguientes datos:
+ 
+Filtro:
+Rango de fechas.
+
+Tipo Acción.
+
+
+ 
+Detalle
+Id Tipo de Crédito: corresponde al identificador del Tipo de Crédito.
+
+Descripción Tipo de Crédito: Nombre o descripción del Tipo de Crédito.
+
+Tipo: Condición o regla de aplicación del plan (Banca, No Banca, Ambos, Cliente específico).
+
+Id Artículo: Identificador del artículo asociado al Tipo de Crédito.
+
+Descripción Artículo: Descripción del artículo asociado al Tipo de Crédito.
+
+Id Cliente: Identificador del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+Nombre Cliente: Nombre del cliente (aplica solo cuando el Tipo de Crédito es Cliente específico).
+
+Usuario Creación: Usuario que creó el registro.
+
+Fecha de Creación: Fecha y hora de creación.
+
+10.  Usuario Modificación: Usuario que realizó la última modificación.
+
+11.  Fecha de Modificación: Fecha y hora de la modificación.
+
+12.  Tipo de Modificación: Acción registrada en la bitácora (creación, modificación o eliminación).
+
+
+Formato: Libro de Excel (.xlsx).
+
+ | 
+ 
+Supuestos y Restricciones
+El módulo contable y la gestión de cuentas por cobrar serán responsabilidad exclusiva del SFA.
+
+No se gestionan líneas de crédito asociadas a los Tipos de Crédito. En el proceso de facturación únicamente se referenciará el plan seleccionado y la tasa correspondiente.
+
+No se contempla la ejecución de aprobaciones financieras, validaciones crediticias adicionales ni el uso de formularios financieros relacionados con procesos internos.
+
+El SFA será el encargado de realizar los cálculos financieros definitivos, incluyendo:
+
+Intereses compuestos.
+
+Tablas de amortización.
+
+LDCOM realizará únicamente cálculos de simulación con fines visuales e informativos durante el proceso de facturación.
+
+Podrá presentarse un escenario en el cual el monto calculado en LDCOM difiera del monto calculado en el SFA.
+
+Estas diferencias serán gestionadas de forma administrativa, mediante procesos de revisión, pruebas y validación con el cliente, para identificar la causa de la variación.
+
+Los cálculos válidos y oficiales serán siempre los generados por el SFA.
+
+Los documentos viajarán por medio de una interfaz hacia el SFA, la cual será analizada en el proyecto de interfaces.
+
+En el sistema pueden cambiarse los detalles, plazos o tasas de un plan en tiempo real.
+
+Por ello, cuando se realice un cambio, se debe sincronizar localmente en el punto de venta, así entrarían en vigencia los ajustes realizados.
+
+No se considera dentro del alcance la creación de un nuevo módulo para la administración de planes de financiamiento, la propuesta de solución es considerando que todos los cambios sean realizados en LDCOM.
+
+La presente propuesta de solución no contempla cambios en el desarrollo distintos a los expresamente indicados. Cualquier modificación al alcance aquí descrito deberá ser sometida a un nuevo análisis y a la correspondiente evaluación de impacto para determinar las implicaciones de su inclusión. Bajo esta premisa, quedamos atentos a su validación, a fin de confirmar que el alcance definido refleja adecuadamente las expectativas actuales y poder avanzar con una ejecución debidamente alineada.
+
+ | 
+Temas por revisar Interno
+
+
+149
+d4295790-bdb7-4fe3-b4ad-a8381bbe5778
+incomplete
+Revisar con Yen y don Ale el tema del acceso de esta nueva aplicación
+
+
+150
+a3990b43-fed9-42d0-8fed-7bae1d93a6e4
+complete
+Validar si está aplicación tenga que llevar el logo de LD
+
+
+
+151
+cb01bb02-b77d-41b0-86a3-9052fedc3403
+complete
+Se deben incluir los logos de LD en el módulo de Financiamiento
+
+
+152
+35089313-e313-4b70-8e74-5f589b0d89b3
+incomplete
+Recordar cuando se vean interfaces que hay que incluir el envío de la información del API que comunica la aplicación nueva con el LDCOM
+
+
+Tiempos 
+Tiempos CO-696-0007 Planes de Financiamiento V2.xlsx
+Temas por revisar Interno
+ | 
+Revisar con Yen y don Ale el tema del acceso de esta nueva aplicación
+
+ | 
+Validar si está aplicación tenga que llevar el logo de LD
+
+ | 
+Recordar cuando se vean interfaces que hay que incluir el envío de la información del API que comunica la aplicación nueva con el LDCOM
+
+ | 

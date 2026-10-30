@@ -1,0 +1,5 @@
+Cliente seleccionado: 4000010
+[]
+agregar: (0, '0x20940', 'LDCOM - Punto de Venta', [], [])
+t=1.9 0x15196c 'Pago de factura' ['¢ 2,320.48', 'Venta', 'Pagado', '¢ 0.00', 'Redondeo', '¢ 0.48'] ['Encuesta', '', '', '', 'Nombre Cliente', 'Imprimir', 'Salir', 'Otra', 'Moneda Extranjera', 'Cupones', 'Cheque', 'Tarjeta', 'Efectivo', 'Transferencia']
+fin t=40.1; desde Confirmar: n/a

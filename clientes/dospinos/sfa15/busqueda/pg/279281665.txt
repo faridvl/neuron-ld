@@ -1,0 +1,1185 @@
+Transaccionales: Propuesta Solución CO-696-0024 Integración Interfaces de Ventas
+INSUMOS INTERNOS
+noneDescripción del Cambio
+Actualmente no existe un mecanismo centralizado y parametrizable que permita la comunicación entre sistemas Dos Pinos y LDCOM, gestionar frecuencias de sincronización de forma independiente o monitorear el flujo de datos en tiempo real.
+Insumos enviados por Dos Pinos
+No aplica
+Pendientes
+Pendientes
+ | Fecha Solicitud
+ | Estado
+ | Notas
+ | Correo
+ | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+PROPUESTA DE SOLUCIÓN
+Servicios de Informática Lexington S.A. ofrece a Cooperativa De Productores De Leche Dos Pinos, R.L. la presente propuesta de solución con el objetivo de diseñar, desarrollar e implementar las integraciones necesarias entre la plataforma LDCOM y los sistemas centrales Dos Pinos, abarcando los procesos transaccionales de ventas, inventarios, financiamiento y operaciones de caja.
+Esta oferta constituye la segunda fase del proyecto de integración de interfaces, complementando la oferta CO-696-0021 (Integración Datos Maestros) que abordó la sincronización de catálogos y datos maestros. En esta fase se desarrollan los 28 flujos transaccionales que soportarán la operación diaria de ventas, despacho, facturación, gestión de inventarios y autorización de créditos entre ambas plataformas.
+SITUACIÓN ACTUAL 
+Actualmente no existe un mecanismo centralizado y parametrizable que permita la comunicación entre sistemas Dos Pinos y LDCOM, gestionar frecuencias de sincronización de forma independiente o monitorear el flujo de datos en tiempo real de los flujos transaccionales de ventas, financiamientos e inventarios.
+ALCANCE DE LA PROPUESTA 
+La integración comprende 26 interfaces agrupadas en 15 flujos de datos que se comunican a través de 16 endpoints (8 Endpoints en el API LDCOM y 8 endpoints en el API Dos Pinos). 
+Todos los flujos pasan por el componente de integración API LDCOM, el cual gestiona el envío y recepción de datos, reintentos automáticos y reporte de eventos al Monitor Integral 360.
+Interfaces incluidas en el alcance 
+Interfaces definidas en contrato
+#
+ | Código
+ | Nombre de la Interfaz
+ | Subcategoría
+ | Requiere Ajustes
+ | 
+1
+ | POS-05
+ | Traslados del CEDI Coyol - AVs
+ | Traslados entre sucursales
+ | NO
+ | 
+2
+ | POS-06
+ | Movimiento de inventario
+ | Traslados entre sucursales
+ | Nuevo endpoint de LD
+
+DP consulta los movimientos.
+
+DP decide cuando consultar.
+
+No se envian ventas ni devolciones
+
+Eliminar endpoint DP 
+
+ | 
+3
+ | POS-08
+ | Entrada de compras directas de almacén SAP
+ | Órdenes de compra
+ | NO
+ | 
+4
+ | POS-09
+ | Disponible de crédito Distribuidores (cc. Límites de créditos)
+ | Crédito/Financiamiento
+ | NO
+ | 
+5
+ | POS-10
+ | Autorización de la venta financiada
+ | Crédito/Financiamiento
+ | NO
+ | 
+6
+ | POS-11
+ | Notas de crédito de ventas financiadas
+ | Crédito/Financiamiento
+ | Es parte del flujo de ventas financiadas SFA (directo)
+ | 
+7
+ | POS-12
+ | Ventas y Devoluciones
+ | Documentos (Ventas/Devoluciones)
+ | NO
+ | 
+8
+ | POS-13
+ | Integración de pedidos B2C (Ecommerce)
+ | Preventa
+ | NO
+ | 
+9
+ | POS-13
+ | Integración de pedidos (Código 6000)
+ | Preventa
+ | NO
+ | 
+10
+ | POS-14
+ | Pedidos graneles
+ | Preventa
+ | NO
+ | 
+11
+ | POS-19
+ | Operaciones de cajas
+ | Movimientos de caja
+ | NO
+ | 
+Interfaces definidas fuera del contrato
+#
+ | Código
+ | Nombre de la Interfaz
+ | Subcategoría
+ | Requiere ajustes
+ | 
+1
+ | POS-07
+ | Traslados del CEDI Ciruelas (graneles)
+ | Preventa
+ | Se debe quitar de la propuesta
+
+Quitar del endpoint LD-02
+
+ | 
+2
+ | POS-15
+ | Confirmación de despacho para facturación de sacos para venta
+ | Preventa
+ | No
+ | 
+3
+ | POS-24
+ | Pedidos Romana
+ | Preventa
+ | No
+ | 
+4
+ | POS-25
+ | Confirmación de pedido
+ | Preventa
+ | No
+ | 
+5
+ | POS-26
+ | Traslados Romana
+ | Traslados entre sucursales
+ | No
+ | 
+6
+ | POS-27
+ | Confirmación de traslados Romana
+ | Traslados entre sucursales
+ | No
+ | 
+7
+ | POS-28
+ | Disponibles de asociados (cc. Plan alterno)
+ | Crédito/Financiamiento
+ | No
+ | 
+8
+ | POS-29
+ | Listas de precios para el B2C
+ | Catálogos LDCOM
+ | No
+ | 
+9
+ | POS-30
+ | Inventarios para el B2C
+ | Catálogos LDCOM
+ | No
+ | 
+10
+ | POS-XX
+ | Confirmación entrada compra
+ | Órdenes de compra
+ | Descartar la interfaz
+
+Eliminar endpoint DP-08
+
+Las entradas de compra se notifican en POS-06
+
+ | 
+11
+ | POS-XX
+ | Confirmación pedidos SUMA Pets
+ | Preventa
+ | Descartar 
+El flujo de silos pasa al POS-15
+ | 
+12
+ | POS-XX
+ | Confirmación pedidos Ordeño & Silos
+ | Preventa
+ | Descartar 
+El flujo de silos pasa al POS-15
+ | 
+13
+ | POS-XX
+ | Creación pedidos SUMA Pets
+ | Preventa
+ | Descartar 
+El flujo de silos pasa al POS-14
+ | 
+14
+ | POS-XX
+ | Creación pedidos Ordeño & Silos
+ | Preventa
+ | Descartar 
+El flujo de silos pasa al POS-14
+ | 
+15
+ | POS-37
+ | Maestro de Tipos de Crédito
+ | Catálogos Planes de Financiamiento
+ | No
+ | 
+Endpoints API LDCOM incluidos en el alcance
+ID
+ | Nombre
+ | Dirección
+ | Descripción
+ | 
+LD-01
+ | Crear preventa 
+ | Dos Pinos→ LDCOM
+ | Endpoint expuesto por LDCOM para permitir la creación de preventas por parte de Dos Pinos.
+ | 
+LD-02
+ | Editar preventa 
+ | Dos Pinos→ LDCOM
+ | Endpoint expuesto por LDCOM para permitir la modificación de preventas por parte de Dos Pinos.
+ | 
+LD-03
+ | Ajustar saldo de cliente 
+ | Dos Pinos → LDCOM
+ | Endpoint expuestos por LDCOM para recibir actualización de saldos de crédito.
+ | 
+LD-04
+ | Catálogo de precios 
+ | Dos Pinos → LDCOM
+ | Endpoint expuesto por LDCOM para permitir la consulta de listas de precios de materiales.
+ | 
+LD-05
+ | Catálogo de inventarios
+ | Dos Pinos → LDCOM
+ | Endpoint expuesto por LDCOM para sincronización de disponibilidad de inventarios hacia la plataforma de ecommerce B2C.
+ | 
+LD-06
+ | Crear traslado
+ | Dos Pinos → LDCOM
+ | Endpoint expuesto por LDCOM para permitir la creación de traslados de inventario entre sucursales o entre CEDI y sucursal.
+ | 
+LD-07
+ | Modificar traslado
+ | Dos Pinos → LDCOM
+ | Endpoint expuesto por LDCOM para permitir la modificación de traslados de inventario entre sucursales o entre CEDI y sucursal.
+ | 
+LD-08
+ | Crear orden de compra 
+ | Dos Pinos → LDCOM
+ | Endpoint expuesto por LDCOM para permitir la creación de ordenes de compra por parte de Dos Pinos.
+ | 
+Endpoints API Dos Pinos incluidos en el alcance
+ID
+ | Nombre
+ | Dirección
+ | Descripción
+ | 
+DP-01
+ | Notificación de nueva preventa
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para recibir notificación de las preventas creadas en LDCOM
+ | 
+DP-02
+ | Notificación de nuevo documento
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para recibir documentos de venta transaccionados en LDCOM.
+ | 
+DP-03
+ | Notificación de nuevo movimiento de caja
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para recibir el consolidado de movimientos de caja al cierre.
+ | 
+DP-04
+ | Autorización de venta para asociados (SFA)
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para solicitar autorización de ventas financiadas.
+ | 
+DP-05
+ | Catálogo de tipos de crédito
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para la sincronización de datos maestros de tipos de crédito.
+ | 
+DP-06
+ | Notificar nuevo traslado
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para para recibir notificación de los traslados de inventario creados en LDCOM, especificamente de tipo “Romana”.
+ | 
+DP-07
+ | Notificación de movimientos de inventario
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para recibir notificación de todos los movimientos de inventario del día.
+ | 
+DP-08
+ | Notificación de entrada de orden de compra
+ | LDCOM → Dos Pinos
+ | Endpoint expuesto por Dos Pinos para recibir notificación de la entrada de inventario relacionada a una orden de compra.
+ | 
+Flujos de integración incluidos en el alcance 
+Los 28 flujos representan los caminos específicos que siguen los datos entre el API LDCOM y los sistemas de Dos Pinos. Cada flujo puede involucrar una o más interfaces y endpoints.
+ID
+ | Nombre del Flujo
+ | Grupo
+ | 
+FL-01
+ | Documentos de ventas y devoluciones
+ | Ventas
+ | 
+FL-02
+ | Preventas de granel & sacos
+ | Preventa
+ | 
+FL-03
+ | Preventas de romanas
+ | Preventa
+ | 
+FL-04
+ | Preventas de SUMA Pets
+ | Preventa
+ | 
+FL-05
+ | Preventas de silos & ordeño
+ | Preventa
+ | 
+FL-06
+ | Creación de preventas
+ | Preventa
+ | 
+FL-07
+ | Autorización de crédito de asociados
+ | Crédito
+ | 
+FL-08
+ | Ajuste de saldos de crédito
+ | Crédito
+ | 
+FL-09
+ | Operaciones de movimientos de caja
+ | Cajas
+ | 
+FL-10
+ | Traslados entre CEDI y sucursales
+ | Inventario
+ | 
+FL-11
+ | Traslados de melaza entre sucursales
+ | Inventario
+ | 
+FL-12
+ | Notificación de movimientos de inventario
+ | Inventario
+ | 
+FL-13
+ | Ordenes de compra
+ | Inventario
+ | 
+FL-14
+ | Catálogos de precios e inventario
+ | Inventario
+ | 
+FL-15
+ | Catálogo de tipos de crédito
+ | Inventario
+ | 
+Funcionalidades al API LDCOM Incluidas en el alcance
+#
+ | Funcionalidad
+ | Descripción
+ | 
+1
+ | Mantenimiento de Clientes API LDCOM
+ | configuración que permitirá obtener los datos de acceso al API LDCOM, necesarios para consumir los endpoints LDCOM.
+ | 
+2
+ | Mantenimiento de Interfaces
+ | configuración que permitirá parametrizar los endpoints de API LDCOM y API Dos Pinos relacionados a flujos transaccionales.
+ | 
+PROPUESTA DE SOLUCIÓN TÉCNICA
+Cambio 1. Nuevos endpoints de integración en API LDCOM 
+LD-01: Crear Preventa 
+Objetivo:
+ | Permitir al API Dos Pinos crear nuevas preventas en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-13: Integración de Pedidos (Ecommerce)
+POS-13: Integración de Pedidos (Código 6000)
+ | 
+Flujos relacionados:
+ | FL-06: Creación de preventas
+ | 
+Envía datos:
+ | API Dos Pinos
+ | 
+Recibe datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Tiempo real 
+ | 
+Disparador: 
+ | Creación de preventa por parte del API Dos Pinos.
+ | 
+Ruta de Ejemplo:
+ | POST /api/{storeId}/preorder
+ | 
+Paso a paso del flujo FL-06: Creación de preventas
+Paso 1: El API Dos Pinos envía los datos para crear una preventa en LDCOM.
+
+Paso 2: El API LDCOM recibe los datos y realiza el proceso de creación de preventa en tiempo real. 
+
+Paso 3: El API LDCOM envía notificación indicando si la preventa fue creada o si ocurrió un error.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-02: Editar Preventa 
+Objetivo:
+ | Permitir al API Dos Pinos modificar preventas existentes en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-07: Traslados del CEDI Ciruelas
+POS-25: Confirmación de pedido
+POS-XX: Confirmación pedidos SUMA Pets
+POS-XX: Confirmación pedidos Ordeño & Silos
+POS-15 Confirmación de despacho para facturación de sacos para venta
+ | 
+Flujos relacionados:
+ | FL-02: Preventas de granel & sacos
+FL-03: Preventas de romanas
+FL-04: Preventas de SUMA Pets
+FL-05: Preventas de silos & ordeño 
+ | 
+Envía datos:
+ | API Dos Pinos
+ | 
+Recibe datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Tiempo real
+ | 
+Disparador: 
+ | Modificación de preventa por parte del API Dos Pinos.
+ | 
+Ruta de Ejemplo:
+ | PUT /api/{storeId}/preorders/{preorderId}
+ | 
+Paso a paso de los flujos (FL-02, FL-03, FL-04, FL-05)
+Paso 1: El API Dos Pinos envía los datos para modificar una preventa en LDCOM.
+
+Paso 2: El API LDCOM recibe los datos y realiza el proceso de modificación de preventa en tiempo real actualizando todos los datos de la preventa. 
+
+Paso 3: El API LDCOM envía notificación indicando si la preventa fue modificada o si ocurrió un error.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-03: Ajustar saldo de cliente 
+Objetivo:
+ | Permitir al API Dos Pinos notificar actualización de saldos de crédito. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-09: Saldos (cc. Límites de créditos)
+POS-34: Disponibles de Asociados (cc. Plan Alterno)
+ | 
+Flujos relacionados:
+ | FL-08 Ajuste de saldos de crédito (Distribuidores/Asociados)
+ | 
+Envía datos:
+ | API Dos Pinos
+ | 
+Recibe datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Tiempo real 
+ | 
+Disparador: 
+ | Actualización de saldos de crédito por parte del API Dos Pinos.
+Ajuste de saldos de crédito de distribuidores (en SAP)
+
+Ajuste de saldos de crédito de asociados (en SFA)
+
+ | 
+Ruta de Ejemplo:
+ | POST /api/customers/{customerId}/account-balance
+ | 
+Paso a paso del flujo FL-08 Ajuste de saldos de crédito (Distribuidores/Asociados)
+Paso 1: El API Dos Pinos notifica al API LDCOM que ocurrió un ajuste de saldo en el crédito de un cliente LDCOM.
+
+Paso 2: El API LDCOM recibe los datos y realiza el proceso de ajuste de saldo en tiempo real actualizando el saldo en el cliente. 
+
+Paso 3: El API LDCOM envía notificación indicando si el saldo fue actualizado o si ocurrió un error.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-04: Catálogo de precios
+Objetivo:
+ | permitir al API Dos Pinos la consulta de listas de precios de materiales en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-29: Lista de precios para el B2C 
+ | 
+Flujos relacionados:
+ | FL-14 Catálogos de precios e inventario
+ | 
+Solicita datos:
+ | API Dos Pinos
+ | 
+Retorna datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Bajo demanda 
+ | 
+Disparador: 
+ |  API Dos Pinos solicita datos de precios al API LDCOM.
+ | 
+Ruta de Ejemplo:
+ | GET /api/items/prices?updatedSince=20250401T1200
+ | 
+Paso a paso del flujo FL-14 Catálogos de precios e inventario
+Paso 1: El API Dos Pinos solicita al API LDCOM lista de precios de materiales.
+
+Paso 2: El API LDCOM recibe la solicitud y realiza de extracción de los datos solicitados. 
+
+Paso 3: El API LDCOM envía en la respuesta los datos solicitados.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-05: Catálogo de inventarios
+Objetivo:
+ | permitir al API Dos Pinos la consulta de inventario de materiales en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-30: Inventarios para el B2C 
+ | 
+Flujos relacionados:
+ | FL-14 Catálogos de precios e inventario
+ | 
+Solicita datos:
+ | API Dos Pinos
+ | 
+Retorna datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Bajo demanda 
+ | 
+Disparador: 
+ |  API Dos Pinos solicita datos de inventario al API LDCOM.
+ | 
+Ruta de Ejemplo:
+ | GET /api/items/stock?updatedSince=20250401T120
+ | 
+Paso a paso del flujo FL-14 Catálogos de precios e inventario
+Paso 1: El API Dos Pinos solicita al API LDCOM el inventario de materiales.
+
+Paso 2: El API LDCOM recibe la solicitud y realiza de extracción de los datos solicitados. 
+
+Paso 3: El API LDCOM envía en la respuesta los datos solicitados.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-06: Crear Traslado
+Objetivo:
+ | Permitir al API Dos Pinos la creación de traslados de inventario entre sucursales LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-26: Traslado Romana
+POS-05: Traslados del CEDI Coyol - AVs
+ | 
+Flujos relacionados:
+ | FL-11 Traslados de melaza entre sucursales
+ | 
+Envía datos:
+ | API Dos Pinos
+ | 
+Recibe datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Tiempo real 
+ | 
+Disparador: 
+ | Creación de traslado por parte del API Dos Pinos.
+ | 
+Ruta de Ejemplo:
+ | POST /api/inventory/transfer
+ | 
+Paso a paso del flujo FL-11 Traslados de melaza entre sucursales
+Paso 1: El API Dos Pinos envía los datos para crear un traslado de inventario en LDCOM.
+
+Paso 2: El API LDCOM recibe los datos y realiza el proceso de creación de traslado de inventario en tiempo real. 
+
+Paso 3: El API LDCOM envía notificación indicando si el traslado fue creado o si ocurrió un error.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-07: Editar traslado
+Objetivo:
+ | Permitir al API Dos Pinos la modificación de traslados de inventario entre sucursales LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-05: Traslados del CEDI Coyol - AVs
+ | 
+Flujos relacionados:
+ | FL-10 Traslados entre CEDI y sucursales
+ | 
+Envía datos:
+ | API Dos Pinos
+ | 
+Recibe datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Tiempo real 
+ | 
+Disparador: 
+ | Creación de traslado por parte del API Dos Pinos.
+ | 
+Ruta de Ejemplo:
+ | PUT /api/inventory/transfer/{transferId}
+ | 
+Paso a paso del flujo FL-10 Traslados entre CEDI y sucursales
+Paso 1: El API Dos Pinos envía los datos para modificar un traslado de inventario en LDCOM.
+
+Paso 2: El API LDCOM recibe los datos y realiza el proceso de modificación de traslado de inventario en tiempo real. 
+
+Paso 3: El API LDCOM envía notificación indicando si el traslado fue modificado o si ocurrió un error.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+LD-08: Crear orden de compra
+Objetivo:
+ | Permitir al API Dos Pinos crear nuevas ordenes de compra en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API LDCOM
+ | 
+Interfaces relacionadas:
+ | POS-08: Entradas compras directas de almacén SAP
+ | 
+Flujos relacionados:
+ | FL-13: Ordenes de compra
+ | 
+Envía datos:
+ | API Dos Pinos
+ | 
+Recibe datos:
+ | API LDCOM
+ | 
+Periodicidad:
+ | Tiempo real 
+ | 
+Disparador: 
+ | Creación de orden de compra por parte del API Dos Pinos.
+ | 
+Ruta de Ejemplo:
+ | POST /api/purchase-orders
+ | 
+Paso a paso del flujo FL-13: Ordenes de compra 
+Paso 1: El API Dos Pinos envía los datos para crear una orden de compra en LDCOM.
+
+Paso 2: El API LDCOM recibe los datos y realiza el proceso de creación de orden de compra en tiempo real. 
+
+Paso 3: El API LDCOM envía notificación indicando si la orden de compra fue creada o si ocurrió un error.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+Cambio 2. Integración a endpoints del API Dos Pintos
+DP-01: Notificación de nueva preventa
+Objetivo:
+ | Notificar al API Dos Pinos la creación de nuevas preventas en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-14: Pedidos Graneles
+POS-24: Pedidos Romana
+POS-XX: Pedidos SUMA Pets
+POS-XX: Pedidos Ordeño & Silos
+ | 
+Flujos relacionados:
+ | FL-02: Preventas de granel & sacos
+FL-03: Preventas de romanas
+FL-04: Preventas de SUMA Pets
+FL-05: Preventas de silos & ordeño 
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Tiempo real
+ | 
+Disparador:
+ | Creación de preventa tipo (granel, romana, SUMA PETS, Ordeño & Silos) en punto de venta LDCOM por parte del vendedor.
+ | 
+Paso a paso de los flujos (FL-02, FL-03, FL-04, FL-05)
+Paso 1: Se crea una preventa de tipo (Graneles, Romana, SUMA PETS, Ordeño & Silo) en LDCOM.
+
+Paso 2: El API LDCOM envía la notificación de preventa al API Dos Pinos.
+
+Paso 3: Dos Pinos recibe la notificación y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+Véase diagrama del cambio https://logicaldata.atlassian.net/wiki/spaces/DP/pages/279281665/Transaccionales+Propuesta+Soluci+n+CO-696-0024+Integraci+n+Interfaces+de+Ventas#LD-02%3A-Editar-Preventa 
+DP-02: Notificación de nuevo documento
+Objetivo:
+ | Notificar al API Dos Pinos la creación de nuevos documentos de venta (facturas, devoluciones) en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-11 Notas de crédito de ventas financiadas
+POS-12 Ventas y Devoluciones
+ | 
+Flujos relacionados:
+ | FL-01 Documentos de ventas y devoluciones
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Cierre de Caja (Envío consolidado de documentos)
+Tiempo real (Ventas y devoluciones de crédito para distribuidores)
+ | 
+Disparador A:
+ | Ejecución del proceso de cierre de caja en punto de venta LDCOM por parte del vendedor.
+ | 
+Disparador B:
+ | Creación de facturas y devoluciones de crédito en punto de venta LDCOM por parte del vendedor.
+ | 
+Paso a paso del flujo FL-01 Documentos de ventas y devoluciones 
+(Envío consolidado de documentos)
+Paso 1: El cajero realiza el cierre de caja en LDCOM.
+
+Paso 2: El API LDCOM envía, de forma consolidada, todos los documentos de venta (facturas, devoluciones) al API Dos Pinos.
+
+Paso 3: Dos Pinos recibe los documentos y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+Paso a paso del flujo FL-01 Documentos de ventas y devoluciones 
+(Ventas y devoluciones de crédito para distribuidores)
+Paso 1: El cajero realiza la venta o devolución de crédito (Distribuidores) en el punto de venta LDCOM.
+
+Paso 2: El API LDCOM envía, en tiempo real, el documento al API Dos Pinos.
+
+Paso 3: Dos Pinos recibe el documento y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+DP-03: Notificación de nuevo movimiento de caja
+Objetivo:
+ | Notificar al API Dos Pinos la creación de nuevos movimientos de caja en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-19 Operaciones de caja
+ | 
+Flujos relacionados:
+ | FL-09 Operaciones de movimientos de caja
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Cierre de Caja (Consolidado de movimientos)
+Tiempo real (Movimientos que afectan crédito)
+ | 
+Disparador A:
+ | Ejecución del proceso de cierre de caja en punto de venta LDCOM por parte del vendedor.
+ | 
+Disparador B:
+ | Aplicación de movimientos de caja relacionados a crédito en punto de venta LDCOM por parte del vendedor.
+ | 
+Paso a paso del flujo FL-09 Operaciones de movimientos de caja 
+(Consolidado de movimientos)
+Paso 1: El cajero realiza el cierre de caja en LDCOM.
+
+Paso 2: El API LDCOM envía, de forma consolidada, todos los movimientos de caja al API Dos Pinos.
+
+Paso 3: Dos Pinos recibe los movimientos y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+Paso a paso del flujo FL-09 Operaciones de movimientos de caja 
+(Movimientos que afectan crédito)
+Paso 1: El cajero realiza el recibo de efectivo (Distribuidores) en el punto de venta LDCOM.
+
+Paso 2: El API LDCOM envía, en tiempo real, el movimiento de caja al API Dos Pinos.
+
+Paso 3: Dos Pinos recibe el movimiento y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.  
+
+DP-04: Autorización de venta para asociados (SFA)
+Objetivo:
+ | solicitar al API Dos Pinos autorización para realizar una venta financiada (SFA) en el punto de venta LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-10 Autorización de la venta financiada
+ | 
+Flujos relacionados:
+ | FL-07 Autorización de crédito de asociados
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Tiempo real
+ | 
+Disparador:
+ | Antes de imprimir una factura de crédito con plan de financiamiento en punto de venta LDCOM por parte del vendedor.
+ | 
+Paso a paso del flujo FL-07 Autorización de crédito de asociados
+Paso 1: El cajero intenta realizar una factura de venta con plan de financiamiento en LDCOM.
+
+Paso 2: El API LDCOM envía, en tiempo real, los datos para solicitar autorización al API Dos Pinos.
+
+Paso 3: Dos Pinos recibe la solicitud y devuelve la notificación indicando si la venta está autorizada o no.
+
+Paso 4 (A): API LDCOM recibe la autorización y permite realizar la factura.
+
+Paso 4 (B): API LDCOM recibe el rechazo, lo muestra al cajero y no permite realizar la factura.
+
+DP-05: Catálogo de tipos de crédito
+Objetivo:
+ | permitir al API LDCOM la consulta de tipos de crédito de los datos maestros en Dos Pinos. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-37 Maestro de Tipos de Crédito
+ | 
+Flujos relacionados:
+ | FL-15 Catálogo de tipos de crédito
+ | 
+Solicita datos:
+ | API LDCOM
+ | 
+Retorna datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Según Política de sincronización
+ | 
+Disparador:
+ | API LDCOM solicita datos de Tipos de crédito al API Dos Pinos.
+ | 
+Paso a paso del flujo FL-15 Catálogo de tipos de crédito
+Paso 1: El API LDCOM solicita al API Dos Pinos los datos de tipos de crédito de acuerdo a la política de sincronización LDCOM.
+
+Paso 2: El API Dos Pinos recibe la solicitud y realiza de extracción de los datos solicitados. 
+
+Paso 3: El API Dos Pinos envía en la respuesta los datos solicitados.
+
+Paso 4: El API LDCOM realiza la sincronización de los datos.
+
+Paso 5: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+DP-06: Confirmar traslados
+Objetivo:
+ | Notificar al API Dos Pinos la confirmación de traslados de inventario por parte de la sucursal destino en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-27: Confirmación traslados romana
+ | 
+Flujos relacionados:
+ | FL-11: Traslados de melaza entre sucursales
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Tiempo real
+ | 
+Disparador:
+ | Al aplicar la recepción de traslado de inventario en la sucursal destino de LDCOM.
+ | 
+Paso a paso del flujo FL-11: Traslados de melaza entre sucursales
+Paso 1: Se aplica la recepción de traslado de inventario en la sucursal destino de LDCOM.
+
+Paso 2: API LDCOM envía la notificación de confirmación al API Dos Pinos.
+
+Paso 3: API Dos Pinos recibe la notificación y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+DP-07: Notificación de movimientos de inventario
+Objetivo:
+ | Notificar al API Dos Pinos los movimientos de inventario aplicados durante el día en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-06 Movimientos de inventario
+ | 
+Flujos relacionados:
+ | FL-12 Notificación de movimientos de inventario
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Programado
+ | 
+Disparador:
+ | Ejecución de sincronización según política de la interfaz. 
+ | 
+Paso a paso del flujo FL-12: Notificación de movimientos de inventario
+Paso 1: Se realizan movimientos de inventario en LDCOM.
+
+Paso 2: API LDCOM envía, de forma consolidada, todos los movimientos de inventario al API Dos Pinos según la política de sincronización de la interfaz.
+
+Paso 3: API Dos Pinos recibe los movimientos y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+DP-08: Notificación de entrada de orden de compra
+Objetivo:
+ | Notificar al API Dos Pinos las entradas de inventario relacionadas a una orden de compra en LDCOM. 
+ | 
+Dueño del endpoint:
+ | API Dos Pinos
+ | 
+Interfaces relacionadas:
+ | POS-XX Confirmación entrada compra
+ | 
+Flujos relacionados:
+ | FL-13 Ordenes de compra
+ | 
+Envía datos:
+ | API LDCOM
+ | 
+Recibe datos:
+ | API Dos Pinos
+ | 
+Periodicidad:
+ | Tiempo real 
+ | 
+Disparador:
+ | Al aplicar una entrada de compra en LDCOM. 
+ | 
+Paso a paso del flujo FL-13 Ordenes de compra
+Paso 1: El cajero realiza la entrada de inventario relacionada a una orden de compra en LDCOM.
+
+Paso 2: API LDCOM envía, en tiempo real, la notificación al API Dos Pinos.
+
+Paso 3: API Dos Pinos recibe la notificación y devuelve la confirmación de recepción.
+
+Paso 4: API LDCOM registra el resultado del evento y lo notifica al Monitor 360.
+
+Cambio 3. Autenticación M2M mediante Azure Active Directory
+Descripción: La autenticación entre el API de Dos Pinos y el API LDCOM se realizará mediante el protocolo OAuth 2.0 con el flujo Client Credentials, utilizando Azure Active Directory (Azure AD) como proveedor de identidad. Este mecanismo es estándar para integraciones M2M (machine-to-machine) y elimina la necesidad de gestionar credenciales personalizadas dentro de LDCOM.
+Funcionamiento:
+Dos Pinos registra una aplicación en su propio tenant de Azure AD (App Registration).
+
+Dos Pinos utiliza el client_id y client_secret de esa App Registration para solicitar un token de acceso al endpoint de OAuth de Azure AD.
+
+El token obtenido (JWT firmado por Azure) se incluye en cada request al API LDCOM como Authorization: Bearer <token>.
+
+El API LDCOM valida la firma del token contra las claves públicas del tenant de Dos Pinos. No genera ni firma tokens propios.
+
+Desarrollo requerido en LDCOM:
+Implementar validación de tokens JWT en el API LDCOM, verificando firma, expiración y claims relevantes (aud, iss, appid).
+
+Configurar en LDCOM los datos del tenant de Dos Pinos necesarios para la validación (ver Supuestos).
+
+Crear una App Registration propia en Azure AD de Logical Data para representar al API LDCOM como recurso protegido (resource app), necesaria para que los tokens emitidos tengan el audience correcto.
+
+Cambio 4. Parametrización de Interfaces
+Ruta: 
+Se integrará en el site Administrativo LDCOM, en una ruta por definir
+
+
+Descripción:
+Se contará con un mantenimiento de configuración de los endpoints transaccionales del API LDCOM, necesarios para realizar las integraciones transaccionales.
+
+
+Objetivo: 
+Centralizar las configuraciones necesarias para los endpoints transaccionales del API LDCOM.
+
+
+Funcionalidad: 
+Por cada endpoint se puede parametrizar:
+Cantidad máxima de reintentos.
+
+Tiempo de espera para reintentos (conocida como “backoff policy”)
+
+Código de interfaz en Dos Pinos (para auditoría)
+
+Política de notificación de eventos al monitor 360: 
+Notificar o no todos los eventos fallidos. 
+
+Notificar o no todos los eventos exitosos
+
+
+
+El acceso a este mantenimiento estará restringido mediante permisos de usuario configurables en LDCOM.
+
+
+SUPUESTOS Y RESTRICCIONES
+Alcance: 
+Esta oferta incluye en el alcance únicamente las interfaces especificadas en el presente documento.
+
+Esta oferta no contempla cambios en el desarrollo distintos a los expresamente indicados. Cualquier modificación al alcance aquí descrito deberá ser sometida a un nuevo análisis y a la correspondiente evaluación de impacto para determinar las implicaciones de su inclusión. Bajo esta premisa, quedamos atentos a su validación, a fin de confirmar que el alcance definido refleja adecuadamente las expectativas actuales y poder avanzar con una ejecución debidamente alineada. 
+
+
+Dependencias:
+El inicio del desarrollo del alcance de esta oferta requiere de la aprobación y desarrollo previo de la oferta CO-696-0021 Integración de Interfaces para Datos Maestros. Esto debido a que dicha oferta incluye la infraestructura base del API LDCOM necesario para los flujos e integraciones transaccionales. 
+
+
+Canales de comunicación: 
+Es de suma importancia que exista un canal de comunicación ágil entre Dos Pino, LD y otros proveedores, con el objetivo que el equipo de línea de producción pueda comunicarse en directo con los equipos y estos respondan de forma ágil. 
+
+Si durante el proceso de línea de producción (desarrollo o aseguramiento de la calidad), existe una incidencia que no permita continuar con el proceso ya que es dependiente de la respuesta del proveedor o Dos Pinos para continuar, si la misma no se recibe en un periodo de 32 horas laborales, el proyecto se colocará en estado detenido hasta tener respuesta y volver a retomar el proceso de línea de producción. 
+
+
+Sesiones para certificación de integración: 
+Se deberán coordinar sesiones de certificación para validar el flujo completo de sincronización de datos maestros.
+
+
+Reportes: 
+Esta oferta no incluye en el alcance la creación de reportes en LDCOM.
+
+
+Autenticación:
+Para el acceso de los sistemas de Dos Pinos al API LDCOM, se asumen los siguientes puntos:
+Dos Pinos gestionará su propia App Registration en su tenant de Azure AD. LDCOM no administra ni almacena credenciales de Dos Pinos.
+
+Dos Pinos proveerá el endpoint de claves públicas (JWKS URI) de su tenant, necesario para que LDCOM valide las firmas de los tokens emitidos.
+
+Logical Data creará una App Registration en su propio tenant de Azure AD para representar al API LDCOM como recurso protegido. Dos Pinos deberá autorizar el acceso a este recurso desde su App Registration.
+
+La integración opera en modalidad cross-tenant: el tenant de Dos Pinos emite los tokens y el tenant de Logical Data (LDCOM) los valida. Esto requiere que ambas partes coordinen los identificadores de aplicación (client_id, Application ID URI) antes del inicio del desarrollo.
+
+LDCOM únicamente valida tokens; no firma, no emite ni almacena tokens de acceso.
+
+Si durante el desarrollo Dos Pinos define un mecanismo de autenticación distinto al aquí descrito, esto quedará sujeto a revisión de alcance de la presente oferta.
+
+
+Infraestructura
+Se asume en esta oferta que todas las integraciones hacia Dos Pinos van a un API con el mismo dominio y autenticado de la misma forma (o sea, cada endpoint o interface comparte la misma URL base. Ej., https://api.dospinos.com/v1/…). Por tanto la configuración de la URL y el API Key es única para todas las interfaces. Si durante el desarrollo se define algo distinto, podría quedar sujeto a cambios de alcance en esta oferta.
+
+Se asume en esta oferta que existirá un ambiente de pruebas estable para integraciones, además del ambiente de producción. Dos Pinos brindará la documentación, llaves y accesos para conectarnos a cada ambiente.
+
+La documentación de las interfaces se realizará mediante herramientas por definir, como Postman.
+
+
+Desarrollo del API
+Los flujos que requieren integraciones en LDCOM de endpoints del API Dos Pinos, se van a desarrollar hasta que Dos Pinos haya compartido los ambientes y la documentación de cada endpoint. Si durante esta fase, Dos Pinos desarrolla algo distinto a lo acordado, podría quedar sujeto a cambios de alcance en esta oferta.
+
+
+Endpoints cuyo dueño es el API LDCOM
+Aplica para todos los endpoints expuestos y administrados por el API LDCOM.
+
+Logical Data definirá, mediante documentación técnica complementaria, el diseño, estructura y contratos de cada endpoint del API LDCOM.
+
+Los sistemas de Dos Pinos deberán consumir los endpoints del API LDCOM respetando estrictamente los contratos y validaciones definidas.
+
+Se requiere conectividad en línea entre Dos Pinos y LDCOM para el consumo de los endpoints que operan en tiempo real o bajo demanda.
+
+Todos los endpoints del API LDCOM estarán sujetos a políticas de seguridad, autenticación y autorización definidas por LDCOM.
+
+Los endpoints contarán con políticas parametrizables de:
+Notificación de eventos exitosos y fallidos al Monitor Integral 360.
+
+
+Los eventos procesados por los endpoints serán registrados y auditados en el Monitor Integral 360.
+
+Los datos requeridos por los endpoints pueden variar conforme se incorporen nuevos alcances funcionales, siempre bajo análisis y validación de impacto.
+
+Para endpoints transaccionales, los datos recibidos deberán cumplir con todas las validaciones funcionales y de negocio establecidas en LDCOM (por ejemplo: existencia, estado, integridad de la información).
+
+Cualquier cambio significativo en los contratos, validaciones o comportamiento de los endpoints podrá estar sujeto a una revisión de alcance de la presente oferta.
+
+
+Endpoints cuyo dueño es el API Dos Pinos
+Aplica para todos los endpoints expuestos y administrados por el API Dos Pinos que son consumidos por LDCOM.
+
+Dos Pinos será responsable de definir y proporcionar:
+El diseño del endpoint.
+
+La estructura y contratos de datos.
+
+La documentación técnica correspondiente.
+
+
+Los endpoints del API Dos Pinos deberán ser configurados en LDCOM mediante el mantenimiento de configuración de APIs, incluyendo:
+URL del endpoint.
+
+Cantidad máxima de reintentos.
+
+Política de espera entre reintentos (backoff).
+
+Código de interfaz para auditoría.
+
+Política de notificación de eventos al Monitor Integral 360.
+
+
+Se requiere conectividad en línea con el API Dos Pinos para el envío y recepción de información según la periodicidad definida en cada flujo.
+
+En caso de indisponibilidad temporal del API Dos Pinos:
+LDCOM aplicará las políticas de reintentos configuradas por interfaz.
+
+Los eventos pendientes serán reenviados una vez restablecida la conectividad.
+
+
+Todos los eventos enviados al API Dos Pinos serán monitoreados y registrados en el Monitor Integral 360, tanto en escenarios exitosos como fallidos según la configuración.
+
+Únicamente los flujos e interfaces explícitamente indicados en el alcance de esta oferta estarán habilitados para integrarse con dichos endpoints.
+
+Los cambios en los contratos, comportamiento o disponibilidad de los endpoints del API Dos Pinos que difieran de lo acordado podrán requerir una revisión de alcance de la presente oferta.
+
+
+Flujo de datos
+Por razones de integridad de datos, los flujos de sincronización solo insertan o actualizan registros; No se pueden eliminar desde datos maestros. En LDCOM si se pueden eliminar manualmente los datos que no tengan transacciones relacionadas.
+
+Se asume en esta oferta que el API de Dos Pinos brindará parámetros en los endpoints de catálogos grandes (como clientes, proveedores o artículos) para filtrar por fecha de modificación y paginación. Si los endpoints de Dos Pinos no pueden ofrecer estos parámetros la sincronización podría ser más lenta y saturar más los servicios. Si esto no es posible a la hora de integrarse, queda sujeto a cambios en el alcance de esta oferta.
+
+Los contratos (conocidos como “schemas”) de cada endpoint de LDCOM y de Dos Pinos aún no se han definido e irán detallándose en el transcurso del proyecto. La cantidad de campos o endpoints podría variar. Sin embargo, si durante esta fase se cambia el desarrollo de forma que involucre un aumento significativo en el alcance, como cambios en la parametrización, creación de catálogos nuevos, o cambios significativos en los “contratos de cada endpoint” una vez se esté implementando, podría quedar sujeto a cambios en esta oferta.
+
+
+ 
