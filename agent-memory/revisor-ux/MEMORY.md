@@ -1,0 +1,3 @@
+- [Patrones frecuentes en consolas de API](patrones-frecuentes-consolas-api.md): ejemplos que fallan, acción real sin confirmar, "0" rojo por JSON roto, tildes escapadas
+- [Patrones frecuentes en historiales de corridas](patrones-frecuentes-historiales-corridas.md): filtro de estado vs color, "intento 4 de 3", pasos en inglés, badges partidos
+- [Patrones frecuentes en tablas de configuración](patrones-frecuentes-tablas-admin.md): inactivo poco visible, casillas, contraste, campo extra en celda, tooltip-única-ayuda, arnés Admin

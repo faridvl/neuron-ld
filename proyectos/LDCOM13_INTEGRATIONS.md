@@ -8,6 +8,7 @@ cliente: dospinos
 ---
 
 **Reglas del repo**: `CLAUDE.md` del propio repo (build, pruebas, arquitectura). Mandan sobre esta ficha.
+**Decisiones**: `.claude/DECISIONS.md` del repo (auditoría de corridas en Events, consola de pruebas).
 
 ## Stack
 .NET 8, puertos y adaptadores, multi-tenant, idempotencia y auditoría. `dotnet build LDCOM13_INTEGRATIONS.sln`,
@@ -28,3 +29,7 @@ Worktrees de trabajo hermanos: `LDCOM13_INTEGRATIONS-<tema>` (por ejemplo `-cola
   CrossReference no decide.
 - Cada campo cola → LDCOM con su prueba en el `*QueueRecordMapperTests` (sin prueba no está mapeado).
 - Contrato de las APIs (cambios rompen a Dos Pinos), datos reales de clientes en las colas.
+- Todo endpoint deja fila en `dbo.Events`, consultas GET incluidas; el monitor del Admin la lee tal cual.
+- La consola de pruebas no tiene login: no publicarla en un ambiente compartido sin protegerla.
+- Scripts manuales: solo los 4 de `Database/seeds` (catálogos, conexiones, eventos, webhooks). Un cambio se agrega al que
+  corresponde; nunca un seed nuevo por ticket. Reglas completas en el `CLAUDE.md` del repo.

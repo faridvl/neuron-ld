@@ -1,1 +1,6 @@
 - [Trampas de entorno QA](reference-trampas-entorno-qa.md) — heredocs de Bash que rompen comillas/backslashes, Docker SQL, reseed dinamico, API en copia, cola con servidor falso
+- [API integraciones contra Docker](reference-api-integraciones-docker-qa.md) — env vars, clave sa codificada, qa_auto, trampas de LD-09/preventas
+- [QA 3663: ANTES/DESPUES con DLL compiladas](reference-qa-3663-compilar-antes-despues.md) — worktree base + MSBuild, API en 6224/6225, trigger de falla acotado, trampa CREATE TRIGGER
+- [Smoke API integraciones en Docker](reference-smoke-api-integraciones-docker.md) — script smoke.py reutilizable; expectativas que fallaron (Strict, LD-06 despacha, LD-10 500 por diseno)
+- [Trampas POS UIA preventas](reference-pos-uia-preventa-trampas.md) — monitor no se clickea por mensaje, Modificar Preventa solo Estado 0/1, + de cantidad, ticket contado
+- [QA 3700: harness NEGOCIO y WCF real](reference-qa-3700-harness-wcf-negocio.md) — Acceso_Generico codifica clave, urlacl 8733, PowerShell no ejecuta exe, SendTimeout post-canal

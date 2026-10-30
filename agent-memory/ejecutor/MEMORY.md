@@ -8,3 +8,7 @@
 - [paridad-clientes contador/control residuo](paridad-clientes-contador-control-residuo.md) — paridad del Admin gasta Contador_Cadena_Control: devolverlo con borrado contado o la siguiente corrida falla.
 - [Simulador CIH: trampas bcp y formato](simulador-cih-trampas-bcp-formato.md) — bcp sin -u, UTF-16 con terminadores largos, CIH omite nulos, pools con marcas internas.
 - [migrate no interactivo y trampas de cabecera](migrate-no-interactivo-y-comentario-cron.md) — push --force; '*/' cierra el comentario; Fallida = renombrar carpeta; sqlcmd :r con ruta relativa.
+- [SheetJS CE sin estilos: xlsx propio](sheetjs-ce-no-estilos-xlsx-propio.md) — Admin LDCOM: negrita/congelar/fechas reales via xlsxMinimo.js; validar con openpyxl.
+- [Restaurar packages.config con feed local](restaurar-packagesconfig-feed-local-msbuild.md) — RestoreConfigFile fuera del repo + SolutionDir; Reference directa en tests.
+- [POS WCF timeouts y Cliente_Relacionado](pos-wcf-timeouts-y-cliente-relacionado.md) — timeout real sale de codigo/WS_Timeout_*, no del App.config; Cliente_Relacionado no siempre es finca; CRLF.
+- [Confluence Buscar falla; publicar puede denegarse](confluence-buscar-claves-duplicadas.md) — usar Leer por id; dejar .nuevo.xml listo si el permiso se deniega.

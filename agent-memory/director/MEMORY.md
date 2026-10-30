@@ -1,1 +1,3 @@
 - [Revisar corridas previas antes de planificar](feedback-revisar-corridas-previas.md) — encargos largos: comparar con avances y fechas; tandas cortas; ante pausa, nada más
+- [Tiempos de ejecutor y paralelo](feedback-tiempos-ejecutor-y-paralelo.md) — topes por etapa en el brief; paralelo con --artifacts-path; reservar ronda de correcciones
+- [Fuente correcta y worktrees paralelos](feedback-fuente-correcta-y-worktrees-paralelos.md) — listar worktrees antes de portar sin commit; backup en rama; --3way; revisores tardan 15-28 min
