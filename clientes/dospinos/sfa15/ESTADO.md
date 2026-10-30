@@ -124,3 +124,12 @@ Hecho: InnerChannel.OperationTimeout (TCatalogoOnLine), respaldo antes de llamar
 
 ### 3700 - Ronda 2 C (ejecutor, 2026-10-29): HECHA, sin commit
 1) Guard de columnas en base local: nueva FacturacionLOCAL\TDisponibilidadColumnasLocal.vb (cache; True permanente, False re-verifica cada 5 min), usada en TFacturacionLocal.Insertar_Factura_Encabezado y en el SELECT de TSincronizacionLocal. 2) Venta partida: TParticionExoneracionBonificados.Limpiar_Autorizacion_Credito_SFA llamado desde TFacturacion.Armar_Encabezado_Separado. 3) NEGOCIO: mensajes fijos al cajero y detalle al log (TArmadorSolicitudCreditoSFA.MensajeCajero, TSistemaFinanciamientoSFA.MENSAJE_*), causa distinguida (cliente/finca/plan inexistente vs sin codigo). 4) MS_Description de Referencia reescrito en 01/02/03; Docker actualizado con sp_updateextendedproperty (checksums de 01/02/03 en _db_migrations del Docker quedan distintos: pendiente confirmar UPDATE de checksum). 5) routines\PV_Cerrar_Caja.sql sigue UTF-16 y = 04 (solo difiere el GO final). Pruebas: Facturacion.Tests 1752, CATALOGOS.Tests 434, FACTURACION.Tests 29, todo verde.
+
+## Ramas subidas (2026-10-30) — para retomar en otra PC
+- Integraciones (3699): `feature/3699-validar-credito-sfa15` en LDCOM13_INTEGRATIONS, commit 887ce1e, sobre develop ac74c50.
+  Se quitó `Sfa15CredencialesTemporales`: el respaldo de credenciales ahora es vacío; las reales van por el evento (IntegrationCredential y parámetros SfaUser/SfaPassword).
+  Build 0 errores; 685 pruebas filtradas de SFA en verde.
+- LDCOM (3700): `feature/3700-validar-credito-sfa15` en LDCOM13_DOS_PINOS, commit 8a178d43, sobre develop. Compilada con compilar-rama-facturacion.ps1 (1756 pruebas en verde).
+  El Web.config del Admin se restauró (no viaja con Docker/Testing); el del WCF lleva IntegrationStage/IntegrationTenant a propósito.
+- La 3700 usa Integration.SDK `1.5.1-sfa15-preview.1`, que solo está en C:\FUENTES\DP\_local-nuget de la PC principal. Sin subirlo al feed (ver aprendizajes/publicar-preview-nuget.md) la otra PC no restaura esa rama.
+- No se hizo PR de ninguna. Falta: subir el preview, PR de la 3699 y luego de la 3700 (la 3700 depende de la 3699 y del paquete oficial).
