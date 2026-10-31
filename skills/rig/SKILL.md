@@ -1,6 +1,6 @@
 ---
 name: rig
-description: Cómo usar y configurar rig, la herramienta de ambientes de LDCOM (antes dp) - instalarla en una PC nueva, iniciar un cliente, compilar y abrir el POS o el Admin, publicar en IIS, levantar Docker, cambiar de ambiente y revisar la rama. Usar cuando el desarrollador pida configurar su ambiente, "ayúdame a configurar rig", pregunte qué comando correr, o cuando haga falta compilar, publicar, abrir el POS/Admin o levantar la base local.
+description: Cómo usar y configurar rig, la herramienta de ambientes de LDCOM (antes dp) — instalarla, iniciar un cliente, compilar y abrir el POS o el Admin, publicar en IIS, levantar Docker, cambiar de ambiente. Usar al configurar el ambiente, preguntar qué comando correr o levantar la base local.
 ---
 
 # rig

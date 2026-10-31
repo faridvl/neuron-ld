@@ -1,6 +1,6 @@
 ---
 name: migraciones-ldcom
-description: Guia de la herramienta de migraciones de LD (`migrate`, LogicalData.DatabaseMigration.Cli, repo DatabaseMigration) y que hacer en cada escenario — crear una migracion, retocar un SP ya migrado, checksum distinto ("Checksum diferente en script ya aplicado" / estado Fallido en `migrate status`), script fallido, baseline, carpetas missing, pipelines. Usar siempre que se hable de "la herramienta de migraciones", `migrate status/up/push/plan/baseline/new`, la tabla `_db_migrations`, carpetas `NEGOCIO/Database/*/migrations`, o de editar/borrar/reaplicar una migracion, en cualquier repo (LDCOM13_DOS_PINOS u otro).
+description: Guía de `migrate` (migraciones de LD) — migración nueva, retocar un SP migrado, checksum distinto, script fallido, baseline. Usar al hablar de `migrate status/up/push/plan/baseline/new`, `_db_migrations` o de editar, borrar o reaplicar una migración.
 ---
 
 # Herramienta de migraciones de LD (`migrate`)

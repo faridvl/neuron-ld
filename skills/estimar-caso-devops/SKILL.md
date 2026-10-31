@@ -1,6 +1,6 @@
 ---
 name: estimar-caso-devops
-description: Hace triage de tickets de Azure DevOps del board AV Retail Dos Pinos (org LD-Vacas) — valida con evidencia (codigo, commits, board historico, Confluence) si el pedido es un bug real, una carga de datos, un hueco de despliegue o alcance nuevo/ya decidido; lo estima en horas cuando corresponde, lo documenta en el ticket (comentario de negocio + nota tecnica), llena Original Estimate/Remaining Work/Due Date (miercoles de entrega) segun la capacidad restante del ciclo y registra la calibracion. Usar siempre que pidan estimar, analizar o revisar un ticket, work item, issue o caso CRM (CAS-XXXXX) de Dos Pinos, o digan "vamos a estimar este caso", aunque no mencionen la palabra estimar. No usar para implementar el fix de un ticket ya estimado.
+description: Triage de tickets de Azure DevOps de Dos Pinos (board AV Retail) — valida con evidencia (código, commits, Confluence) si es bug real, carga de datos, hueco de despliegue o alcance nuevo; estima en horas, documenta en el ticket y llena Original Estimate, Remaining Work y Due Date. Usar al estimar, analizar o revisar un ticket o caso CRM (CAS-XXXXX) de Dos Pinos. No para implementar el fix.
 argument-hint: "[ID del ticket o CAS-XXXXX]"
 allowed-tools: Read, Grep, Glob, Agent, AskUserQuestion, Bash(node *capacidad.mjs*), mcp__ado__wit_work_item, mcp__ado__wit_query, mcp__ado__search_workitem, mcp__ado__core_get_identity_ids, mcp__ado__wit_work_item_attachment
 ---

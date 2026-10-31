@@ -5,7 +5,7 @@ Lo que el equipo de LD sabe de LDCOM y de cada cliente. La usan `rig` (perfiles 
 
 ```
 neuron-ld/
-├── reglas.md                    reglas del equipo (Claude las carga en cada sesión)
+├── reglas.md                    reglas del equipo (Claude las carga en las sesiones y agentes de los proyectos de LD)
 ├── clientes/<cliente>/rig.json  perfil del cliente para rig: carpeta, repos, slots, ambientes, IIS, reportes
 ├── proyectos/<repo>.md          ficha: qué es, ramas, comandos, riesgos, dónde viven sus reglas
 ├── aprendizajes/                "así resolvimos X", útil en más de un caso

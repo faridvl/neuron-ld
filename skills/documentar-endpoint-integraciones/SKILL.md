@@ -1,6 +1,6 @@
 ---
 name: documentar-endpoint-integraciones
-description: Genera o actualiza los 3 entregables de documentación de un endpoint de la API LDCOM13_INTEGRATIONS (Dos Pinos) — el Swagger OpenAPI escrito a mano, la colección de Postman y la página de Confluence LD-xx — partiendo del código real (controller, DTOs, servicio, códigos de error), para que los tres digan lo mismo que el código. Usar siempre que se cree o cambie un endpoint LD-01…LD-10 (parámetro nuevo, filtro, campo, regla, código de error, cambio de contrato), cuando pidan "documentar el endpoint", "actualizar el swagger/postman/confluence", "armar el entregable" o "la documentación de LD-xx", o al cerrar un ticket de la API de integraciones que cambia el contrato, aunque no mencionen los tres archivos.
+description: Genera o actualiza el Swagger, la colección de Postman y la página de Confluence LD-xx de un endpoint de LDCOM13_INTEGRATIONS desde el código real. Usar al crear o cambiar un endpoint LD-01…LD-10 o al pedir documentar el endpoint o armar el entregable.
 ---
 
 # Documentar un endpoint de LDCOM13_INTEGRATIONS

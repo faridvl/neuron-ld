@@ -1,6 +1,6 @@
 # Reglas del equipo LD (neuron-ld)
 
-Se importan en cada sesión de Claude de quien instale esta neurona. Las reglas de cada repo
+Se cargan en las sesiones y agentes de los proyectos de esta neurona, de quien la instale. Las reglas de cada repo
 (`<repo>/CLAUDE.md` y `<repo>/.claude/rules/`) mandan sobre estas cuando hablan de lo mismo.
 
 ## Ambiente: siempre con rig
