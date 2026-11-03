@@ -1,0 +1,229 @@
+{
+  "codigo": "POS-24",
+  "nombre": "Pedidos a Romana (preventa de tipo romana)",
+  "sentido": "LDCOM -> Dos Pinos (saliente)",
+  "endpoint": "POST https://usw3-gw.dm-us.informaticacloud.com/devapi.dospinos.com/agv/v1/p_POS24_PedidosRomana (desarrollo; hoy no hay URL de producción)",
+  "autenticacion": "OAuth2 client_credentials: token Bearer pedido a https://dm-us.informaticacloud.com/authz-service/oauth/token",
+  "dispara": "El hecho PREVENTA_CREADA de LDCOM: cuando se guarda en el POS una preventa cuyo tipo es el del parámetro TIPO_PREVENTA_ROMANA (por defecto 'Romana'). Las preventas de otro tipo no se envían.",
+  "cuando_se_envia": "Al instante, una sola vez, cuando la preventa romana se guarda. Si falla no se reintenta sola: Romana registraría el pedido dos veces.",
+  "fuente_documentacion": "Ejemplo del contrato ROM03 de Informática (escenario 'Alta de pedido' en Bruno), 40 envíos de prueba en Bruno contra el ambiente de desarrollo de Dos Pinos, preventas reales guardadas desde el POS (#54, #55, #61, #62 y #63) y DECISIONS.md de Integraciones (POS-24).",
+  "estado_general": "Provisional",
+  "notas_generales": "La integración ya envía de verdad al ambiente de desarrollo de Dos Pinos desde el POS y responde 'ROM03 recibido correctamente'. Faltan los largos oficiales de los campos y saber qué espera Dos Pinos en NUMERO_PEDIDO_CLIENTE.",
+  "reglas": [
+    {
+      "tema": "Cuándo se envía",
+      "regla": "Solo se envían las preventas de tipo romana, al momento de guardarlas. El nombre del tipo se compara sin importar mayúsculas, tildes ni espacios y se cambia en el Admin (parámetro TIPO_PREVENTA_ROMANA)."
+    },
+    {
+      "tema": "Duplicados",
+      "regla": "Romana no detecta repetidos: si recibe el mismo pedido dos veces, lo registra dos veces. Por eso cada preventa se manda una sola vez."
+    },
+    {
+      "tema": "Reintentos",
+      "regla": "No hay reintentos automáticos (un solo intento). Si no hay respuesta, hay un timeout o un error 500, no se sabe si Romana lo recibió: el aviso queda fallido con el mensaje 'Revisala en Romana antes de volver a enviarla'."
+    },
+    {
+      "tema": "Qué es éxito",
+      "regla": "Solo la respuesta 'ROM03 recibido correctamente' cuenta como enviado. Dos Pinos responde los rechazos de validación también con 200 y un texto 'Validacion: ...', y eso se registra como rechazo con su texto."
+    },
+    {
+      "tema": "Qué valida Dos Pinos",
+      "regla": "En desarrollo aceptó cantidad 0 o negativa, fechas mal formadas, conteo de líneas distinto, material inexistente y pedidos repetidos. Por eso LDCOM valida antes de enviar: cantidad mayor que 0, número de pedido de máximo 35 caracteres, cada línea con material y descripción."
+    },
+    {
+      "tema": "Identificación en la bitácora",
+      "regla": "El GUID del mensaje es el mismo identificador de la transacción que se ve en la bitácora de eventos y en el Monitor 360, y la marca de agrupación es la hora en que LDCOM avisó la preventa. Si el mensaje se vuelve a armar, salen los mismos valores."
+    },
+    {
+      "tema": "Fallas",
+      "regla": "Una falla de esta integración nunca detiene ni revierte la preventa en el POS. Los fallos llegan al Monitor 360 (nivel de aviso ERRORS_ONLY)."
+    }
+  ],
+  "preguntas": [
+    {
+      "numero": 1,
+      "tema": "Largos oficiales de ROM03",
+      "pregunta": "¿Cuál es el largo máximo de cada campo de ROM03? En desarrollo se aceptó hasta 50 en REFERENCIA, 36 en NUMERO_PEDIDO y NUMERO_PEDIDO_CLIENTE, 40 en MATERIAL y 100 en DESCRIPCION, pero no encontramos el límite real; con todos excedidos a la vez respondió 500.",
+      "campos": "REFERENCIA, NUMERO_PEDIDO, NUMERO_PEDIDO_CLIENTE, MATERIAL, DESCRIPCION"
+    },
+    {
+      "numero": 2,
+      "tema": "Número de pedido del cliente",
+      "pregunta": "¿Qué esperan en NUMERO_PEDIDO_CLIENTE? Hoy mandamos el mismo número de la preventa que en NUMERO_PEDIDO, porque en LDCOM la preventa no trae un número de pedido propio del cliente.",
+      "campos": "NUMERO_PEDIDO_CLIENTE"
+    },
+    {
+      "numero": 3,
+      "tema": "Mandante",
+      "pregunta": "¿Confirman que el MANDANTE es 600 en todos los ambientes, incluido producción?",
+      "campos": "MANDANTE"
+    }
+  ],
+  "campos": [
+    {
+      "bloque": "Encabezado",
+      "campo": "REFERENCIA",
+      "doc": "Texto, largo no documentado (se aceptó hasta 50), obligatorio",
+      "origen": "Fecha de la preventa (AAAAMMDD) + guion + número de la preventa.",
+      "descripcion": "Es el nombre con que LDCOM identifica este pedido. Sirve para buscarlo en Romana y en nuestro monitor.",
+      "ejemplo": "20261103-001-0019-00001-63",
+      "estado": "Decidido por nosotros",
+      "nota": "Romana no rechaza una REFERENCIA repetida: la registra otra vez.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "SOCIEDAD_FINANCIERA",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento SOCIEDAD_FINANCIERA = CR01.",
+      "descripcion": "La sociedad financiera de SAP a la que pertenece el pedido. Para Costa Rica siempre es CR01.",
+      "ejemplo": "CR01",
+      "estado": "Confirmado",
+      "nota": "Mismo valor que usan POS-12 y POS-19.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "CONS_AGRUPA_TRANS",
+      "doc": "Texto, obligatorio",
+      "origen": "Fecha y hora (AAAAMMDDHHMMSS, hora de Costa Rica) en que LDCOM avisó la preventa a Integrations.",
+      "descripcion": "Una marca de agrupación del envío. Es la hora del aviso, así que siempre es la misma para el mismo pedido aunque el mensaje se vuelva a armar.",
+      "ejemplo": "20261103132808",
+      "estado": "Decidido por nosotros",
+      "nota": "POS-19 usa otra cosa en su campo de agrupación (CSAGR = el cierre de caja), porque allí sí hay un grupo natural.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "CONS_TRANSACCION",
+      "doc": "Número, obligatorio",
+      "origen": "Consecutivo interno de la preventa en LDCOM (PreventaId).",
+      "descripcion": "El número interno de la preventa en LDCOM.",
+      "ejemplo": "63",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "FECHA_CREACION",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "Fecha de la preventa.",
+      "descripcion": "El día en que se hizo la preventa.",
+      "ejemplo": "20261103",
+      "estado": "Decidido por nosotros",
+      "nota": "Dos Pinos aceptó fechas mal formadas en desarrollo; LDCOM siempre manda AAAAMMDD.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "CANTIDAD_REG_INTEGRAR",
+      "doc": "Número, obligatorio",
+      "origen": "Cantidad de líneas del detalle.",
+      "descripcion": "Cuántos artículos trae el pedido. Sirve para que Romana compruebe que llegó completo.",
+      "ejemplo": "1",
+      "estado": "Decidido por nosotros",
+      "nota": "Dos Pinos aceptó un conteo distinto del detalle en desarrollo; LDCOM siempre manda el real.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "MANDANTE",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento MANDANTE = 600.",
+      "descripcion": "El mandante (ambiente) de SAP donde se registra el pedido.",
+      "ejemplo": "600",
+      "estado": "Provisional",
+      "nota": "Es el valor del ejemplo del contrato y funciona en desarrollo. Se cambia en el Admin sin tocar código.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "GUID_VALUE",
+      "doc": "Texto, 32 (UUID sin guiones), obligatorio",
+      "origen": "Identificador de la transacción del aviso en Integrations, sin guiones: el mismo que se ve en la bitácora y en el Monitor 360.",
+      "descripcion": "Un código único del envío. Con él se encuentra el mismo pedido en nuestro monitor y en Dos Pinos.",
+      "ejemplo": "cdfbab5e6f5c4b46805fb000b22b8fec",
+      "estado": "Decidido por nosotros",
+      "nota": "POS-19 manda su GUID con guiones (36); en POS-24 el contrato lo pide sin guiones.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "NUMERO_PEDIDO",
+      "doc": "Texto, largo no documentado (se aceptó hasta 36), obligatorio",
+      "origen": "Número de la preventa, igual al que devuelve el endpoint de preventas de LDCOM. Se repite en cada línea.",
+      "descripcion": "El número del pedido al que pertenece la línea.",
+      "ejemplo": "001-0019-00001-63",
+      "estado": "Decidido por nosotros",
+      "nota": "Si pasa de 35 caracteres, el envío falla con un mensaje claro en vez de cortarse.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "NUMERO_PEDIDO_CLIENTE",
+      "doc": "Texto, largo no documentado (se aceptó hasta 36), obligatorio",
+      "origen": "El mismo número de la preventa que NUMERO_PEDIDO.",
+      "descripcion": "El número con que el cliente conoce su pedido. Como LDCOM no tiene uno aparte, va el de la preventa.",
+      "ejemplo": "001-0019-00001-63",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Es una suposición nuestra.",
+      "pregunta": "1, 2"
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "FECHA_PEDIDO",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "Fecha de la preventa (la misma de FECHA_CREACION).",
+      "descripcion": "El día del pedido.",
+      "ejemplo": "20261103",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "MATERIAL",
+      "doc": "Texto, largo no documentado (se aceptó hasta 40), obligatorio",
+      "origen": "ArticuloId de la línea, que es el código SAP del material (no el código principal, que puede ser uno local de LDCOM).",
+      "descripcion": "El código SAP del artículo pedido.",
+      "ejemplo": "20000202",
+      "estado": "Confirmado",
+      "nota": "Probado desde el POS con #61 (BOVIGOLD 20010633) y #62 (TIJERA HOJALETERO 10, código local AV15, SAP 20000202). Dos Pinos no valida que el material exista al recibir.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "DESCRIPCION",
+      "doc": "Texto, largo no documentado (se aceptó hasta 100), obligatorio",
+      "origen": "Descripción del artículo en la línea de la preventa.",
+      "descripcion": "El nombre del artículo, para que se lea en Romana.",
+      "ejemplo": "TIJERA HOJALETERO 10",
+      "estado": "Decidido por nosotros",
+      "nota": "Si pasa de 100 caracteres se recorta (es solo informativa). Los largos cuentan caracteres, no bytes: tildes y eñes no restan.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "POSICION",
+      "doc": "Número, obligatorio",
+      "origen": "Orden de la línea en la preventa, de 10 en 10.",
+      "descripcion": "El número de línea dentro del pedido: 10, 20, 30...",
+      "ejemplo": "10",
+      "estado": "Decidido por nosotros",
+      "nota": "Va de 10 en 10 como en el ejemplo del contrato.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "CANTIDAD_PEDIDO",
+      "doc": "Número decimal, obligatorio",
+      "origen": "Cantidad de la línea de la preventa, sin redondear, con punto decimal.",
+      "descripcion": "Cuánto se pide del artículo. Acepta decimales (por ejemplo, kilos de producto a granel).",
+      "ejemplo": "1.000",
+      "estado": "Decidido por nosotros",
+      "nota": "Debe ser mayor que 0 con 3 decimales (0.0004 se toma como 0 y el envío falla con un mensaje claro). Dos Pinos aceptaba 0 y negativos.",
+      "pregunta": null
+    }
+  ]
+}
