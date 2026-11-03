@@ -133,3 +133,24 @@ Hecho: InnerChannel.OperationTimeout (TCatalogoOnLine), respaldo antes de llamar
   El Web.config del Admin se restauró (no viaja con Docker/Testing); el del WCF lleva IntegrationStage/IntegrationTenant a propósito.
 - La 3700 usa Integration.SDK `1.5.1-sfa15-preview.1`, que solo está en C:\FUENTES\DP\_local-nuget de la PC principal. Sin subirlo al feed (ver aprendizajes/publicar-preview-nuget.md) la otra PC no restaura esa rama.
 - No se hizo PR de ninguna. Falta: subir el preview, PR de la 3699 y luego de la 3700 (la 3700 depende de la 3699 y del paquete oficial).
+
+## 3699 en PR (2026-11-02) — PR 1321 a develop, rama feature/3699-validar-credito-sfa15
+- Runner por Stage: `RunnerFileSettings.Load(directory, stage)` mezcla `appsettings.{Stage}.json` sobre `appsettings.json`;
+  opción `Integration:TrustServerCertificate`. Solo cambia el Runner, no el SDK.
+- Runner publicado (43 MB, sin ReadyToRun) y copiado al bin del Admin del Docker con `appsettings.TESTING.json` (respaldo del
+  viejo en `ClaudeLocalSession\evidencias\sfa15-venta-prueba\respaldo-runner\`). "Probar conexión" no existe en el Admin de
+  la rama 3700; el Monitor sí pasó por este Runner. Falta copiarlo junto a `Integration.Runner.exe` en el core al redesplegar.
+- SDK 1.5.2 (decisión del usuario): el paquete sale 1.5.2.<build>, por encima de 1.5.1-sfa15-preview.1.
+- `SendBodyCredentials` (true por defecto) decide si viajan `Usuario`/`Contraseña` en el cuerpo; en false por ambiente,
+  sin código ni deploy.
+- Nombres por función, nada de Sfa15 en clases, archivos ni parámetros (FinancingPlan*, BodyUser/BodyPassword).
+- Docker (`LDCOM_DOS_PINOS_INTEGRATIONS_STAGING_DOCKER`): parámetros renombrados a BodyUser/BodyPassword,
+  SendBodyCredentials=true y checksum de la migración 20261029110000/02 actualizado tras cambiarle el comentario.
+  Dev y Testing no la tienen aplicada.
+- NotConfigured o InvalidRequest: el POS emite en contingencia; el usuario lo aceptó porque queda en el Monitor.
+- IntegrationUserCode=`INTEGRACIONSFA` es un valor fijo que pide el proveedor (confirmado por el usuario).
+- Comentarios de Copilot del PR: 4 resueltos (3 corregidos en 222fb13, el de IN_PROGRESS por diseño).
+- Al mergear el PR 1321: avisar a la sesión "Migraciones en develop" (otra PC, por Remote Control) para que corra
+  `migrate up` en develop (autorizado por el usuario); después, el seed 04 con sus variables `>>> LLENAR`.
+- Luego: CI de develop → correr a mano `cd-integrations-testing` (etapa Publish SDK al feed) → en la rama 3700 cambiar
+  el preview por la versión publicada en los 4 packages.config → probar desde el POS.
