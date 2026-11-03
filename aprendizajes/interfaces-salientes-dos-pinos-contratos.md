@@ -49,15 +49,33 @@ en largos, constantes y en cómo responde el rechazo en todas las que se probaro
 
 ## 4. Diseño acordado para las salientes (decisiones del desarrollador)
 
-- **LDCOM no conoce POS-xx ni a Dos Pinos.** Avisa hechos propios con un enum fijo (cierre de caja, movimiento de caja,
-  venta, nota de crédito, preventa creada, traslado creado), con el nombre guardado como `IntegrationEvent.Name`.
-  Integrations decide a qué interfaz(es) va cada hecho y con qué regla (p. ej. preventa de tipo romana -> POS-24). El
-  código POS-xx vive solo en `IntegrationEvent.EventCode` (monitor).
+**Un solo método en LDCOM: `Notificar(hecho, documento)`.**
+
+- **LDCOM no conoce POS-xx ni a Dos Pinos.** Avisa hechos propios con un enum fijo (`HechoLdcom`: CierreCaja,
+  MovimientoCaja, PreventaCreada, TrasladoCreado, Venta, NotaCredito; viaja como `CIERRE_CAJA`...).
+- **El documento va completo en el `Notificar`**, en el modelo propio de LDCOM (`DocumentoLdcom` y uno por hecho:
+  sucursal, caja, montos, líneas y los `Codigo_Interfaz` que LDCOM ya tiene). Su `Referencia` es la llave única y
+  estable: notificar dos veces el mismo documento no duplica. Los modelos viven en el SDK (contrato compartido).
+- **Integrations no lee la BD de LDCOM.** Arma cada mensaje con el documento + parámetros del evento
+  (`IntegrationEventParameter`: IDITZ, MANDANTE, sociedad) + mapeos (`CrossReference`).
+- **Un hecho puede alimentar varias interfaces:** tabla `IntegrationEventFact (IntegrationEventId, FactName)`.
+  `IntegrationEvent.Name` es único por integración, así que NO se usa como nombre del hecho: cada interfaz conserva su
+  propio evento (nombre, intentos, monitor, código POS-xx en `EventCode`).
+- **Lo único propio de cada interfaz** es un builder (`IOutboundNotificationBuilder`): `Applies` (su regla, p. ej.
+  POS-24 solo preventas de tipo romana, comparado contra un parámetro del evento), `BuildAsync` (arma el mensaje) y
+  `Classify` (Sent / AlreadySent / Rejected / Transient). Se registran solos por reflexión. Si el hecho ya existe en
+  LDCOM, una interfaz nueva no toca LDCOM.
+- **Envío:** `Notificar` vuelve en cuanto Integrations guardó el pendiente (`OutboundNotification`, con la foto del
+  documento) y **nunca lanza**. El envío sale al instante en segundo plano (el cajero no espera al Runner ni a Dos
+  Pinos); un job reintenta solo lo pendiente. Los reintentos reenvían el mismo mensaje armado en el primer intento.
 - **Reintentos e intervalo salen de la tabla del evento** (`IntegrationEvent.RetryMax` y `BackoffSeconds`), igual que
   en datos maestros. `RetryMax` es el total de intentos: 1 = sin reintentos; 0 no se acepta (Admin y API, rango 1-10).
 - Sin reintento ciego donde el destino no es idempotente: SFA (mueve crédito) fijo en 1; POS-24/26 aceptan duplicados,
   así que un timeout o un 500 de Romana no se reintenta sin saber si llegó. POS-19 sí se puede reintentar: el duplicado
-  vuelve como "dato de control ya existe" y se toma como enviado.
-- Propuesta en diseño (no implementada): el hecho se registra como pendiente en la misma transacción del documento, se
-  envía de inmediato en segundo plano (el cajero no espera al Runner ni a Dos Pinos) y un job reintenta solo lo que
-  quedó pendiente. POS-10 sigue siendo síncrono porque el POS necesita la respuesta para facturar.
+  vuelve como "dato de control ya existe" y se toma como enviado (`AlreadySent`).
+- **Dónde queda el rastro:** todo en Integrations (`OutboundNotification` + `Events` + Monitor 360, y correo si falla
+  el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va al
+  log de NEGOCIO con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
+- **Excepción:** POS-10 (y POS-11) siguen síncronos porque el POS necesita la respuesta del SFA para facturar.
+- Nombres genéricos: lo común (Notificar, pendientes, despacho, suscripción) no lleva nombre de interfaz ni de
+  cliente; solo los builders llevan POS19, POS24...
