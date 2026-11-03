@@ -168,10 +168,14 @@ Hecho: InnerChannel.OperationTimeout (TCatalogoOnLine), respaldo antes de llamar
   compartida: no se escribe desde aquí).
 - El Web.config del WCF apunta Integrations al SQL compartido igual que develop; la 3700 solo le agrega `<appSettings>`.
 - El primer commit de la 3700 había subido el `LD.Facturacion.LD` de esta PC; el commit 9c417091 lo devuelve al de develop.
-- WCF en IIS del Docker con Integration.SDK 1.5.2.7597 (FileVersion confirmada). **Falta la venta a crédito en el POS con el SDK
-  oficial**: dos rondas de qa se quedaron sin turnos en la pantalla "Asignar Autorizado" (botón "+" junto a "Autorizado:").
-  Las ventas S07/S02/FAC-0047 fueron con el preview.
-- Riesgo en el Docker: el evento 1009 de Integrations está **activo y con la URL real de Informática**. Antes de cada venta
-  apuntarlo al simulador (7390) y devolverlo después (valor original en
-  `ClaudeLocalSession\evidencias\sfa15-venta-prueba\sdk-oficial\evento-1009-antes.txt`).
+- Venta a crédito en el POS con el SDK oficial **PASA** (2026-11-02), contra el SFA de pruebas de Informática:
+  factura 019-04-0000090, cliente 4000054, plan PLAN SIN VIGENCIA (CAMPOS AUSENTES), CRC 19.55. Attempt 1007 AUTHORIZED
+  (solicitud 309, crédito 25235), events 81031-81033 SUCCESS, sin Msg_Message nuevos. Evidencia en
+  `ClaudeLocalSession\evidencias\sfa15-venta-prueba\resultados.md`.
+- En el Docker el evento 1009 queda activo con la URL de Informática: las ventas de prueba van contra ese SFA (decisión del
+  usuario); el simulador (7390) solo para forzar caída o rechazo.
+- develop no está listo para probar en el POS: LDCOM13_CR_DOS_PINOS no tiene las columnas `Factura_Credito_SFA_*` (falta la
+  migración 3700), el evento CREDIT_VALIDATION 27 está inactivo y sin credenciales, no hay usuario de integración SFA
+  (`integrador_agvretail_dev@dospinos.com` existe para otros eventos) ni cajeros de QA (15 usuarios reales). Los clientes de
+  prueba del Docker (4000010, 4000054, 3664) no existen; candidato: cliente 10100813 con el plan 35 POR_CLIENTE (12 semanas).
 - Descripción del PR lista en `ClaudeLocalSession\planes\pr-3700-descripcion.md` (sin push ni PR creado).
