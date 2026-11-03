@@ -88,6 +88,32 @@ después de responder al POS, con su propio timeout y sin bloquear nunca la vent
 1. Integrations: unitarias del clasificador y del mapeo (cada campo con su prueba) + E2E con el Runner real contra
    el simulador (cada formato de respuesta, 401/403, timeout, evento inactivo, reintento con la misma referencia).
 2. LDCOM: compilar la rama en su worktree y correr Facturacion.Tests y CATALOGOS.Tests.
-3. POS real automatizado (ver `automatizar-pos-recorridos.md`) contra Docker + Integrations local + simulador:
+3. POS real automatizado (ver `automatizar-pos-recorridos.md`) contra Docker + Integrations local:
    cada resultado, contingencia, venta de contado, facturación local, sincronización, cierre de caja y
    devolución/NC si aplica, con evidencia en BD.
+4. La prueba final de cada resultado va **desde el POS contra el endpoint real de pruebas de Informática**, sin
+   redirigir el evento al simulador. El simulador sirve para desarrollar y para forzar casos que el real no da
+   (caída, timeout); Bruno solo valida datos y no cuenta como cobertura. Cada autorización real crea un crédito sin
+   reverso: montos pequeños (CRC 19,55).
+
+## 7. Tropiezos que costaron horas en POS-10
+
+- **Certificado del SQL de Integrations:** el Runner usa Microsoft.Data.SqlClient, que cifra por defecto. Sin
+  `TrustServerCertificate=True` en la cadena que se le pasa, toda validación cae a "no disponible" y parece una
+  contingencia normal. Ver `runner-integraciones-cifra-por-defecto.md`.
+- **SDK preliminar → oficial:** se desarrolla con un paquete `-preview` del feed y, antes del PR, se cambia en
+  NEGOCIO, ServiciosWCF y el Admin a la versión que publique el release de Testing de Integrations (en POS-10,
+  `1.5.2.7597`). Restaurar con `restaurar-paquetes-feed-ado.md`, recompilar y **repetir una venta real** con el
+  paquete oficial antes de darlo por cerrado.
+- **El texto que ve el cajero es fijo de LDCOM** ("Favor comunicarse con Servicios Financieros"); el motivo real
+  del rechazo solo queda en `CreditValidationAttempt`. Soporte lo busca ahí.
+- **Escenarios de datos:** finca ajena (S04) se arma reasignando en Docker un cliente-finca a otro asociado, con
+  script de preparación y de reversa; asociado sin finca usa un cliente que es el propio asociado.
+
+## 8. Entregables en el repo de LDCOM
+
+Mismo formato que FE AVD (`documentos/15 - PRDs/<nn> - <tema>/`): `PRD.md`, `Manual-<tema>.html` con la estructura
+y el CSS del manual de FE, `qa/QA.md` con veredicto por prueba y la sección "Evidencias por archivo" (tablas
+`| # | Caso | Doc | Resultado | Hora | Evidencia |`), `qa/trazabilidad.md` (documento, solicitud, crédito,
+referencia, intento, eventos) y `qa/evidencias/` con archivos sueltos `caja-NN-…`, `pdf-NN-…`, `admin-NN-…`,
+`log-NN-…`. Nada de zips. Revisar cada captura y log antes de subirlos: sin claves, tokens ni cadenas de conexión.

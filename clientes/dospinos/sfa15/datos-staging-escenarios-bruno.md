@@ -41,3 +41,17 @@ Todos activos, sin bloqueo y No Banca.
 - C02/C03 mismo idExterno LDQA-DUP-0001: AMBOS aprobados (solicitudes 282 y 283, creditos 25215 y 25216). **SFA no protege contra duplicados: la guarda contra doble envio tiene que estar en LDCOM/Integrations.**
 - Creditos de 1.00 creados en SFA de pruebas: 25213, 25214, 25215, 25216.
 - Rareza de SFA: en los mensajes concatena un "1" al valor ("unidad de costo 999999991", "CEDPF1"); no afecta.
+
+## Escenarios POS 3700 (S01-S07) contra el CIH real (2026-11-02)
+
+La carpeta "5 Escenarios POS 3700" de Bruno ya no usa el simulador: todo va al SFA real con el environment UAT Dos Pinos.
+
+| Escenario | Resultado |
+|---|---|
+| S01 autorizado con finca | A, credito 25228 |
+| S04 rechazo funcional (finca ajena 2563) | HTTP 200, indEstado null, "La unidad de costo 2563 no existe para el cliente 4000010." Sin credito |
+| S05 sin conexion | Host `.invalid`: no resuelve DNS (curl 6, ~0.1 s); no llega al SFA. Una corrida por error contra el real dio 200 (posible credito extra) |
+| S06 timeout | Corte del cliente a 1 s: "timeout of 1000ms exceeded". El SFA si recibe la solicitud y puede crear el credito igual |
+| S07 autorizado 2320.48, plan 42 dias tipo 203 | A, credito 25231 |
+
+Las claves de SFA del environment son secretas en Bruno (no estan en el yml): los requests se corren desde Bruno.

@@ -118,3 +118,27 @@ paso a paso ante una falla y (c) guardar trazas exitosas. Eso cubre lo nuestro s
 4. Opcional y barato, para comparar: probar UFO2 en una carpeta aislada (venv propio fuera del repo, clave de API
    temporal, solo contra el Docker local, `ACTION_SEQUENCE: false` primero) con una tarea de solo lectura; descartar si
    se cuelga con las modales.
+
+## Venta a crédito con plan de financiamiento (SFA15)
+
+Recorrido probado en la caja 019-04 del Docker, sin mover mouse ni teclado:
+
+1. Cliente: F1 Cambiar Clientes → buscar → elegir la fila (el cliente-finca lleva al asociado).
+2. Documento: botón de documento → FACTURA DE CREDITO (Crédito General).
+3. Artículo y cantidad; para montos grandes, artículo de precio editable (AV02) con precio personalizado.
+4. F5 (Imprimir Documento) abre "Seleccionar Tipo de Credito": elegir el plan → Simulador de Cuotas (el plazo es un
+   combo cerrado) → F1 Confirmar. No hay pantalla de cobro: el crédito no registra forma de pago.
+5. Diálogo "Guardar impresión como": escribir la ruta completa del PDF con `WM_SETTEXT` en el Edit de id 1001 y
+   Enter. El diálogo puede repetirse por cada copia; cerrar las extras con Esc.
+6. Verificar en base: `Ticket_Encabezado` (`Factura_Validacion_Credito`, solicitud, crédito, referencia),
+   `CreditValidationAttempt` y `Events` en Integrations.
+
+Trucos que funcionaron:
+- Botones de diálogos sin `auto_id`: buscarlos por clase BUTTON y texto **con `strip()`** (el POS rellena con
+  espacios) y mandar `BM_CLICK` con `PostMessage`, que no bloquea si el clic abre otro modal.
+- Antes de cada paso, listar las ventanas visibles del proceso (título, clase, tamaño): los modales del POS
+  comparten título y así se sabe cuál está al frente.
+- El cierre de caja con el EMV sin datáfono lanza una excepción Win32 al imprimir: es ruido del ambiente, Aceptar
+  y seguir; el cierre queda hecho en central.
+- Para evidencias: capturar con `PrintWindow` en el momento del mensaje (se cierran solos) y renombrar al formato
+  `caja-NN-<caso>-<qué se ve>.png` al copiarlas al repo.
