@@ -74,8 +74,8 @@ en largos, constantes y en cómo responde el rechazo en todas las que se probaro
   así que un timeout o un 500 de Romana no se reintenta sin saber si llegó. POS-19 sí se puede reintentar: el duplicado
   vuelve como "dato de control ya existe" y se toma como enviado (`AlreadySent`).
 - **Dónde queda el rastro:** todo en Integrations (`OutboundNotification` + `Events` + Monitor 360, y correo si falla
-  el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va al
-  log de NEGOCIO con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
+  el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va con
+  `Save_Msg` a `MSG_MESSAGE` (255 caracteres) con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
 - **Excepción:** POS-10 (y POS-11) siguen síncronos porque el POS necesita la respuesta del SFA para facturar.
 - Nombres genéricos: nada lleva nombre de interfaz ni de cliente, tampoco los builders (se nombran por lo que arman,
   p. ej. movimientos de caja). El código POS19/POS24 vive solo en el evento y su seed. Regla en `reglas.md` (Código).
