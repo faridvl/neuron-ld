@@ -154,3 +154,24 @@ Hecho: InnerChannel.OperationTimeout (TCatalogoOnLine), respaldo antes de llamar
   `migrate up` en develop (autorizado por el usuario); después, el seed 04 con sus variables `>>> LLENAR`.
 - Luego: CI de develop → correr a mano `cd-integrations-testing` (etapa Publish SDK al feed) → en la rama 3700 cambiar
   el preview por la versión publicada en los 4 packages.config → probar desde el POS.
+
+## 3700 con el SDK oficial (2026-11-02)
+- PR 1321 mergeado; release de Testing hecho por el usuario (build 7597). El paquete oficial es Integration.SDK
+  **1.5.2.7597** (feed LDCOM13.DosPinos); restaurarlo: `aprendizajes/restaurar-paquetes-feed-ado.md`.
+- Rama 3700: 4 packages.config y 5 proyectos pasan de `1.5.1-sfa15-preview.1` a `1.5.2.7597`. NEGOCIO, ServiciosWCF,
+  ADMIN (MetodosEnLinea) compilan; CATALOGOS.Tests 511 correctas, 7 omitidas, 0 con error.
+- Va en el mismo PR el arreglo de TrustServerCertificate de la cadena de Integrations que recibe el SDK
+  (`TInterfazTabla.ConfiarCertificadoDelServidor`, ver DECISIONS.md del repo y `aprendizajes/runner-integraciones-cifra-por-defecto.md`).
+- develop de Integrations: `migrate up` hecho por la otra sesión (18 archivos) y seeds 01 a 04 corridos. El evento
+  CREDIT_VALIDATION (id 27) quedó **inactivo**, URL `CHANGE_ME`, sin usuario ni clave y SendBodyCredentials=true. Falta que
+  alguien con las credenciales cargue la URL real, usuario/clave y la llave de la conexión «Monitor de procesos» (base
+  compartida: no se escribe desde aquí).
+- El Web.config del WCF apunta Integrations al SQL compartido igual que develop; la 3700 solo le agrega `<appSettings>`.
+- El primer commit de la 3700 había subido el `LD.Facturacion.LD` de esta PC; el commit 9c417091 lo devuelve al de develop.
+- WCF en IIS del Docker con Integration.SDK 1.5.2.7597 (FileVersion confirmada). **Falta la venta a crédito en el POS con el SDK
+  oficial**: dos rondas de qa se quedaron sin turnos en la pantalla "Asignar Autorizado" (botón "+" junto a "Autorizado:").
+  Las ventas S07/S02/FAC-0047 fueron con el preview.
+- Riesgo en el Docker: el evento 1009 de Integrations está **activo y con la URL real de Informática**. Antes de cada venta
+  apuntarlo al simulador (7390) y devolverlo después (valor original en
+  `ClaudeLocalSession\evidencias\sfa15-venta-prueba\sdk-oficial\evento-1009-antes.txt`).
+- Descripción del PR lista en `ClaudeLocalSession\planes\pr-3700-descripcion.md` (sin push ni PR creado).
