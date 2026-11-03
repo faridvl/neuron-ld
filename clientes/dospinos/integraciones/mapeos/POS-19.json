@@ -1,0 +1,301 @@
+{
+  "codigo": "POS-19",
+  "nombre": "Movimientos de cajas (cierre de caja y movimientos contables)",
+  "sentido": "LDCOM -> Dos Pinos (saliente)",
+  "endpoint": "POST https://usw3-gw.dm-us.informaticacloud.com/devapi.dospinos.com/agv/v1/p_POS19_movimientos_de_cajas (desarrollo; hoy no hay URL de producción)",
+  "autenticacion": "OAuth2 client_credentials: token Bearer pedido a https://dm-us.informaticacloud.com/authz-service/oauth/token",
+  "dispara": "Dos hechos de LDCOM: el cierre de caja del POS de agencias (CIERRE_CAJA) y la entrada de dinero con deudor (MOVIMIENTO_CAJA).",
+  "cuando_se_envia": "La entrada de dinero con deudor sale al instante, en el momento en que el cajero la aplica. Todo lo demás (apertura, retiros, depósitos, salidas, entradas sin deudor, faltante o sobrante) sale junto en un solo aviso cuando la caja se cierra.",
+  "fuente_documentacion": "Excel de Informática 'POS19_Movimientos de cajas.xlsx' (solicitud del 16/09/2026, responsable Fabiola Delgado), OpenAPI POS19.yml, pruebas reales en Bruno contra el ambiente de desarrollo de Dos Pinos y decisiones del proyecto (DECISIONES.md de POS-19, números 8, 11, 14, 15 y 16).",
+  "estado_general": "Provisional",
+  "notas_generales": "La integración ya envía de verdad al ambiente de desarrollo de Dos Pinos y responde 200. Quedan provisionales los códigos de catálogo (libro de caja y tipo de operación) hasta que Dos Pinos entregue los reales.",
+  "reglas": [
+    {
+      "tema": "Cuándo se envía",
+      "regla": "Una entrada de dinero con deudor se envía al instante. El resto de movimientos de la caja viajan juntos en un solo aviso al cerrar la caja. Los retiros con tarjeta u 'otro' no se envían."
+    },
+    {
+      "tema": "Entradas con deudor y el cierre",
+      "regla": "El aviso del cierre no repite las entradas con deudor que ya se mandaron al instante. Si Dos Pinos pidiera lo contrario, se cambia con el parámetro CIERRE_EXCLUYE_CON_DEUDOR (S = no repetir, N = repetir) y se apaga el envío al instante; no hace falta tocar código."
+    },
+    {
+      "tema": "Duplicados",
+      "regla": "Dos Pinos considera repetido un envío cuando coinciden juntos GUID + NROEJ + CSAGR + REFERENCIA (del bloque de control). Un reenvío idéntico responde 500 'dato de control ya existe' y nosotros lo damos por enviado."
+    },
+    {
+      "tema": "Reintentos",
+      "regla": "Si falla, se reintenta hasta 3 veces en total, con 60 segundos de espera entre intentos. Cada reintento manda exactamente el mismo mensaje (mismo GUID, NROEJ, CSAGR y REFERENCIA), por eso es seguro."
+    },
+    {
+      "tema": "Qué valida Dos Pinos",
+      "regla": "Al recibir, Dos Pinos solo revisa que el mensaje esté completo y bien armado (si falta un dato obligatorio responde 400). Que el libro de caja exista, que el importe tenga sentido o que la fecha sea válida lo valida SAP después, sin avisarnos: por eso los códigos del catálogo deben ser los reales."
+    },
+    {
+      "tema": "Importes",
+      "regla": "Siempre positivos y con 2 decimales. Un movimiento que redondea a cero no se envía. El sentido (entra o sale dinero) lo da el tipo de operación, no el signo."
+    },
+    {
+      "tema": "Fallas",
+      "regla": "Una falla de esta integración nunca detiene ni revierte el cierre de caja ni la entrada de dinero en el POS. Todo el rastro queda en Integrations (Monitor 360)."
+    }
+  ],
+  "preguntas": [
+    {
+      "numero": 1,
+      "tema": "Catálogo de libro de caja y tipos de operación",
+      "pregunta": "¿Cuál es el código real de LIBRO_CAJA (¿uno por sucursal o uno solo?) y el NUM_OPERACION de cada operación de esta lista: apertura, retiro de efectivo, retiro del fondo, retiro de cheques, retiro por transferencia, entrada de dinero, salida de dinero, depósito, faltante y sobrante? Además: ¿cómo se debe reportar una anulación? Hoy mandamos la entrada o salida original y luego su reverso con el tipo contrario.",
+      "campos": "LIBRO_CAJA, NUM_OPERACION"
+    },
+    {
+      "numero": 2,
+      "tema": "Retiros con tarjeta u otro",
+      "pregunta": "Los retiros de caja que son con tarjeta o de tipo 'otro' no tienen operación en nuestra lista. ¿Qué código les corresponde, o confirman que no se deben enviar?",
+      "campos": "NUM_OPERACION"
+    },
+    {
+      "numero": 3,
+      "tema": "Entradas con deudor y el cierre",
+      "pregunta": "Las entradas de dinero con deudor las mandamos al instante. ¿Confirman que el aviso del cierre no debe repetirlas?",
+      "campos": "Aviso de cierre (todas las líneas), DEUDOR"
+    },
+    {
+      "numero": 4,
+      "tema": "Detalles de campos",
+      "pregunta": "(a) COD_IMPUESTO: ¿es el indicador de IVA de SAP y en qué casos se necesita? Hoy no lo enviamos. (b) FECHA_CONTA: ¿debe ser la fecha del cierre o la fecha en que se hizo el movimiento? (c) USER: ¿es correcto mandar el usuario de acceso (login) del cajero que hizo la operación?",
+      "campos": "COD_IMPUESTO, FECHA_CONTA, USER"
+    }
+  ],
+  "campos": [
+    {
+      "bloque": "Control",
+      "campo": "IDITZ",
+      "doc": "Texto, 10, obligatorio",
+      "origen": "Parámetro del evento IDITZ = POS19.",
+      "descripcion": "Es el código fijo que le dice a Dos Pinos de qué interfaz viene el mensaje. Siempre es POS19.",
+      "ejemplo": "POS19",
+      "estado": "Confirmado",
+      "nota": "Probado en Bruno: el valor correcto es POS19 sin guion (FSD-19 no sirve).",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "CSAGR",
+      "doc": "Texto, 20 según el Excel (14 reales), obligatorio",
+      "origen": "Identificador del cierre de caja en LDCOM: empresa-sucursal-caja-cierre separados por guiones. Lo usan tanto el aviso del cierre como cada movimiento de ese cierre.",
+      "descripcion": "Es el número del cierre de caja al que pertenece el mensaje. Así Dos Pinos puede agrupar todo lo de un mismo cierre. Si no cabe en 14 caracteres, primero se quita la empresa y después los guiones; nunca se corta a la fuerza.",
+      "ejemplo": "1-19-4-16",
+      "estado": "Decidido por nosotros",
+      "nota": "El Excel dice 20 de largo pero la base de Dos Pinos solo acepta 14 (con 15 da error ORA-12899). Repetir el CSAGR en varios avisos del mismo cierre es seguro porque el duplicado se detecta con los cuatro datos juntos.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "NROEJ",
+      "doc": "Texto, 10, obligatorio",
+      "origen": "Número del aviso en Integrations (consecutivo, único).",
+      "descripcion": "Es el número de este envío. Cada aviso tiene el suyo y no se repite, así que sirve para distinguir un envío de otro.",
+      "ejemplo": "9",
+      "estado": "Decidido por nosotros",
+      "nota": "Debe ser positivo y de máximo 10 dígitos; si no, el envío falla con un mensaje claro.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "DATEE",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "Fecha en que se envía, en hora de Costa Rica.",
+      "descripcion": "La fecha en que se mandó el mensaje a Dos Pinos, no la fecha de la operación.",
+      "ejemplo": "20261103",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "HOURE",
+      "doc": "Texto, 8 (HH:MM:SS), obligatorio",
+      "origen": "Hora en que se envía, en hora de Costa Rica.",
+      "descripcion": "La hora en que se mandó el mensaje a Dos Pinos.",
+      "ejemplo": "12:29:23",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "BUKRS",
+      "doc": "Texto, 4, obligatorio",
+      "origen": "Parámetro del evento BUKRS = CR01.",
+      "descripcion": "La sociedad financiera de SAP a la que se carga el movimiento. Para Costa Rica siempre es CR01.",
+      "ejemplo": "CR01",
+      "estado": "Confirmado",
+      "nota": "Mismo valor que usa POS-12 (Confluence).",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "REFERENCIA (control)",
+      "doc": "Texto, 16, obligatorio",
+      "origen": "Referencia del documento: la del cierre (CIERRE-...) o la del movimiento (MOV-...). Si no cabe en 16, se usa una forma compacta.",
+      "descripcion": "Es el nombre con que LDCOM identifica este cierre o este movimiento. Sirve para rastrearlo y, junto con otros tres datos, para que Dos Pinos reconozca un envío repetido.",
+      "ejemplo": "CIERRE-1-19-4-16 (cierre) o MOV-1-19-4-3-6 (movimiento)",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "USER",
+      "doc": "Texto, 12, obligatorio",
+      "origen": "Usuario de acceso (login) del cajero que hizo la operación o tuvo el cierre. Si el documento no lo trae, el parámetro USER del evento; se corta a 12 caracteres.",
+      "descripcion": "Quién generó el movimiento. Mandamos el usuario del cajero para que en SAP se sepa quién fue.",
+      "ejemplo": "qa_auto",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Es una suposición nuestra (el Excel solo dice 'Usuario que genera el mensaje'). Pendiente de confirmar con Dos Pinos.",
+      "pregunta": 4
+    },
+    {
+      "bloque": "Control",
+      "campo": "GUID",
+      "doc": "Texto, 36 (UUID), obligatorio",
+      "origen": "Identificador de la transacción del aviso en Integrations: el mismo que se ve en la bitácora y en el Monitor 360.",
+      "descripcion": "Un código único del envío. Con él se puede encontrar el mismo mensaje en nuestro monitor y en Dos Pinos. En un reintento se manda el mismo.",
+      "ejemplo": "Formato UUID de 36 caracteres con guiones (el de la transacción del aviso en el Monitor)",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "FECHA_DOC",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "Fecha en que ocurrió la operación en la caja (apertura, retiro, depósito, entrada o salida; en faltante y sobrante, la del cierre).",
+      "descripcion": "La fecha real del movimiento en la caja.",
+      "ejemplo": "20261103",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "FECHA_CONTA",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "En el aviso del cierre: la fecha del cierre. En una entrada con deudor enviada al instante: la fecha de la operación (o de la anulación).",
+      "descripcion": "La fecha con la que SAP debería registrar el asiento contable.",
+      "ejemplo": "20261103",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "No sabemos si Dos Pinos quiere la fecha del cierre o la del movimiento. Hoy usamos la del cierre cuando va dentro del cierre.",
+      "pregunta": 4
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "LIBRO_CAJA",
+      "doc": "Texto, 4, obligatorio",
+      "origen": "Parámetro del evento LIBRO_CAJA = LC01 (el mismo para todas las líneas).",
+      "descripcion": "El libro de caja de SAP donde se anota el movimiento. Por ahora mandamos siempre LC01, que es el valor de los ejemplos de Dos Pinos.",
+      "ejemplo": "LC01",
+      "estado": "Provisional",
+      "nota": "Dos Pinos no ha entregado el catálogo real. Si el código no existe, igual responde 200 y SAP lo rechaza después. Falta saber si es uno por sucursal.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "REFERENCIA (línea)",
+      "doc": "Texto, 16, obligatorio",
+      "origen": "Prefijo del documento más una marca del tipo de línea (AP apertura, RET retiro, FON fondo, CHQ cheques, TRA transferencia, DEP depósito, ENT entrada, SAL salida, FALT faltante, SOBR sobrante). Si pasa de 16 caracteres se corta a 10 y se agrega un código corto calculado de la referencia completa.",
+      "descripcion": "Identifica cada línea dentro del mensaje. Es siempre la misma para la misma línea, así un reenvío no crea movimientos nuevos.",
+      "ejemplo": "S19C4K16-ENT6 (movimiento al instante); CIERRE-1-1ISZSST (apertura dentro del cierre CIERRE-1-19-4-16)",
+      "estado": "Decidido por nosotros",
+      "nota": "Los ejemplos son ilustrativos, calculados con la regla.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "NUM_OPERACION",
+      "doc": "Texto, 4, obligatorio",
+      "origen": "Tabla de operación -> código (parámetros del evento): apertura OP01, retiro de efectivo OP02, retiro del fondo OP03, cheques OP04, transferencia OP05, entrada de dinero OP06, salida de dinero OP07, depósito OP08, faltante OP09, sobrante OP10. Tarjeta y 'otro' no se envían. Anulación: la entrada original (OP06) y un reverso con salida (OP07), o al revés.",
+      "descripcion": "Le dice a SAP qué clase de movimiento es (por ejemplo, un depósito o un retiro). Cada tipo de operación de la caja tiene su código.",
+      "ejemplo": "OP02 (retiro de efectivo)",
+      "estado": "Provisional",
+      "nota": "Los códigos OP01 a OP10 son los de los ejemplos de Dos Pinos en Bruno, no un catálogo oficial. Falta confirmar también anulación, faltante, sobrante y retiros con tarjeta u 'otro'.",
+      "pregunta": "1, 2"
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "IMPORTE",
+      "doc": "Número, 13, obligatorio",
+      "origen": "Monto de la operación, redondeado a 2 decimales. En faltante o sobrante, el valor absoluto de la diferencia del cierre.",
+      "descripcion": "Cuánto dinero es. Siempre positivo; si una operación da cero no se manda.",
+      "ejemplo": "2000.00",
+      "estado": "Decidido por nosotros",
+      "nota": "Máximo 13 dígitos; si un monto no cabe, el envío falla con un mensaje claro en vez de cortarse.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "TEXTO",
+      "doc": "Texto, 50, opcional",
+      "origen": "Frase fija según el tipo de línea, por ejemplo 'Apertura de caja con fondo', 'Retiro de efectivo del cierre', 'Entrada de dinero con deudor', 'Faltante del cierre de caja'. En anulaciones: 'Anulacion de la entrada ENT6'.",
+      "descripcion": "Una descripción corta en palabras para que quien revise en SAP entienda de qué es la línea.",
+      "ejemplo": "Entrada de dinero con deudor",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "ASIGNACION",
+      "doc": "Texto, 18, opcional",
+      "origen": "La referencia del cierre o del movimiento (el prefijo). En los depósitos, el número de control del depósito.",
+      "descripcion": "Un dato de agrupación para SAP: todas las líneas de un mismo cierre llevan la misma asignación, así se ven juntas.",
+      "ejemplo": "CIERRE-1-19-4-16",
+      "estado": "Decidido por nosotros",
+      "nota": "Se corta a 18 caracteres si fuera más largo.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "DEUDOR",
+      "doc": "Texto, 10, opcional",
+      "origen": "Código de interfaz del cliente (deudor) que tiene el movimiento en LDCOM. Solo se manda si lo trae.",
+      "descripcion": "El cliente al que se le acredita el dinero cuando es una entrada con deudor. Es el código con el que SAP conoce a ese cliente.",
+      "ejemplo": "1082228",
+      "estado": "Decidido por nosotros",
+      "nota": "Si el código pasa de 10 caracteres, el envío falla con un mensaje claro. Las entradas con deudor salen al instante y el cierre no las repite (falta que Dos Pinos lo confirme).",
+      "pregunta": "3"
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "ACREEDOR",
+      "doc": "Texto, 10, opcional",
+      "origen": "Código de interfaz del proveedor (acreedor) del movimiento. Solo se manda en salidas de dinero a un acreedor.",
+      "descripcion": "El proveedor al que se le paga cuando la salida de dinero es para un proveedor.",
+      "ejemplo": "(según el proveedor)",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "CENTRO_COSTO",
+      "doc": "Texto, 10, opcional",
+      "origen": "Código de interfaz del centro de costo del movimiento. Solo se manda si el tipo de movimiento lo pide.",
+      "descripcion": "El centro de costo al que se carga el gasto o ingreso, cuando el movimiento lo trae.",
+      "ejemplo": "(según el centro de costo)",
+      "estado": "Decidido por nosotros",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Línea de movimiento",
+      "campo": "COD_IMPUESTO",
+      "doc": "Texto, 2, opcional",
+      "origen": "No se envía.",
+      "descripcion": "El código de impuesto de SAP para el movimiento. Hoy no lo mandamos porque no sabemos cuándo corresponde.",
+      "ejemplo": "(no se envía)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Es opcional en el Excel. Hay que saber si es el indicador de IVA de SAP y en qué casos se necesita.",
+      "pregunta": 4
+    }
+  ]
+}
