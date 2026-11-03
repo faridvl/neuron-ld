@@ -179,3 +179,21 @@ Hecho: InnerChannel.OperationTimeout (TCatalogoOnLine), respaldo antes de llamar
   (`integrador_agvretail_dev@dospinos.com` existe para otros eventos) ni cajeros de QA (15 usuarios reales). Los clientes de
   prueba del Docker (4000010, 4000054, 3664) no existen; candidato: cliente 10100813 con el plan 35 POR_CLIENTE (12 semanas).
 - Descripción del PR lista en `ClaudeLocalSession\planes\pr-3700-descripcion.md` (sin push ni PR creado).
+
+## 3700: respaldo previo, PRs y SDK 1.5.2.7621 (2026-11-02/03)
+- Commit 762b241b (push): no se llama al SFA si no se pudo respaldar la factura (`Respaldar_Documento` en Frm_Facturacion).
+  Venta autorizada verificada en el POS: factura 019-04-0000091 (evidencia en
+  `ClaudeLocalSession\evidencias\sfa15-venta-prueba\3700-respaldo\`). Los 5 hilos de Copilot del PR 1324 quedaron Fixed.
+- PR 1324 (a develop) y PR 1328 (a release/7.0, creado por pedido del usuario; nunca mergearlo): ambos **aprobados** por
+  el usuario. El 1328 lleva 37 commits sobre release/7.0, 28 ajenos al 3700 (3729, 2600, 2217, 2594, 2590, 2596, 2592,
+  QA); el usuario decidió dejarlo así, sin rama limpia.
+- Catálogo 42 CREDIT_APPLIES_TO (otra sesión, "Catálogos no almacenados en LDCOM"): PR 1329 y 1330 de Integrations
+  mergeados, build 7621 desplegado en Testing. El catálogo queda visible y mapeable en el Admin; el 1330 ya no siembra sus
+  4 mapeos, así que LD-10 resuelve appliesTo por nombre (BANK, NO_BANK, BOTH, SPECIFIC_CUSTOMERS) hasta que se mapeen;
+  al mapear deben quedar 1 a 4. Se revisó que no afecta POS-10 ni la elegibilidad Banca/No banca del POS (1214 pruebas
+  de Integrations correctas).
+- Commit 3b84fe35 (push): la rama 3700 pasa a Integration.SDK **1.5.2.7621** en los mismos 9 archivos. NEGOCIO y Admin
+  compilan; CATALOGOS.Tests 511 correctas, 7 omitidas, 0 con error. Facturación no se recompiló porque el POS estaba
+  abierto (no usa el SDK). Falta ver en el Admin publicado el catálogo "Aplica para (plan de financiamiento)".
+- PR 1325 (release/6.4), 1326 (release/7.0) y 1327 (develop) de LDCOM: los lleva la otra sesión; deben subir a la misma
+  1.5.2.7621 (release/6.4 viene de 1.5.0.6645 y no tiene la 3700).
