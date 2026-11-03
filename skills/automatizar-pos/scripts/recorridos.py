@@ -35,8 +35,21 @@ def cancelar_y_salir_del_documento():
     return [("cancelar_documento", {})]
 
 
+def entrar():
+    """Login con las credenciales de prueba (variables POS_USUARIO/POS_CLAVE o POS_CREDENCIALES)."""
+    return [("iniciar_sesion", {})]
+
+
+def cerrar_caja(efectivo=0, banco=0, encargado=0, numero_deposito="QA0001"):
+    """Cierre de caja completo. Con efectivo=0 solo sale del retiro (útil si el retiro ya se guardó)."""
+    return [("cerrar_caja", {"efectivo": efectivo, "banco": banco, "encargado": encargado,
+                             "numero_deposito": numero_deposito})]
+
+
 RECORRIDOS = {
     "venta_contado": venta_contado,
     "venta_credito_financiado": venta_credito_financiado,
     "cancelar_documento": cancelar_y_salir_del_documento,
+    "entrar": entrar,
+    "cerrar_caja": cerrar_caja,
 }

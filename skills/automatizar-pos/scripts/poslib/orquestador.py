@@ -13,10 +13,6 @@ def correr(pos, pasos, nombre="recorrido", seguir_si_falla=False):
     Se detiene en el primer paso fallido (deja captura de la principal y de cada modal abierta)."""
     informe = {"recorrido": nombre, "ok": True, "pasos": []}
     inicio = time.time()
-    if not pos.conectado:
-        t0 = time.time()
-        pos.conectar()
-        informe["pasos"].append({"flujo": "(ubicar controles UIA)", "s": round(time.time() - t0, 2), "ok": True})
     for numero, (flujo, parametros) in enumerate(pasos, 1):
         parametros = dict(parametros or {})
         registro = {"n": numero, "flujo": flujo, "params": parametros}
@@ -24,6 +20,9 @@ def correr(pos, pasos, nombre="recorrido", seguir_si_falla=False):
             parametros.setdefault("nombre", "%s-%02d-mensaje" % (nombre, numero))
         t0 = time.time()
         try:
+            if getattr(REGISTRO[flujo], "REQUIERE_PRINCIPAL", True) and not pos.conectado:
+                pos.conectar()  # los flujos de login/cierre de caja corren antes (o después) de que exista la principal
+                informe["pasos"].append({"flujo": "(ubicar controles UIA)", "s": round(time.time() - t0, 2), "ok": True})
             registro["resultado"] = REGISTRO[flujo].ejecutar(pos, **parametros)
             registro["ok"] = True
         except Exception as e:  # se reporta y se captura
