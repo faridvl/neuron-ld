@@ -1,7 +1,9 @@
 # Mapeos de integraciones LDCOM - Dos Pinos
 
 Un archivo `.json` por integración es la fuente de verdad. El script arma el Excel
-`Mapeo-Integraciones-DosPinos.xlsx` con una hoja por integración, un índice y una hoja
+`Mapeo-Integraciones-DosPinos.xlsx`: un índice, una hoja por integración que es solo el mapeo
+de campos (campo de Dos Pinos, de dónde sale en LDCOM, tipo, significado, ejemplo, estado),
+una hoja "Reglas" con el endpoint, cuándo se envía y las reglas de cada integración, y una hoja
 "Preguntas a Dos Pinos". El Excel se puede borrar y regenerar cuando se quiera.
 
 ## Agregar una integración

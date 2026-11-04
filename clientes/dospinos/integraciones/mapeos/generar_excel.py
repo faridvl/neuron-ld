@@ -35,8 +35,8 @@ ESTADOS_PENDIENTES = ("Provisional", "Pregunta a Dos Pinos")
 COLUMNAS_CAMPOS = [
     ("Bloque", 18, "bloque"),
     ("Campo Dos Pinos", 20, "campo"),
+    ("Sale de LDCOM (qué mandamos)", 46, "origen"),
     ("Tipo / largo / obligatorio (según su documento)", 24, "doc"),
-    ("De dónde sale en LDCOM / qué mandamos", 46, "origen"),
     ("Qué significa (en palabras simples)", 52, "descripcion"),
     ("Ejemplo", 30, "ejemplo"),
     ("Estado", 22, "estado"),
@@ -101,73 +101,11 @@ def hoja_integracion(libro, integracion, nombre):
         name="Calibri", bold=True, size=16, color=AZUL_OSCURO)
     hoja.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ultima)
 
-    metadatos = [
-        ("Sentido", integracion.get("sentido")),
-        ("Endpoint", integracion.get("endpoint")),
-        ("Autenticación", integracion.get("autenticacion")),
-        ("Qué la dispara en LDCOM", integracion.get("dispara")),
-        ("Cuándo se envía", integracion.get("cuando_se_envia")),
-        ("Fuente de la documentación", integracion.get("fuente_documentacion")),
-        ("Estado general", integracion.get("estado_general")),
-        ("Notas", integracion.get("notas_generales")),
-    ]
+    subtitulo = hoja.cell(row=2, column=1, value=(
+        f"Mapeo de campos: {integracion.get('sentido', '')}. Endpoint, cuándo se envía y reglas: hoja Reglas."))
+    subtitulo.font = Font(name="Calibri", italic=True, color="555555")
+    hoja.merge_cells(start_row=2, start_column=1, end_row=2, end_column=ultima)
     fila = 3
-    for etiqueta, valor in metadatos:
-        if not valor:
-            continue
-        titulo = hoja.cell(row=fila, column=1, value=etiqueta)
-        titulo.font = Font(name="Calibri", bold=True, color=AZUL_OSCURO)
-        titulo.alignment = AJUSTE
-        titulo.fill = RELLENO_ALTERNO
-        titulo.border = BORDE
-        hoja.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=2)
-        contenido = hoja.cell(row=fila, column=3, value=valor)
-        contenido.alignment = AJUSTE
-        contenido.border = BORDE
-        if etiqueta == "Estado general":
-            pintar_estado(contenido, valor)
-            contenido.alignment = Alignment(wrap_text=True, vertical="top", horizontal="left")
-        hoja.merge_cells(start_row=fila, start_column=3, end_row=fila, end_column=ultima)
-        ancho_total = sum(c[1] for c in COLUMNAS_CAMPOS[2:])
-        hoja.row_dimensions[fila].height = altura_fila([valor], [ancho_total])
-        fila += 1
-
-    fila += 1
-    reglas = integracion.get("reglas") or []
-    if reglas:
-        titulo = hoja.cell(row=fila, column=1, value="Reglas")
-        titulo.font = Font(name="Calibri", bold=True, size=13, color=AZUL_OSCURO)
-        fila += 1
-        for col, texto_col in ((1, "Tema"), (3, "Regla")):
-            celda = hoja.cell(row=fila, column=col, value=texto_col)
-        for col in range(1, ultima + 1):
-            celda = hoja.cell(row=fila, column=col)
-            celda.fill = RELLENO_ENCABEZADO
-            celda.font = LETRA_BLANCA
-            celda.border = BORDE
-        hoja.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=2)
-        hoja.merge_cells(start_row=fila, start_column=3, end_row=fila, end_column=ultima)
-        fila += 1
-        ancho_regla = sum(c[1] for c in COLUMNAS_CAMPOS[2:])
-        for indice, regla in enumerate(reglas):
-            tema = hoja.cell(row=fila, column=1, value=regla["tema"])
-            tema.font = Font(name="Calibri", bold=True)
-            cuerpo = hoja.cell(row=fila, column=3, value=regla["regla"])
-            for col in range(1, ultima + 1):
-                celda = hoja.cell(row=fila, column=col)
-                celda.alignment = AJUSTE
-                celda.border = BORDE
-                if indice % 2 == 1:
-                    celda.fill = RELLENO_ALTERNO
-            hoja.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=2)
-            hoja.merge_cells(start_row=fila, start_column=3, end_row=fila, end_column=ultima)
-            hoja.row_dimensions[fila].height = altura_fila([regla["regla"]], [ancho_regla])
-            fila += 1
-        fila += 1
-
-    titulo = hoja.cell(row=fila, column=1, value="Campos mapeados")
-    titulo.font = Font(name="Calibri", bold=True, size=13, color=AZUL_OSCURO)
-    fila += 1
     fila_encabezado = fila
     encabezado_tabla(hoja, fila, [c[0] for c in COLUMNAS_CAMPOS])
     anchos = [c[1] for c in COLUMNAS_CAMPOS]
@@ -181,7 +119,7 @@ def hoja_integracion(libro, integracion, nombre):
             if indice % 2 == 1:
                 celda.fill = RELLENO_ALTERNO
         hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
-        hoja.cell(row=fila, column=9).alignment = Alignment(horizontal="center", vertical="top")
+        hoja.cell(row=fila, column=len(COLUMNAS_CAMPOS)).alignment = Alignment(horizontal="center", vertical="top")
         pintar_estado(hoja.cell(row=fila, column=7), campo.get("estado"))
         hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
 
@@ -236,6 +174,42 @@ def hoja_indice(libro, integraciones, nombres):
     hoja.sheet_properties.tabColor = "1F4E79"
 
 
+def hoja_reglas(libro, integraciones):
+    hoja = libro.create_sheet("Reglas")
+    hoja.sheet_view.showGridLines = False
+    titulos = ["Integración", "Tema", "Detalle"]
+    anchos = [14, 30, 130]
+    for col, ancho in enumerate(anchos, start=1):
+        hoja.column_dimensions[get_column_letter(col)].width = ancho
+    encabezado_tabla(hoja, 1, titulos)
+    fila = 1
+    for integracion in integraciones:
+        filas = [
+            ("Endpoint", integracion.get("endpoint")),
+            ("Autenticación", integracion.get("autenticacion")),
+            ("Qué la dispara en LDCOM", integracion.get("dispara")),
+            ("Cuándo se envía", integracion.get("cuando_se_envia")),
+            ("Fuente de la documentación", integracion.get("fuente_documentacion")),
+            ("Notas", integracion.get("notas_generales")),
+        ] + [(r["tema"], r["regla"]) for r in integracion.get("reglas") or []]
+        for tema, detalle in filas:
+            if not detalle:
+                continue
+            fila += 1
+            valores = [integracion["codigo"], tema, detalle]
+            for col, valor in enumerate(valores, start=1):
+                celda = hoja.cell(row=fila, column=col, value=valor)
+                celda.alignment = AJUSTE
+                celda.border = BORDE
+                if fila % 2 == 1:
+                    celda.fill = RELLENO_ALTERNO
+            hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
+            hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
+    hoja.auto_filter.ref = f"A1:C{max(fila, 2)}"
+    hoja.freeze_panes = "A2"
+    hoja.sheet_properties.tabColor = "7F7F7F"
+
+
 def hoja_preguntas(libro, integraciones):
     hoja = libro.create_sheet("Preguntas a Dos Pinos")
     hoja.sheet_view.showGridLines = False
@@ -273,11 +247,12 @@ def main():
         raise SystemExit("No hay archivos .json de integraciones en la carpeta.")
 
     libro = Workbook()
-    usados = {"indice", "preguntas a dos pinos"}
+    usados = {"indice", "reglas", "preguntas a dos pinos"}
     nombres = [nombre_hoja(i["codigo"], usados) for i in integraciones]
     hoja_indice(libro, integraciones, nombres)
     for integracion, nombre in zip(integraciones, nombres):
         hoja_integracion(libro, integracion, nombre)
+    hoja_reglas(libro, integraciones)
     hoja_preguntas(libro, integraciones)
     libro.save(SALIDA)
     print(f"Generado {SALIDA} con {len(integraciones)} integración(es).")
