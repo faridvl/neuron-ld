@@ -4,14 +4,16 @@ Comando: `python -I scripts\correr.py <pid> cerrar_caja` (parámetros en `recorr
 `encargado`, `numero_deposito`). Código: `poslib\flujos\cerrar_caja.py`.
 
 ## Ruta
-Barra F11 (más funciones) > F5 Cerrar Caja > `Frm_Lista` botón `Bn_F2`. En coordenadas de captura (factor 1.25):
-F11 en (1093, 693) y F5 en (475, 693).
+Teclas reales (`fisico.pulsar_tecla`, keybd_event con la ventana al frente): en la principal **F5 = Caja** directo; si no abre
+la ventana de opciones (título `Frm_Lista`), **F11** alterna la página de la barra y luego F5. En `Frm_Lista`, **F2** = Cerrar Caja.
+Los clics por coordenadas y el `Invoke` de UIA se descartaron: UIA se cuelga con la modal abierta.
 
-Pantallas que atiende el flujo, sondeando cada 50 ms: "Cierre de caja", "Retiro de Caja", "Depósito Automático" y
-"Confirmación".
+Pantallas que atiende el flujo, sondeando cada 50 ms: "Cierre de caja" (F1), "Retiro de Caja" (ESC si no hay efectivo),
+"Depósito Automático" y "Confirmación".
 
 ## Trampas
-- La pantallita **"Cierre de caja" caduca en ~15 s**: por eso se sondea cada 50 ms y se pulsa F1 (VK 0x70) enseguida.
+- La pantallita **"Cierre de caja" caduca en ~15 s**: por eso se sondea cada 50 ms y se pulsa F1 real (VK 0x70) enseguida.
+- En **"Retiro de Caja"** se sale con ESC real (el botón Salir por `BM_CLICK` no cerraba).
 - El **error EMV** (`#32770`, OK) es inocuo en Docker: `modales.cerrar_errores_dotnet`.
 - **Éxito** = el POS vuelve al login (`sesion.hay_login`). Si no, el flujo falla con `PasoFallido`.
 - Denominaciones: los botones aceptan `BM_CLICK`; el teclado numérico necesita clic físico con el POS al frente.

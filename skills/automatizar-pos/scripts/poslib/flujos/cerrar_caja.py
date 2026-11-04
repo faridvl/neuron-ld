@@ -1,7 +1,7 @@
 """cerrar_caja(efectivo=0, ...): cierra la caja del POS de punta a punta.
-Barra F11 (Menú) > F5 (Caja) > F2 Cerrar Caja; luego atiende, según aparezcan, Retiro de Caja, Depósito Automático,
+Teclas reales: F5 (Caja; si no abre, F11 y F5) > F2 Cerrar Caja; luego atiende, según aparezcan, Retiro de Caja, Depósito Automático,
 las preguntas de confirmación y la pantallita "Cierre de caja" (caduca a ~15 s: se sondea cada 50 ms y se pulsa
-F1 de inmediato). El error EMV (#32770) es inocuo en Docker y se cierra con OK. Terminó cuando el POS vuelve al login.
+F1 real de inmediato). En Retiro de Caja sin efectivo sale con ESC. El error EMV (#32770) es inocuo en Docker y se cierra con OK. Terminó cuando el POS vuelve al login.
 Idempotente: con efectivo=0 solo sale del Retiro y cierra, sin repetir retiro ni depósito. Si se corta a medias,
 lo ya guardado en la base (retiro, depósito) queda; volver a correr con efectivo=0."""
 import time
@@ -12,13 +12,12 @@ import win32gui
 from .. import base, fisico, modales, sesion
 
 NOMBRE = "cerrar_caja"
-PANTALLA = "Barra F11>F5>F2; Retiro de Caja, Depósito Automático, Cierre de caja (F1); termina en login"
+PANTALLA = "Teclas F5>F2 (o F11>F5>F2); Retiro de Caja, Depósito Automático, Cierre de caja (F1); termina en login"
 REQUIERE_PRINCIPAL = False
 
-CLIC_MENU_F11 = (1093, 693)   # coordenadas medidas sobre captura, ver fisico.ESCALA_CAPTURA
-CLIC_CAJA_F5 = (475, 693)
-ESPERA_TRAS_MENU = 2.5
-ESPERA_TRAS_CAJA = 3.0
+TITULOS_OPCIONES_CAJA = ("Frm_Lista", "Opciones de la Caja")
+ESPERA_TRAS_TECLA_MENU = 2.0
+TOPE_OPCIONES_CAJA = 3.0
 SONDEO = 0.05
 TOPE_CIERRE = 240.0
 TOPE_DENOMINACIONES = 15.0
@@ -27,7 +26,12 @@ ESPERA_TRAS_DENOMINACIONES = 1.0
 ESPERA_TRAS_SALIR = 2.0
 ESPERA_ANTES_GUARDAR = 0.5
 VK_F1 = 0x70
+VK_F2 = 0x71
+VK_F5 = 0x74
+VK_F11 = 0x7A
+VK_ESC = 0x1B
 CBN_SELCHANGE = 1
+SECUENCIAS_ABRIR_OPCIONES = ([VK_F5], [VK_F11, VK_F5])  # F5 es Caja solo en la página principal de la barra; F11 la alterna
 TECLAS = list("0123456789") + ["="]
 
 
@@ -79,7 +83,7 @@ def _retiro(pos, h, efectivo):
         time.sleep(ESPERA_TRAS_SALIR)
         _pulsar(_boton(h, "Retirar"))
     else:
-        _pulsar(_boton(h, "Salir"))
+        fisico.pulsar_tecla(h, VK_ESC)
 
 
 def _deposito(h, numero, banco, encargado):
@@ -97,22 +101,27 @@ def _deposito(h, numero, banco, encargado):
 
 
 def _cierre_de_caja(h):
-    boton = _boton(h, "Cerrar")
-    if boton:
-        _pulsar(boton)
-    else:
-        win32gui.PostMessage(h, win32con.WM_KEYDOWN, VK_F1, 0)
-        win32gui.PostMessage(h, win32con.WM_KEYUP, VK_F1, 0)
+    fisico.pulsar_tecla(h, VK_F1, espera=0)
+
+
+def _opciones_de_caja(pid):
+    return next((h for h in base.modales(pid) if base.titulo(h) in TITULOS_OPCIONES_CAJA), None)
+
+
+def abrir_opciones_de_caja(pid):
+    """Abre la ventana de opciones de la caja con teclas reales desde la principal; devuelve su handle."""
+    pantalla_principal = base.principal(pid)
+    for secuencia in SECUENCIAS_ABRIR_OPCIONES:
+        for codigo in secuencia:
+            fisico.pulsar_tecla(pantalla_principal, codigo, espera=ESPERA_TRAS_TECLA_MENU)
+        opciones = base.esperar(lambda: _opciones_de_caja(pid), TOPE_OPCIONES_CAJA)
+        if opciones:
+            return opciones
+    raise base.PasoFallido("No abrió la ventana de opciones de la caja (F5 ni F11+F5)")
 
 
 def ejecutar(pos, efectivo=0, banco=0, encargado=0, numero_deposito="QA0001", tope=TOPE_CIERRE):
-    pantalla_principal = base.principal(pos.pid)
-    fisico.clic_relativo(pantalla_principal, *CLIC_MENU_F11)
-    time.sleep(ESPERA_TRAS_MENU)
-    fisico.clic_relativo(pantalla_principal, *CLIC_CAJA_F5)
-    time.sleep(ESPERA_TRAS_CAJA)
-    lista = next((h for h in base.ventanas(pos.pid, 0) if "Frm_Lista" in base.titulo(h)), pantalla_principal)
-    fisico.pulsar_por_id(lista, "Bn_F2")
+    fisico.pulsar_tecla(abrir_opciones_de_caja(pos.pid), VK_F2, espera=0)
     hecho = {"retiro": False, "deposito": False, "cierre": False, "confirmaciones": 0}
     vistas = set()
     limite = time.time() + tope

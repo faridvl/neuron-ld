@@ -6,7 +6,9 @@ funciona (teclado numérico de Denominaciones, barra de funciones paginada). Nun
 import ctypes
 import time
 
+import win32con
 import win32gui
+import win32process
 
 from . import base
 
@@ -19,6 +21,10 @@ ESPERA_FOCO = 0.4
 ESPERA_CURSOR = 0.15
 ESPERA_CLIC = 0.05
 ESPERA_TRAS_CLIC = 0.7
+ESPERA_TECLA = 0.08
+ESPERA_FOCO_CONTROL = 0.3
+VK_SHIFT = 0x10
+GA_RAIZ = 2
 
 _usuario = ctypes.windll.user32
 
@@ -35,12 +41,54 @@ def traer_al_frente(h):
 
 
 def _clic_en(x, y, espera_final):
-    _usuario.SetCursorPos((int(x), int(y)))
+    _usuario.SetCursorPos(int(x), int(y))
     time.sleep(ESPERA_CURSOR)
     _usuario.mouse_event(MOUSEEVENTF_IZQUIERDO_ABAJO, 0, 0, 0, 0)
     time.sleep(ESPERA_CLIC)
     _usuario.mouse_event(MOUSEEVENTF_IZQUIERDO_ARRIBA, 0, 0, 0, 0)
     time.sleep(espera_final)
+
+
+def tecla_real(vk):
+    """Tecla de teclado real (keybd_event) hacia la ventana en primer plano: la única que llega a los modales del POS,
+    donde UIA se cuelga y PostMessage no activa los atajos."""
+    _usuario.keybd_event(vk, 0, 0, 0)
+    _usuario.keybd_event(vk, 0, KEYEVENTF_KEYUP, 0)
+
+
+def pulsar_tecla(h_ventana, vk, espera=ESPERA_TRAS_CLIC):
+    """Trae la ventana al frente y le pulsa una tecla real (F1..F12, ESC, flechas)."""
+    traer_al_frente(h_ventana)
+    tecla_real(vk)
+    time.sleep(espera)
+
+
+def foco_en_control(h_control):
+    """Ventana al frente y foco en el control (AttachThreadInput); las teclas reales caen en ese control."""
+    h_ventana = win32gui.GetAncestor(h_control, GA_RAIZ)
+    win32gui.ShowWindow(h_ventana, win32con.SW_SHOW)
+    traer_al_frente(h_ventana)
+    hilo_control = win32process.GetWindowThreadProcessId(h_control)[0]
+    hilo_propio = ctypes.windll.kernel32.GetCurrentThreadId()
+    _usuario.AttachThreadInput(hilo_propio, hilo_control, True)
+    _usuario.SetFocus(h_control)
+    _usuario.AttachThreadInput(hilo_propio, hilo_control, False)
+    time.sleep(ESPERA_FOCO_CONTROL)
+
+
+def escribir_real(texto):
+    """Escribe caracteres como teclas reales (dígitos y letras sin acentos) en el control con foco.
+    Necesario para CLSText (Monto) y campos que ignoran WM_SETTEXT."""
+    for caracter in texto:
+        codigo = _usuario.VkKeyScanW(ord(caracter))
+        tecla = codigo & 0xFF
+        con_mayuscula = (codigo >> 8) & 1
+        if con_mayuscula:
+            _usuario.keybd_event(VK_SHIFT, 0, 0, 0)
+        tecla_real(tecla)
+        if con_mayuscula:
+            _usuario.keybd_event(VK_SHIFT, 0, KEYEVENTF_KEYUP, 0)
+        time.sleep(ESPERA_TECLA)
 
 
 def clic_en_control(h_ventana, h_control):
