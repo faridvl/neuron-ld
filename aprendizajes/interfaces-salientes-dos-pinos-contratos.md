@@ -79,3 +79,9 @@ en largos, constantes y en cómo responde el rechazo en todas las que se probaro
 - **Excepción:** POS-10 (y POS-11) siguen síncronos porque el POS necesita la respuesta del SFA para facturar.
 - Nombres genéricos: lo común (Notificar, pendientes, despacho, suscripción) no lleva nombre de interfaz ni de
   cliente; solo los builders llevan POS19, POS24...
+- **REGLA (usuario, 2026-11-04), todas las integraciones: GUID = TransactionId.** El `guid` que viaja al socio (bloque
+  de control de Informatica: POS-12, POS-19…) y el `guid` del reporte al Monitor 360 son el mismo `TransactionId` que
+  queda en `Events`/`OutboundNotification`. Nunca `Guid.NewGuid()` por envío ni por reporte: el mismo valor en cada
+  reintento y en cada estado (E y luego S) del monitor, para cruzar Dos Pinos, monitor y auditoría con un solo id. El
+  documento del Monitor dice "por cada envío" uno nuevo, pero sus propios ejemplos repiten el guid para el mismo
+  `idenTran` en E y en S.
