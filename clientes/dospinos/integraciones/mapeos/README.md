@@ -1,7 +1,8 @@
 # Mapeos de integraciones LDCOM - Dos Pinos
 
 Un archivo `.json` por integración es la fuente de verdad. El script arma el Excel
-`Mapeo-Integraciones-DosPinos.xlsx` con una hoja por integración, un índice y una hoja
+`Mapeo-Integraciones-DosPinos.xlsx` con un índice, una hoja "Variables" (todos los campos de
+todas las integraciones: qué manda LDCOM y por qué), una hoja por integración y una hoja
 "Preguntas a Dos Pinos". El Excel se puede borrar y regenerar cuando se quiera.
 
 ## Agregar una integración
@@ -24,7 +25,7 @@ Requiere `openpyxl`. Cada sesión toca solo su propio json, así que no hay conf
 - `preguntas`: lista de `{numero, tema, pregunta, campos}`. Se agrupan las dudas por tema
   (no una por campo) y salen en la hoja "Preguntas a Dos Pinos".
 - `campos`: lista con `bloque`, `campo`, `doc` (tipo, largo, obligatorio según el documento),
-  `origen` (de dónde sale en LDCOM), `descripcion` (qué significa, para quien no programa),
+  `origen` (de dónde sale en LDCOM), `porque` (por qué se manda eso), `descripcion` (qué significa, para quien no programa),
   `ejemplo`, `estado`, `nota` y `pregunta` (número o números de la lista de preguntas, o vacío).
 
 ## Estados permitidos
