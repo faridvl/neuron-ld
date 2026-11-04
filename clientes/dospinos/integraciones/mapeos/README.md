@@ -24,7 +24,15 @@ y `bloqueo`, con PRs como evidencia. Se actualiza `fecha_corte` y la fila de la 
 python -I generar_excel.py
 ```
 
-Requiere `openpyxl`. Cada sesión toca solo su propio json, así que no hay conflictos.
+Requiere `openpyxl` y `Pillow`. Cada sesión toca solo su propio json, así que no hay conflictos. El Excel tiene
+que estar cerrado para regenerarlo.
+
+## Imágenes y hojas agregadas a mano
+
+En el Excel se pegan imágenes (capturas, tablas de Dos Pinos). Al regenerar, el script conserva las imágenes de
+cada hoja en la misma celda y copia las hojas que no salen de los json (nombre distinto a las generadas). Lo que
+se escriba a mano dentro de una hoja generada sí se pierde: va en el json. Una imagen queda anclada a su celda, así
+que si se agregan campos antes de ella puede quedar al lado de otra fila; conviene pegarlas a la derecha de la tabla.
 
 ## Qué lleva cada json
 

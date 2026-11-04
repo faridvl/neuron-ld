@@ -4,11 +4,14 @@ Uso: python -I generar_excel.py
 Cada integracion es un .json (ver README.md); no se edita el Excel a mano.
 """
 import glob
+import io
 import json
 import os
 import re
+from copy import copy
 
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
+from openpyxl.drawing.image import Image
 from openpyxl.formatting.rule import DataBarRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
@@ -378,6 +381,42 @@ def hoja_preguntas(libro, integraciones):
     hoja.sheet_properties.tabColor = "C00000"
 
 
+def leer_agregado_a_mano(nombres_generados):
+    """Imágenes de cada hoja y hojas enteras que la gente agregó al Excel: el json no las tiene."""
+    if not os.path.exists(SALIDA):
+        return {}, []
+    anterior = load_workbook(SALIDA)
+    imagenes = {hoja.title: list(hoja._images) for hoja in anterior.worksheets if hoja._images}
+    hojas_propias = [hoja for hoja in anterior.worksheets if hoja.title.lower() not in nombres_generados]
+    return imagenes, hojas_propias
+
+
+def pegar_imagenes(hoja, imagenes):
+    for original in imagenes:
+        nueva = Image(io.BytesIO(original._data()))
+        nueva.anchor = original.anchor
+        nueva.width, nueva.height = original.width, original.height
+        hoja.add_image(nueva)
+
+
+def copiar_hoja_propia(libro, origen):
+    destino = libro.create_sheet(origen.title)
+    for fila in origen.iter_rows():
+        for celda in fila:
+            if celda.value is None and not celda.has_style:
+                continue
+            nueva = destino.cell(row=celda.row, column=celda.column, value=celda.value)
+            if celda.has_style:
+                nueva.font, nueva.fill, nueva.border = copy(celda.font), copy(celda.fill), copy(celda.border)
+                nueva.alignment, nueva.number_format = copy(celda.alignment), celda.number_format
+    for letra, dimension in origen.column_dimensions.items():
+        destino.column_dimensions[letra].width = dimension.width
+    for numero, dimension in origen.row_dimensions.items():
+        destino.row_dimensions[numero].height = dimension.height
+    for rango in origen.merged_cells.ranges:
+        destino.merge_cells(str(rango))
+
+
 def main():
     integraciones = []
     for ruta in sorted(glob.glob(os.path.join(CARPETA, "*.json"))):
@@ -391,6 +430,7 @@ def main():
     libro = Workbook()
     usados = {"avance", "indice", "variables", "reglas", "preguntas a dos pinos"}
     nombres = [nombre_hoja(i["codigo"], usados) for i in integraciones]
+    imagenes, hojas_propias = leer_agregado_a_mano(usados)
     hoja_indice(libro, integraciones, nombres)
     hoja_variables(libro, integraciones)
     for integracion, nombre in zip(integraciones, nombres):
@@ -401,7 +441,17 @@ def main():
     if os.path.exists(ruta_avance):
         with open(ruta_avance, encoding="utf-8") as archivo:
             hoja_avance(libro, json.load(archivo))
-    libro.save(SALIDA)
+    for hoja in hojas_propias:
+        copiar_hoja_propia(libro, hoja)
+    for nombre, imagenes_hoja in imagenes.items():
+        if nombre in libro.sheetnames:
+            pegar_imagenes(libro[nombre], imagenes_hoja)
+        else:
+            print(f"Aviso: la hoja '{nombre}' ya no existe; sus {len(imagenes_hoja)} imagen(es) no se conservaron.")
+    try:
+        libro.save(SALIDA)
+    except PermissionError:
+        raise SystemExit(f"No se pudo guardar {SALIDA}: ciérrelo en Excel y vuelva a correr el script.")
     print(f"Generado {SALIDA} con {len(integraciones)} integración(es).")
 
 

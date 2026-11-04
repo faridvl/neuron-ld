@@ -74,7 +74,7 @@
       "nombre": "Monitor 360",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 50,
+      "porcentaje": 60,
       "hecho": "Reportan las 5 colas de datos maestros y los envíos de la base Notificar (POS-19 y POS-24), con correo de respaldo si el monitor falla.",
       "falta": "Reporte de POS-10, POS-12 y endpoints LD-xx; probar el correo de respaldo; destinatarios en el Admin (hoy quemados en el seed 03); URL de producción; codEC por interfaz.",
       "bloqueo": "codEC y llave por ambiente (Dos Pinos)."
@@ -95,8 +95,8 @@
       "codigo": "POS-14",
       "nombre": "Pedidos graneles",
       "sentido": "LDCOM -> Dos Pinos",
-      "estado": "Sin empezar",
-      "porcentaje": 5,
+      "estado": "En curso",
+      "porcentaje": 40,
       "hecho": "Solo existe el endpoint de entrada LD-02 (preventas).",
       "falta": "Todo: contrato DP-01 y estados logísticos; después construir sobre la base Notificar.",
       "bloqueo": "Contrato de Dos Pinos."
@@ -107,7 +107,7 @@
       "nombre": "Autorización de venta financiada (SFA15)",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 90,
+      "porcentaje": 95,
       "hecho": "Integrations en develop (PR 1321) y POS en develop (PR 1324).",
       "falta": "Bugs 3728 y 3736 (ramas sin PR), llevarlo al release 7.0 (PR 1328 abandonado) y 2 casos reales contra el SFA de Dos Pinos.",
       "bloqueo": "SFA de pruebas de Dos Pinos caído y OK para desembolsar."
@@ -117,11 +117,11 @@
       "codigo": "POS-11",
       "nombre": "Notas de crédito de venta financiada (SFA13)",
       "sentido": "LDCOM -> Dos Pinos",
-      "estado": "Sin empezar",
-      "porcentaje": 15,
-      "hecho": "Contrato y requests en Bruno (PR 1331); las validaciones de formato responden bien.",
-      "falta": "Correr las precondiciones y casos contra el SFA; decidir si va por SFA o junto con POS-12; construir Integrations y LDCOM.",
-      "bloqueo": "SFA de pruebas de Dos Pinos caído (504)."
+      "estado": "En curso",
+      "porcentaje": 25,
+      "hecho": "Contrato y requests en Bruno (PR 1331); validaciones de formato probadas contra desarrollo; mapeo de los 13 campos definido (numReferencia = referencia de crédito SFA de POS-10, confirmado por Dos Pinos).",
+      "falta": "Respuestas de Dos Pinos a 6 preguntas del mapeo; casos reales que reversan créditos; construir Integrations y LDCOM (la NC lee Factura_Credito_SFA_Referencia de la factura original).",
+      "bloqueo": "SFA de pruebas de Dos Pinos caído (504), credencial Basic propia de SFA13 y OK para reversar créditos."
     },
     {
       "carpeta": "11",
@@ -140,7 +140,7 @@
       "nombre": "Preventa de Romana",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 80,
+      "porcentaje": 85,
       "hecho": "Integrations en develop (PR 1348) y LDCOM en revisión (PR 1349).",
       "falta": "Aprobar y mergear el PR 1349, llevarlo al release, URLs de QA y producción, respuesta de Dos Pinos sobre duplicados.",
       "bloqueo": "Romana acepta duplicados: falta la regla de Dos Pinos."

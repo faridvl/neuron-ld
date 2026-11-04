@@ -1,0 +1,264 @@
+{
+  "codigo": "POS-11",
+  "nombre": "Notas de crédito de venta financiada (SFA13)",
+  "sentido": "LDCOM -> Dos Pinos (saliente, sincrónica, hacia el SFA)",
+  "endpoint": "POST https://usw3-cai.dm-us.informaticacloud.com/active-bpel/rt/p_SFA13_NotasCredito (desarrollo; hoy no hay URL de QA ni de producción). El cuerpo va envuelto en un objeto Body.",
+  "autenticacion": "Basic, con un usuario propio del servicio (integrador_sfa_dev@dospinos.com en desarrollo). No sirve el de SFA15: con ese responde 403. A diferencia de SFA15, no lleva usuario ni clave dentro del cuerpo.",
+  "dispara": "Guardar en el POS una nota de crédito, devolución o anulación de una factura que se financió con el SFA (POS-10): la factura original tiene plan de financiamiento y una referencia de crédito SFA guardada (Factura_Credito_SFA_Referencia).",
+  "cuando_se_envia": "Al instante, cuando se aplica la nota de crédito, una sola vez por nota. El SFA responde en la misma llamada si reversó el crédito (total o parcial) o por qué lo rechazó.",
+  "fuente_documentacion": "Documento de construcción SFA13 de BD Consultores v1.0 (02-09-2026, con las capturas de la prueba integral con Dos Pinos), xlsx y docx 'SFA13 Notas de crédito y devoluciones' (14-08-2026), 11 envíos de validación en Bruno contra desarrollo (03-11-2026) y el código de POS-10 en develop (issue 3700).",
+  "estado_general": "Provisional",
+  "notas_generales": "La NC no es un documento nuevo para el SFA: es la reversa del crédito que se pidió con POS-10. El SFA encuentra ese crédito por numReferencia, que debe ser exactamente el idExterno que LDCOM mandó al autorizar la venta. Los campos del contrato están probados contra desarrollo; faltan probar casos reales (reversan créditos) y las respuestas de Dos Pinos de la hoja de preguntas.",
+  "reglas": [
+    {
+      "tema": "Qué NC se envían",
+      "regla": "Solo las notas de crédito, devoluciones o anulaciones de facturas que el SFA autorizó (tienen referencia de crédito SFA guardada). Las NC de facturas de contado o de crédito sin financiamiento no se envían."
+    },
+    {
+      "tema": "Cómo encuentra el SFA el crédito",
+      "regla": "Por numReferencia = la misma referencia (idExterno) que LDCOM mandó en POS-10 al autorizar la venta. Lo confirmó Dos Pinos en la prueba integral: el número de referencia de la factura origen es el vínculo con el crédito. Si la referencia tiene más de un crédito, el SFA rechaza (código 60783)."
+    },
+    {
+      "tema": "Total o parcial",
+      "regla": "LDCOM no lo indica: manda el monto de la NC y el SFA decide. Responde tipTransaccion T (TOTAL) si el monto cubre el saldo del crédito o P (PARCIAL) si no. Una anulación viaja igual que una NC total."
+    },
+    {
+      "tema": "Repetidos",
+      "regla": "El SFA rechaza la misma solicitud para la misma factura en la misma fecha (código 60773, 'ya se encuentra procesada'). Por eso un reintento manda el cuerpo idéntico: si el primero sí se aplicó, el rechazo 60773 significa que la NC ya está reversada en el SFA, no que falló."
+    },
+    {
+      "tema": "Respuesta",
+      "regla": "Aplicada: HTTP 200 con indEstado A, tipTransaccion T o P, idSecuencia y monDisponibleLinea. Rechazo de negocio: HTTP 200 con indEstado R y el código y motivo en observaciones (ej. 60791 crédito ya devuelto en total). Rechazo de validación: HTTP 200 con indEstado R, desIndEstadoTransaccion 'RECHAZADO VALIDACION' y todos los errores juntos en observaciones. Error técnico o timeout: HTTP 500 con error.detail (code y details)."
+    },
+    {
+      "tema": "Reintentos y monitor",
+      "regla": "Informática no reintenta. Según su documento, el resultado lo notifica Informática al Monitor Integral con codEC SFA13; LDCOM guarda el envío y la respuesta en su bitácora de integraciones, igual que POS-10."
+    },
+    {
+      "tema": "Fecha",
+      "regla": "fecSolicitud es el día en que se aplica la NC, en hora de Costa Rica (AAAA-MM-DD), con la misma regla de POS-10 para no pasarse al día siguiente después de las 6 p. m."
+    }
+  ],
+  "preguntas": [
+    {
+      "numero": 1,
+      "tema": "Números externos de la factura y de la NC",
+      "pregunta": "¿Qué esperan en numReferenciaExterno y numDevolucionExterno y cuál es el largo real? El xlsx dice 15 y el ejemplo de su Postman dice 17 ('F001-002-0001-001'). El consecutivo de Hacienda tiene 20 dígitos y no cabe. Proponemos sucursal-caja-número interno del documento de LDCOM (ej. '16-2-9' para la factura y '16-2-1' para la NC). ¿Les sirve o necesitan otro número?",
+      "campos": "numReferenciaExterno, numDevolucionExterno"
+    },
+    {
+      "numero": 2,
+      "tema": "Varias NC de la misma factura el mismo día",
+      "pregunta": "Si un cliente hace dos devoluciones parciales de la misma factura el mismo día, cada una con su propio numDevolucionExterno, ¿el SFA aplica la segunda o la rechaza con 60773? En la prueba integral el rechazo 60773 fue con el cuerpo idéntico, así que no sabemos si cuenta el número de la devolución.",
+      "campos": "numDevolucionExterno, fecSolicitud"
+    },
+    {
+      "numero": 3,
+      "tema": "Monto de la devolución",
+      "pregunta": "¿monDevolucion va con IVA (el total de la NC, como el monto que se pidió en SFA15) o sin IVA? Debe estar en la misma base que el crédito para que una NC total deje el saldo en cero.",
+      "campos": "monDevolucion"
+    },
+    {
+      "numero": 4,
+      "tema": "Qué hace el POS si el SFA rechaza o no responde",
+      "pregunta": "Si el SFA rechaza la NC (ej. 60791 crédito ya devuelto) o no responde, ¿el POS debe impedir la nota de crédito o la emite igual y queda pendiente de conciliar? Las NC son documentos fiscales ante Hacienda y no conviene bloquearlas por una caída del SFA.",
+      "campos": "Todos"
+    },
+    {
+      "numero": 5,
+      "tema": "NC de ventas hechas en contingencia",
+      "pregunta": "Una venta financiada hecha en contingencia (sin conexión al SFA) no tiene crédito en el SFA. ¿Su NC no se envía, o se debe informar de otra forma?",
+      "campos": "numReferencia"
+    },
+    {
+      "numero": 6,
+      "tema": "Usuario, credencial y URLs",
+      "pregunta": "¿codUsuario es el usuario fijo de la integración (en la prueba integral usaron INTEGRACIONSFA) o el usuario del cajero? ¿Cuáles son el usuario Basic y las URLs de QA y producción?",
+      "campos": "codUsuario"
+    }
+  ],
+  "campos": [
+    {
+      "bloque": "Body",
+      "campo": "codEmpresa",
+      "doc": "Varchar 5, obligatorio. El xlsx dice constante 'CR01'.",
+      "origen": "Configuración de la integración: 001 (la misma de POS-10).",
+      "porque": "El servicio solo acepta 001: con CR01 responde 'codEmpresa debe ser la constante 001' (probado en Bruno, V02).",
+      "descripcion": "La empresa Dos Pinos en el SFA. Siempre es la misma.",
+      "ejemplo": "001",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "El xlsx de Dos Pinos está equivocado en este valor; manda lo que respondió el servicio.",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "codAgencia",
+      "doc": "Varchar 5, obligatorio. Código de almacén.",
+      "origen": "La sucursal de la NC (Suc_Id) traducida al código de agencia del SFA con el catálogo de sucursales de Integraciones, igual que en POS-10.",
+      "porque": "Es la misma traducción que ya usa la venta financiada, así factura y NC salen con la misma agencia.",
+      "descripcion": "La agencia (sucursal) de Dos Pinos donde se hizo la nota de crédito.",
+      "ejemplo": "001",
+      "estado": "Provisional",
+      "duda": "En el SFA de pruebas solo existe la agencia 001; no tenemos los códigos reales de cada sucursal.",
+      "porque_duda": "Dos Pinos no ha entregado la tabla de agencias del SFA por sucursal; con 002 el servicio no llegó a responder (SFA caído) y no sabemos si la rechaza.",
+      "nota": "Comparte catálogo con POS-10: cuando se llene para uno, sirve para los dos.",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "codTipoId",
+      "doc": "Varchar 5, opcional. Solo si no viene codCliente.",
+      "origen": "Vacío.",
+      "porque": "LDCOM siempre manda codCliente (el asociado), igual que en POS-10, así que la identificación no hace falta.",
+      "descripcion": "Tipo de cédula del cliente. Solo se usa cuando no se conoce el código de cliente.",
+      "ejemplo": "",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "El servicio exige codCliente o bien codTipoId junto con numId (probado, V04).",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "numId",
+      "doc": "Varchar 30, opcional. Solo si no viene codCliente.",
+      "origen": "Vacío.",
+      "porque": "Igual que codTipoId: va el código de cliente.",
+      "descripcion": "Número de cédula del cliente. Solo se usa cuando no se conoce el código de cliente.",
+      "ejemplo": "",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "codCliente",
+      "doc": "Varchar 15, obligatorio si no viene la identificación.",
+      "origen": "Código de interfaz (código SAP) del asociado de la factura original: Cliente.Codigo_Interfaz, el mismo que se mandó en POS-10.",
+      "porque": "El crédito está a nombre del asociado; la NC tiene que llegar al mismo cliente que la venta.",
+      "descripcion": "El asociado de Dos Pinos dueño del crédito que se reversa.",
+      "ejemplo": "4000010",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Si la venta fue de una finca, el cliente sigue siendo el asociado (la finca viajó como unidad de costo en POS-10).",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "nomAutorizado",
+      "doc": "Varchar 100, obligatorio.",
+      "origen": "Nombre del asociado (Cliente.Cliente_Nombre), recortado a 100 caracteres, igual que en POS-10.",
+      "porque": "Es el mismo dato que se mandó al pedir el crédito y en el ejemplo de Dos Pinos el autorizado es el propio cliente.",
+      "descripcion": "Nombre de la persona a nombre de quien se hace la devolución.",
+      "ejemplo": "PRUEBA LDCOM QA 3700",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Un nombre largo se recorta, no se rechaza.",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "fecSolicitud",
+      "doc": "Datetime, formato AAAA-MM-DD, obligatorio.",
+      "origen": "Fecha de la nota de crédito en hora de Costa Rica.",
+      "porque": "Es la fecha de la devolución; el SFA la usa además para detectar repetidos (misma factura, misma fecha).",
+      "descripcion": "Día en que se pidió la devolución.",
+      "ejemplo": "2026-11-04",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Con otro formato responde 'fecSolicitud debe tener formato YYYY-MM-DD' (probado, V11).",
+      "pregunta": 2
+    },
+    {
+      "bloque": "Body",
+      "campo": "numReferencia",
+      "doc": "Varchar 15, el xlsx dice no obligatorio ('número de factura Retail').",
+      "origen": "La referencia de crédito SFA de la factura original (Factura_Credito_SFA_Referencia en Ticket_Encabezado o Factura_Encabezado): el mismo idExterno que se mandó en POS-10.",
+      "porque": "Dos Pinos confirmó en la prueba integral que este número es el vínculo con el crédito: el SFA busca el crédito cuyo idExterno es igual a numReferencia. Sin él no hay qué reversar.",
+      "descripcion": "Identifica la venta financiada original y, con ella, el crédito que se va a devolver.",
+      "ejemplo": "00G0201K9XA2000 (ilustrativo: 15 caracteres, sucursal, caja, hora y contador)",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Para LDCOM es obligatorio aunque el xlsx diga que no: si la factura no tiene referencia SFA, la NC no se envía. La referencia la genera el POS al facturar y la conserva el documento.",
+      "pregunta": 5
+    },
+    {
+      "bloque": "Body",
+      "campo": "numReferenciaExterno",
+      "doc": "Varchar 15 en el xlsx (17 en el Postman de Dos Pinos), no obligatorio.",
+      "origen": "Número interno de la factura original en LDCOM: sucursal-caja-número (Suc_Id-Caja_Id-Factura_Id).",
+      "porque": "Permite que alguien de Dos Pinos encuentre la factura en LDCOM desde el SFA; el consecutivo de Hacienda (20 dígitos) no cabe.",
+      "descripcion": "El número de la factura original, para consulta.",
+      "ejemplo": "16-2-9",
+      "estado": "Pregunta a Dos Pinos",
+      "duda": "No sabemos qué número esperan ni si el largo es 15 o 17.",
+      "porque_duda": "El xlsx y el Postman de Dos Pinos no coinciden en el largo y su ejemplo 'F001-002-0001-001' no corresponde a ningún número de LDCOM.",
+      "nota": "Decisión provisional nuestra: el servicio no lo valida (aceptó textos de prueba).",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Body",
+      "campo": "numDevolucionExterno",
+      "doc": "Varchar 15 en el xlsx (17 en el Postman de Dos Pinos), no obligatorio.",
+      "origen": "Número interno de la nota de crédito en LDCOM: sucursal-caja-número (Suc_Id-Caja_Id-Factura_Id de la NC).",
+      "porque": "Cada NC lleva su propio número para distinguir dos devoluciones de la misma factura y para conciliar.",
+      "descripcion": "El número de la nota de crédito que se hizo en el POS.",
+      "ejemplo": "16-2-1",
+      "estado": "Pregunta a Dos Pinos",
+      "duda": "No sabemos el formato ni el largo, ni si el SFA lo usa para aceptar una segunda NC de la misma factura el mismo día.",
+      "porque_duda": "Igual que numReferenciaExterno; y el rechazo 60773 de la prueba integral se dio con el cuerpo idéntico, no con otro número de devolución.",
+      "nota": "Un reintento manda el mismo número.",
+      "pregunta": "1, 2"
+    },
+    {
+      "bloque": "Body",
+      "campo": "monDevolucion",
+      "doc": "Numérico 16.2 (14 enteros y 2 decimales).",
+      "origen": "Total de la nota de crédito, redondeado a 2 decimales.",
+      "porque": "Es lo que se le devuelve al asociado; el SFA decide con ese monto si la reversa es total o parcial.",
+      "descripcion": "Cuánto se rebaja del crédito.",
+      "ejemplo": "21812.38",
+      "estado": "Pregunta a Dos Pinos",
+      "duda": "No sabemos si va con o sin IVA.",
+      "porque_duda": "El contrato no lo dice; si no está en la misma base que el monto pedido en SFA15, una NC total dejaría saldo o se pasaría.",
+      "nota": "Se manda como número. Con 3 decimales responde 'debe ser numérico con máximo 14 enteros y 2 decimales' (probado, V09).",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Body",
+      "campo": "indOrigen",
+      "doc": "Varchar 5, obligatorio. Constante 'AVR'.",
+      "origen": "Constante AVR.",
+      "porque": "Identifica a AV Retail (LDCOM) como sistema de origen; con otro valor el servicio rechaza (probado, V03).",
+      "descripcion": "De qué sistema viene la devolución.",
+      "ejemplo": "AVR",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "",
+      "pregunta": ""
+    },
+    {
+      "bloque": "Body",
+      "campo": "codUsuario",
+      "doc": "Varchar 15, obligatorio.",
+      "origen": "Usuario de la integración configurado en Integraciones (el mismo de POS-10).",
+      "porque": "Dos Pinos usó INTEGRACIONSFA en su prueba integral y POS-10 ya manda el usuario de la integración.",
+      "descripcion": "Usuario con que queda registrada la devolución en el SFA.",
+      "ejemplo": "INTEGRACIONSFA",
+      "estado": "Provisional",
+      "duda": "No sabemos si debe ser el usuario fijo de la integración o el del cajero.",
+      "porque_duda": "El contrato solo dice 'código de usuario'; el valor de la prueba integral fue de ellos, no una regla escrita.",
+      "nota": "El usuario del cajero tendría que existir en el SFA, por eso se usa el de la integración.",
+      "pregunta": 6
+    }
+  ]
+}
