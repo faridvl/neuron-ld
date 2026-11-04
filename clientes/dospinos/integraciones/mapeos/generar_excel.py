@@ -33,6 +33,9 @@ COLORES_ESTADO = {
     "Pregunta a Dos Pinos": ("F8CBCB", "9C0006"),
 }
 ESTADOS_PENDIENTES = ("Provisional", "Pregunta a Dos Pinos")
+# Regla del usuario: toda fila provisional o con duda va entera en rojo, con la duda y su porqué
+RELLENO_DUDA = PatternFill("solid", fgColor="F8CBCB")
+LETRA_DUDA = Font(name="Calibri", bold=True, color="9C0006")
 
 # Relleno de la fila entera en la hoja Avance; "Sin empezar" queda en blanco a propósito
 COLORES_AVANCE = {
@@ -50,9 +53,11 @@ COLUMNAS_CAMPOS = [
     ("Qué significa (en palabras simples)", 52, "descripcion"),
     ("Ejemplo", 30, "ejemplo"),
     ("Estado", 22, "estado"),
+    ("Duda y por qué es duda", 52, "duda"),
     ("Nota", 46, "nota"),
     ("Pregunta N.º", 11, "pregunta"),
 ]
+COLUMNA_ESTADO = 8
 
 
 def nombre_hoja(codigo, usados):
@@ -121,16 +126,26 @@ def hoja_integracion(libro, integracion, nombre):
     anchos = [c[1] for c in COLUMNAS_CAMPOS]
     for indice, campo in enumerate(integracion["campos"]):
         fila += 1
+        es_duda = campo.get("estado") in ESTADOS_PENDIENTES
         valores = [texto(campo.get(clave)) for _, _, clave in COLUMNAS_CAMPOS]
+        # Integraciones que aún no escriben la duda: se muestra la nota para no dejar la celda vacía
+        if es_duda and not campo.get("duda"):
+            valores[[c[2] for c in COLUMNAS_CAMPOS].index("duda")] = texto(campo.get("nota"))
         for col, valor in enumerate(valores, start=1):
             celda = hoja.cell(row=fila, column=col, value=valor)
             celda.alignment = AJUSTE
             celda.border = BORDE
-            if indice % 2 == 1:
+            if es_duda:
+                celda.fill = RELLENO_DUDA
+            elif indice % 2 == 1:
                 celda.fill = RELLENO_ALTERNO
         hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
         hoja.cell(row=fila, column=len(COLUMNAS_CAMPOS)).alignment = Alignment(horizontal="center", vertical="top")
-        pintar_estado(hoja.cell(row=fila, column=8), campo.get("estado"))
+        celda_estado = hoja.cell(row=fila, column=COLUMNA_ESTADO)
+        pintar_estado(celda_estado, campo.get("estado"))
+        if es_duda:
+            celda_estado.fill = RELLENO_DUDA
+            celda_estado.font = LETRA_DUDA
         hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
 
     hoja.auto_filter.ref = f"A{fila_encabezado}:{get_column_letter(ultima)}{fila}"

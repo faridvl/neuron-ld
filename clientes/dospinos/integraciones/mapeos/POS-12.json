@@ -192,7 +192,8 @@
       "ejemplo": "1-19-4-16",
       "estado": "Provisional",
       "nota": "La base de Dos Pinos solo acepta 14 caracteres (con 15 da error ORA-12899). Para el crédito a distribuidores, que se envía al instante y sin cierre, no está definido qué CSAGR lleva. El ejemplo es ilustrativo.",
-      "pregunta": 10
+      "pregunta": 10,
+      "duda": "Duda: ¿qué identifica el cierre? Por qué: la tabla de Dos Pinos lo arma con fecha + centro ('20250922-1518'), pero así dos cajas de la misma sucursal que cierran el mismo día chocarían como duplicado. Usamos empresa-sucursal-caja-cierre, como POS-19, y el servicio solo acepta 14 caracteres."
     },
     {
       "bloque": "Control",
@@ -240,7 +241,8 @@
       "ejemplo": "CR01",
       "estado": "Provisional",
       "nota": "Probado: el servicio no lo valida contra su maestro (hasta XXXX pasa). CR01 viene del ejemplo de Confluence; falta el valor real.",
-      "pregunta": 18
+      "pregunta": 18,
+      "duda": "Duda: ¿es siempre CR01? Por qué: la tabla y los ejemplos dicen CR01, pero el servicio acepta cualquier valor (XXXX pasó), así que no lo confirma."
     },
     {
       "bloque": "Control",
@@ -252,7 +254,8 @@
       "ejemplo": "LIQUIDACION/AA-341110~0149",
       "estado": "Provisional",
       "nota": "El ejemplo de Dos Pinos tiene otro formato (LIQUIDACION/...~sucursal). Nuestra propuesta no está confirmada. Máximo 50 caracteres.",
-      "pregunta": 18
+      "pregunta": 18,
+      "duda": "Duda: ¿qué formato lleva? Por qué: el ejemplo es 'LIQUIDACION/AA-611~1518' y nadie explica de dónde sale cada parte; el servicio acepta cualquier texto de hasta 50."
     },
     {
       "bloque": "Control",
@@ -300,7 +303,8 @@
       "ejemplo": "ZVNA",
       "estado": "Provisional",
       "nota": "El servicio real rechaza ZVNH y ZREH del contrato; solo acepta ZVNA y ZVNB. Falta saber cuál es venta y cuál devolución, y si hay más clases (crédito, asociados).",
-      "pregunta": "2, 17"
+      "pregunta": "2, 17",
+      "duda": "Duda: ¿cuál es venta y cuál devolución? Por qué: la tabla dice 'Clase de documento' y los ejemplos traen ZVNH/ZREH, pero el servicio rechaza esos y solo acepta ZVNA y ZVNB, sin decir cuál es cuál."
     },
     {
       "bloque": "Cabecera",
@@ -396,7 +400,8 @@
       "ejemplo": "A",
       "estado": "Pregunta a Dos Pinos",
       "nota": "Toda la documentación de Dos Pinos e Informática lo manda vacío, pero el servicio de dev responde 'XBLNR es requerido'. 'A' es el valor con el que el servicio aceptó en Bruno. Se cambia en el parámetro, sin tocar código, cuando Dos Pinos confirme.",
-      "pregunta": 3
+      "pregunta": 3,
+      "duda": "Duda: ¿qué valor lleva? Por qué: toda la documentación lo manda vacío, pero el servicio responde 'XBLNR es requerido'. Mientras tanto sale de los parámetros del evento ('A')."
     },
     {
       "bloque": "Cabecera",
@@ -408,7 +413,8 @@
       "ejemplo": "A",
       "estado": "Pregunta a Dos Pinos",
       "nota": "Toda la documentación de Dos Pinos e Informática lo manda vacío, pero el servicio de dev responde 'IHREZ es requerido'. 'A' es el valor con el que el servicio aceptó en Bruno. Se cambia en el parámetro, sin tocar código, cuando Dos Pinos confirme.",
-      "pregunta": 3
+      "pregunta": 3,
+      "duda": "Duda: ¿qué valor lleva? Por qué: toda la documentación lo manda vacío, pero el servicio responde 'IHREZ es requerido'. Mientras tanto sale de los parámetros del evento ('A')."
     },
     {
       "bloque": "Cabecera",
@@ -420,7 +426,8 @@
       "ejemplo": "P1514",
       "estado": "Pregunta a Dos Pinos",
       "nota": "EN DUDA: valor fijo provisional (P1514). El usuario lo valida. Confluence lo llama 'Ruta de preventa'.",
-      "pregunta": 7
+      "pregunta": 7,
+      "duda": "Duda: ¿qué ruta de preventa va? Por qué: la tabla solo dice 'Ruta preventa' y LDCOM no tiene rutas en el POS. Va fijo en P1514 (el ejemplo) hasta que el usuario lo valide."
     },
     {
       "bloque": "Cabecera",
@@ -432,7 +439,8 @@
       "ejemplo": "1518",
       "estado": "Provisional",
       "nota": "En LDCOM Sucursal.Codigo_Interfaz está vacío. El valor real lo debe dar Dos Pinos por cada agencia.",
-      "pregunta": 8
+      "pregunta": 8,
+      "duda": "Duda: ¿el código de centro de cada sucursal? Por qué: la tabla dice 'Centro', pero LDCOM no tiene ese código cargado (Sucursal.Codigo_Interfaz está vacío). Dos Pinos debe dar el catálogo por sucursal."
     },
     {
       "bloque": "Cabecera",
@@ -468,7 +476,8 @@
       "ejemplo": "0001088949",
       "estado": "Provisional",
       "nota": "Antes lo teníamos como transportista: el mapeo oficial dice que el transportista es KUNNR2. En el ejemplo de Informática ROUNA (0001088949) es distinto de KUNNR (0001054444): falta confirmar si es otro cliente, como el pagador.",
-      "pregunta": 5
+      "pregunta": 5,
+      "duda": "Duda: ¿es el mismo cliente de KUNNR u otro? Por qué: la tabla dice 'Código cliente', pero en el ejemplo ROUNA (0001088949) es distinto de KUNNR (0001054444). Puede ser el pagador."
     },
     {
       "bloque": "Cabecera",
@@ -480,7 +489,8 @@
       "ejemplo": "L",
       "estado": "Provisional",
       "nota": "El servicio solo acepta L y la exige. El usuario recuerda que cambia según sea factura o no, o que es opcional; en dev no se pudo comprobar.",
-      "pregunta": "1, 6"
+      "pregunta": "1, 6",
+      "duda": "Duda: ¿cambia según el documento? Por qué: la tabla dice 'Siempre L' y el servicio solo acepta L, pero el usuario recuerda que variaba entre factura y otros casos."
     },
     {
       "bloque": "Cabecera",
@@ -504,7 +514,8 @@
       "ejemplo": "B00",
       "estado": "Provisional",
       "nota": "Opcional. El mapeo oficial dice 'Motivo del pedido o motivo de devolución'. LDCOM no tiene motivos de devolución, así que va vacío.",
-      "pregunta": 15
+      "pregunta": 15,
+      "duda": "Duda: ¿hace falta en devoluciones? Por qué: la tabla dice 'Motivo del pedido o motivo de devolución' y es opcional, pero LDCOM no guarda motivos de devolución; va vacío."
     },
     {
       "bloque": "Cabecera",
@@ -516,7 +527,8 @@
       "ejemplo": "1518CRE20250919",
       "estado": "Provisional",
       "nota": "Opcional, máximo 16 caracteres. El formato lo definimos nosotros.",
-      "pregunta": 15
+      "pregunta": 15,
+      "duda": "Duda: ¿qué formato quieren? Por qué: la tabla dice 'Referencia POS' sin formato (máx. 16) y el ejemplo '1518CRE20250919' parece centro + CRE + fecha. El formato lo propusimos nosotros."
     },
     {
       "bloque": "Cabecera",
@@ -528,7 +540,8 @@
       "ejemplo": "",
       "estado": "Provisional",
       "nota": "Probado: opcional. Falta saber si Dos Pinos lo usa en ventas.",
-      "pregunta": null
+      "pregunta": null,
+      "duda": "Duda: ¿va siempre vacío? Por qué: la tabla dice 'vacío' y es opcional, pero en el detalle PRCTR sí lleva el CECO; hay que confirmar que en la cabecera no se repite."
     },
     {
       "bloque": "Cabecera",
@@ -540,7 +553,8 @@
       "ejemplo": "0.82",
       "estado": "Provisional",
       "nota": "Es opcional. En los ejemplos trae 0.53 y 0.82, que no parecen un total: confirmar con Dos Pinos.",
-      "pregunta": 15
+      "pregunta": 15,
+      "duda": "Duda: ¿es el total de la factura? Por qué: la tabla dice 'Total factura', pero los ejemplos traen 0.53 y 0.82, que no parecen un total."
     },
     {
       "bloque": "Cabecera",
@@ -552,7 +566,8 @@
       "ejemplo": "8006",
       "estado": "Provisional",
       "nota": "El servicio lo valida contra un catálogo que no conocemos. LDCOM no tiene este código.",
-      "pregunta": 8
+      "pregunta": 8,
+      "duda": "Duda: ¿qué oficina de ventas tiene cada sucursal? Por qué: el servicio lo valida contra un catálogo y LDCOM no tiene ese código. Dos Pinos debe dar el catálogo por sucursal."
     },
     {
       "bloque": "Cabecera",
@@ -564,7 +579,8 @@
       "ejemplo": "122",
       "estado": "Provisional",
       "nota": "El servicio lo valida contra un catálogo que no conocemos. LDCOM no tiene este código.",
-      "pregunta": 8
+      "pregunta": 8,
+      "duda": "Duda: ¿qué oficina de distribución tiene cada sucursal? Por qué: el servicio lo valida contra un catálogo y LDCOM no tiene ese código. Dos Pinos debe dar el catálogo por sucursal."
     },
     {
       "bloque": "Cabecera",
@@ -576,7 +592,8 @@
       "ejemplo": "0000165922",
       "estado": "Provisional",
       "nota": "Suposición del usuario. Calza con el ejemplo de Informática (0000165922, código de cliente de 10). El mapeo oficial dice 'vacío' y el servicio lo exige: falta definir qué va cuando la factura no tiene autorizado.",
-      "pregunta": 3
+      "pregunta": 3,
+      "duda": "Duda: ¿qué va si la factura no tiene autorizado? Por qué: la tabla dice 'vacío', el servicio lo exige, y la suposición del usuario es que es el cliente autorizado de la factura."
     },
     {
       "bloque": "Cabecera",
@@ -588,7 +605,8 @@
       "ejemplo": "",
       "estado": "Pregunta a Dos Pinos",
       "nota": "Probado: opcional. Puede ser el libro mayor especial, como UMSKZ, pero es una suposición.",
-      "pregunta": 15
+      "pregunta": 15,
+      "duda": "Duda: ¿qué es? Por qué: la tabla dice 'vacío' y es opcional; nadie explicó para qué sirve."
     },
     {
       "bloque": "Cabecera",
@@ -600,7 +618,8 @@
       "ejemplo": "(pendiente)",
       "estado": "Pregunta a Dos Pinos",
       "nota": "Requerido, máximo 100. Falta saber qué textos quieren y qué mandar cuando no hay ninguno.",
-      "pregunta": 3
+      "pregunta": 3,
+      "duda": "Duda: ¿qué textos quieren y qué va si no hay? Por qué: la tabla dice 'Campo de textos, se separan por ;' (máx. 100) y el servicio no acepta vacío."
     },
     {
       "bloque": "Cabecera",
@@ -636,7 +655,8 @@
       "ejemplo": "(pendiente)",
       "estado": "Provisional",
       "nota": "El usuario recordaba que el transportista iba en uno de estos campos; según el mapeo oficial es KUNNR2. Falta definir qué va si la factura no tiene transportista: el servicio no acepta vacío.",
-      "pregunta": "3, 4"
+      "pregunta": "3, 4",
+      "duda": "Duda: ¿qué va si la factura no tiene transportista? Por qué: la tabla dice 'Código transportista' y el servicio no acepta vacío."
     },
     {
       "bloque": "Cabecera",
@@ -648,7 +668,8 @@
       "ejemplo": "(pendiente)",
       "estado": "Provisional",
       "nota": "El usuario lo tenía como autorizado; el mapeo oficial dice finca. En LDCOM la finca No REA está guardada como texto y hay que separar el id. Falta definir qué va cuando no hay finca: el servicio no acepta vacío.",
-      "pregunta": "3, 4"
+      "pregunta": "3, 4",
+      "duda": "Duda: ¿qué va si no hay finca? Por qué: la tabla dice 'FINCA' y el servicio no acepta vacío. Además, en LDCOM la finca No REA está guardada como texto y hay que separar el id."
     },
     {
       "bloque": "Cabecera",
@@ -672,7 +693,8 @@
       "ejemplo": "Z001",
       "estado": "Provisional",
       "nota": "Falta el código exacto de cada uno (los ejemplos traen Z001 y Z005).",
-      "pregunta": 12
+      "pregunta": 12,
+      "duda": "Duda: ¿qué código es contado y cuál crédito? Por qué: la tabla dice 'CRÉDITO O CONTADO' y los ejemplos traen Z001 y Z005, sin decir cuál es cuál."
     },
     {
       "bloque": "Detalle",
@@ -720,7 +742,8 @@
       "ejemplo": "2",
       "estado": "Pregunta a Dos Pinos",
       "nota": "Mapeo oficial de Dos Pinos: 'Cantidad', INT4 de 10, requerido. En SAP es la cantidad del pedido en unidad de venta. Probado: el servicio solo acepta enteros, y rechaza negativos y decimales. Pendiente: cómo va el granel (lleva decimales) y que la devolución vaya en positivo (la clase de documento ya dice que es devolución).",
-      "pregunta": 14
+      "pregunta": 14,
+      "duda": "Duda: ¿cómo va el granel y la devolución? Por qué: la tabla dice 'Cantidad' (entero) y el servicio rechaza decimales y negativos; el granel lleva decimales y LDCOM guarda las devoluciones en negativo."
     },
     {
       "bloque": "Detalle",
@@ -732,7 +755,8 @@
       "ejemplo": "UN",
       "estado": "Provisional",
       "nota": "Decisión del cuaderno: por unidad del artículo. En LDCOM el símbolo de unidad no tiene código de Dos Pinos y en Docker viene vacío. El servicio no lo valida.",
-      "pregunta": 14
+      "pregunta": 14,
+      "duda": "Duda: ¿qué códigos de unidad usan? Por qué: la tabla dice 'Unidad de medida' y el ejemplo trae 'UN', pero LDCOM no tiene el código SAP de cada unidad."
     },
     {
       "bloque": "Detalle",
@@ -744,7 +768,8 @@
       "ejemplo": "Z005",
       "estado": "Provisional",
       "nota": "Probado: opcional en el detalle. No se valida que sea igual al de la cabecera.",
-      "pregunta": 12
+      "pregunta": 12,
+      "duda": "Duda: ¿va en el detalle? Por qué: no aparece en la tabla oficial del detalle; el ejemplo lo trae y el servicio lo acepta vacío."
     },
     {
       "bloque": "Detalle",
@@ -768,7 +793,8 @@
       "ejemplo": "(pendiente)",
       "estado": "Provisional",
       "nota": "Falta confirmar que el CECO de la factura es el que Dos Pinos espera y que trae su código.",
-      "pregunta": 3
+      "pregunta": 3,
+      "duda": "Duda: ¿el CECO de la factura es el que esperan? Por qué: la tabla dice 'CECO' y es obligatorio; falta confirmar que el CECO de LDCOM trae el código de Dos Pinos."
     },
     {
       "bloque": "Detalle",
@@ -780,7 +806,8 @@
       "ejemplo": "P1514",
       "estado": "Pregunta a Dos Pinos",
       "nota": "EN DUDA: valor fijo provisional (P1514). El usuario lo valida. Confluence lo llama 'Ruta de preventa'.",
-      "pregunta": 7
+      "pregunta": 7,
+      "duda": "Duda: ¿qué ruta de preventa va? Por qué: la tabla solo dice 'ruta preventa' y en el detalle es obligatoria. Va fijo en P1514 (el ejemplo) hasta que el usuario lo valide."
     },
     {
       "bloque": "Detalle",
@@ -792,7 +819,8 @@
       "ejemplo": "1518",
       "estado": "Provisional",
       "nota": "Hoy Sucursal.Codigo_Interfaz está vacío en LDCOM. Los códigos reales los debe dar Dos Pinos.",
-      "pregunta": 8
+      "pregunta": 8,
+      "duda": "Duda: ¿el código de centro de cada sucursal? Por qué: la tabla dice 'centro' y LDCOM no tiene ese código cargado. Dos Pinos debe dar el catálogo por sucursal."
     },
     {
       "bloque": "Detalle",
@@ -804,7 +832,8 @@
       "ejemplo": "2207",
       "estado": "Provisional",
       "nota": "LDCOM no tiene código de Dos Pinos en la bodega. Se arma un mapeo bodega a almacén; falta que Dos Pinos dé los valores.",
-      "pregunta": 8
+      "pregunta": 8,
+      "duda": "Duda: ¿el almacén de cada bodega? Por qué: la tabla dice 'almacén' (máx. 4) y las bodegas de LDCOM no tienen código de Dos Pinos. Va en un mapeo por bodega."
     },
     {
       "bloque": "Condiciones",
@@ -840,7 +869,8 @@
       "ejemplo": "ZPR1",
       "estado": "Provisional",
       "nota": "El servicio valida que sea una clase válida. Solo se conoce ZPR1 (precio); las demás clases no las definió Dos Pinos.",
-      "pregunta": 13
+      "pregunta": 13,
+      "duda": "Duda: ¿qué clases de condición hay? Por qué: la tabla dice 'Clase de condición' y solo conocemos ZPR1 (precio); faltan las de descuento, impuesto y bonificación."
     },
     {
       "bloque": "Condiciones",
@@ -852,7 +882,8 @@
       "ejemplo": "10112.36",
       "estado": "Provisional",
       "nota": "Según el mapeo oficial es el valor de la condición multiplicado por la cantidad, es decir, el total de la línea y no el precio unitario.",
-      "pregunta": 13
+      "pregunta": 13,
+      "duda": "Duda: ¿con o sin impuesto, y el signo de los descuentos? Por qué: la tabla dice 'Valor de la condición multiplicada por la cantidad', pero no aclara el IVA ni cómo van los descuentos."
     }
   ]
 }

@@ -48,3 +48,7 @@ Requiere `openpyxl`. Cada sesión toca solo su propio json, así que no hay conf
 
 Lo que no se sepa se marca Provisional o Pregunta a Dos Pinos; no se inventa.
 Los ejemplos que sean ilustrativos se dicen así en la nota.
+
+## Filas con duda
+
+Toda fila Provisional o Pregunta a Dos Pinos sale entera en rojo, con la columna 'Duda y por qué es duda'. Cada campo pendiente lleva su `duda` en el json: qué no sabemos y por qué (regla del usuario, 2026-11-04). Si falta, el Excel muestra la nota.
