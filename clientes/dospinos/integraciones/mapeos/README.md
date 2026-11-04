@@ -35,7 +35,9 @@ Requiere `openpyxl`. Cada sesión toca solo su propio json, así que no hay conf
   (no una por campo) y salen en la hoja "Preguntas a Dos Pinos".
 - `campos`: lista con `bloque`, `campo`, `doc` (tipo, largo, obligatorio según el documento),
   `origen` (de dónde sale en LDCOM), `porque` (por qué se manda eso), `descripcion` (qué significa, para quien no programa),
-  `ejemplo`, `estado`, `nota` y `pregunta` (número o números de la lista de preguntas, o vacío).
+  `ejemplo`, `estado`, `duda` y `porque_duda` (qué falta saber y por qué no está cerrado; vacíos si no hay duda), `nota` y `pregunta`
+  (número o números de la lista de preguntas, o vacío). Un campo Provisional, Pregunta a Dos Pinos o con `duda` sale con
+  toda la fila en rojo en el Excel.
 
 ## Estados permitidos
 

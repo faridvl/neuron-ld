@@ -43,6 +43,10 @@ Para casos de cliente (CAS-XXXXX), buscar el ticket con `search_workitem`; nunca
 - Comentarios cortos y solo si aportan el porqué; nada de contexto de la sesión. Referencia a ticket solo como
   `'Issue 2369: <regla en pocas palabras>'`.
 - Nombres descriptivos: nunca `Dim r` ni abreviaturas, tampoco en pruebas.
+- Nombres por lo que hace la pieza, nunca por la interfaz ni el cliente (`POS19`, `DosPinos`, `CAI`...): ni clases,
+  ni archivos, ni carpetas, ni pruebas, sin excepciones (tampoco los builders o mapeadores de una sola interfaz).
+  El código de la interfaz vive solo en la configuración (evento, seed) y es lo que elige la pieza. Lo ya mergeado
+  con esos nombres no se renombra por esto; lo nuevo no los usa.
 - Sin números ni códigos mágicos: constantes con nombre o configuración.
 - Al copiar un fix a métodos hermanos (FACTCEDI, CEDI, INVENTARIO), verificar columnas y controles del destino.
 - Validación nueva: rastrear hacia arriba quién la llama y qué transforma antes.

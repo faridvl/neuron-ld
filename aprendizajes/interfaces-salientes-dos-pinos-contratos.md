@@ -74,14 +74,12 @@ en largos, constantes y en cómo responde el rechazo en todas las que se probaro
   así que un timeout o un 500 de Romana no se reintenta sin saber si llegó. POS-19 sí se puede reintentar: el duplicado
   vuelve como "dato de control ya existe" y se toma como enviado (`AlreadySent`).
 - **Dónde queda el rastro:** todo en Integrations (`OutboundNotification` + `Events` + Monitor 360, y correo si falla
-  el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va al
-  log de NEGOCIO con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
+  el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va con
+  `Save_Msg` a `MSG_MESSAGE` (255 caracteres) con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
+- **Regla para todas las integraciones: GUID = `TransactionId` que se guarda en el Monitor.** El GUID que va a
+  Dos Pinos es siempre el `TransactionId` del aviso, el mismo que queda registrado en `Events` y en el Monitor 360.
+  Nunca se genera uno nuevo, nunca se usa el número de documento, aunque el contrato lo permita ("NUMEROPREVENTA o
+  GUID"). Lo único que cambia por interfaz es el formato (con o sin guiones), según el largo del contrato.
 - **Excepción:** POS-10 (y POS-11) siguen síncronos porque el POS necesita la respuesta del SFA para facturar.
-- Nombres genéricos: lo común (Notificar, pendientes, despacho, suscripción) no lleva nombre de interfaz ni de
-  cliente; solo los builders llevan POS19, POS24...
-- **REGLA (usuario, 2026-11-04), todas las integraciones: GUID = TransactionId.** El `guid` que viaja al socio (bloque
-  de control de Informatica: POS-12, POS-19…) y el `guid` del reporte al Monitor 360 son el mismo `TransactionId` que
-  queda en `Events`/`OutboundNotification`. Nunca `Guid.NewGuid()` por envío ni por reporte: el mismo valor en cada
-  reintento y en cada estado (E y luego S) del monitor, para cruzar Dos Pinos, monitor y auditoría con un solo id. El
-  documento del Monitor dice "por cada envío" uno nuevo, pero sus propios ejemplos repiten el guid para el mismo
-  `idenTran` en E y en S.
+- Nombres genéricos: nada lleva nombre de interfaz ni de cliente, tampoco los builders (se nombran por lo que arman,
+  p. ej. movimientos de caja). El código POS19/POS24 vive solo en el evento y su seed. Regla en `reglas.md` (Código).
