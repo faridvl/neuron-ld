@@ -7,6 +7,13 @@ campos (campo de Dos Pinos, de dónde sale en LDCOM, por qué, tipo, significado
 una hoja "Reglas" con el endpoint, cuándo se envía y las reglas de cada integración, y una hoja
 "Preguntas a Dos Pinos". El Excel se puede borrar y regenerar cuando se quiera.
 
+## Hoja Avance
+
+`avance.json` lleva el estado de todas las interfaces (una por carpeta de Documentos-DosPinos-Interfaces):
+`estado` (Implementada en verde, En curso en amarillo, Sin empezar en blanco), `porcentaje`, `hecho`, `falta`
+y `bloqueo`, con PRs como evidencia. Se actualiza `fecha_corte` y la fila de la interfaz cada vez que avanza
+(un PR mergeado, una prueba contra Dos Pinos) y se regenera el Excel.
+
 ## Agregar una integración
 
 1. Copiar `POS-19.json` a `POS-XX.json` (el nombre del archivo es el código).
