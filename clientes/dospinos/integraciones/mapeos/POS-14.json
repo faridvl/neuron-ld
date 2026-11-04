@@ -36,7 +36,7 @@
     },
     {
       "tema": "Cantidades",
-      "regla": "La cantidad va tal cual, sin redondear. Si Dos Pinos la rechaza, el rechazo queda en el Monitor 360."
+      "regla": "Se manda la cantidad real, sin redondear. Si Dos Pinos la rechaza, el motivo del rechazo queda en Events y se envía al Monitor 360; el correo sale solo si el Monitor 360 falla."
     },
     {
       "tema": "Fallas",
@@ -52,18 +52,6 @@
     },
     {
       "numero": 2,
-      "tema": "Largos del control",
-      "pregunta": "El contrato dice CSAGR de 20 (YYYYMMDD-NUMEROPREVENTA) y NROEJ de 15, pero el servicio rechaza más de 14 en ambos y NROEJ tiene que ser numérico. Mandaremos CSAGR con el formato del contrato y el id de la preventa (20261104-62), que con preventas de hasta 5 dígitos cabe en 14, y NROEJ = llave completa de la preventa en 14 dígitos (00119010000062). ¿Pueden ampliar CSAGR a 20 como dice el contrato, por si la preventa llega a 6 dígitos?",
-      "campos": "CSAGR, NROEJ"
-    },
-    {
-      "numero": 3,
-      "tema": "Centro",
-      "pregunta": "¿CENTRO_AV es el centro SAP de la sucursal (como 1518)?",
-      "campos": "CENTRO_AV"
-    },
-    {
-      "numero": 4,
       "tema": "Reenvío con otro CSAGR",
       "pregunta": "Un reenvío con el mismo GUID pero otro CSAGR se acepta como pedido nuevo. ¿SAP detecta el duplicado por NUM_DOC o lo registra dos veces?",
       "campos": "GUID, CSAGR, NUM_DOC"
@@ -79,6 +67,8 @@
       "descripcion": "El código con que Dos Pinos reconoce esta interfaz.",
       "ejemplo": "LDP10",
       "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
       "nota": "Probado en desarrollo.",
       "pregunta": null
     },
@@ -91,6 +81,8 @@
       "descripcion": "La sociedad de SAP (BUKRS = company code). Para Costa Rica, CR01.",
       "ejemplo": "CR01",
       "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -103,20 +95,24 @@
       "descripcion": "Marca de agrupación del envío.",
       "ejemplo": "20261104-62",
       "estado": "Decidido por nosotros",
-      "nota": "Con preventas de hasta 5 dígitos queda en 14 o menos (20261104-17000).",
-      "pregunta": 2
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Con preventas de hasta 5 dígitos queda en 14 o menos (20261104-17000). Decidido por el desarrollador: no se pide ampliar el largo; si una preventa de 6 dígitos lo pasa, el rechazo queda en Events y en el Monitor 360.",
+      "pregunta": null
     },
     {
       "bloque": "Control",
       "campo": "NROEJ",
-      "doc": "CHAR 15 según contrato (NUMEROPREVENTA); el servicio exige numérico y máx. 14",
-      "origen": "Llave completa de la preventa, solo dígitos y de ancho fijo: empresa (3), sucursal (2), tipo de documento (2) y preventa (7), en el orden del endpoint de preventas.",
-      "porque": "Identifica la preventa sin ambigüedad y cumple lo que exige el servicio (numérico, máx. 14). El ancho fijo permite leer cada parte de vuelta.",
+      "doc": "INT4 de 14 según la tabla del documento de construcción (ilustración 2); el contrato dice CHAR 15 (NUMEROPREVENTA)",
+      "origen": "Id de la preventa (Preventa_Id), sin ceros.",
+      "porque": "Es el número de preventa que pide el contrato. INT4 llega a 2 147 483 647, así que la llave completa no cabe; la llave completa ya viaja en NUM_DOC.",
       "descripcion": "Número de la transacción.",
-      "ejemplo": "00119010000062",
+      "ejemplo": "62",
       "estado": "Decidido por nosotros",
-      "nota": "Empresa 1, sucursal 19, tipo de documento 1, preventa 62. No se ha probado en dev con ceros a la izquierda.",
-      "pregunta": 2
+      "duda": "",
+      "porque_duda": "",
+      "nota": "El ejemplo del documento de construcción usa 15476904.",
+      "pregunta": null
     },
     {
       "bloque": "Control",
@@ -127,6 +123,8 @@
       "descripcion": "Fecha del envío.",
       "ejemplo": "20261104",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -139,6 +137,8 @@
       "descripcion": "Hora del envío.",
       "ejemplo": "00:48:24",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "El largo 4 del contrato no corresponde a HH:MM:SS.",
       "pregunta": null
     },
@@ -151,6 +151,8 @@
       "descripcion": "Referencia legible del pedido.",
       "ejemplo": "001-0019-00010-123456",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -163,6 +165,8 @@
       "descripcion": "Usuario que hizo el pedido.",
       "ejemplo": "LDCOM",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -175,6 +179,8 @@
       "descripcion": "Código único del envío para encontrarlo en el Monitor y en Dos Pinos.",
       "ejemplo": "665b7a90-35ad-48c8-a37e-8002e9be43d7",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "Con y sin guiones se aceptó.",
       "pregunta": null
     },
@@ -187,6 +193,8 @@
       "descripcion": "Número del pedido en Dos Pinos.",
       "ejemplo": "1-19-1-62",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "Probado: '1-1-10-1-123456' aceptado; '001-0001-00010-1234' rechazado (excede 18).",
       "pregunta": null
     },
@@ -199,6 +207,8 @@
       "descripcion": "Día del pedido.",
       "ejemplo": "20261104",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -211,6 +221,8 @@
       "descripcion": "Referencia del pedido.",
       "ejemplo": "001-0019-00010-123456",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -223,6 +235,8 @@
       "descripcion": "Día en que se despacha el pedido.",
       "ejemplo": "20261105",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -230,23 +244,27 @@
       "bloque": "Encabezado del pedido",
       "campo": "CENTRO_AV",
       "doc": "CHAR 4, obligatorio (CODIGO DEL CENTRO DEL AV)",
-      "origen": "Código de interfaz (centro SAP) de la sucursal de la preventa.",
-      "porque": "A Dos Pinos van los códigos SAP que llegaron por interfaz.",
+      "origen": "CrossReference: sucursal de la preventa -> centro SAP de esa sucursal.",
+      "porque": "Confirmado por el desarrollador: el centro es la sucursal. Se resuelve con los mapeos de CrossReference, igual que el transportista; si la sucursal no tiene mapeo, el envío falla con un mensaje claro y llega al Monitor.",
       "descripcion": "Centro SAP del almacén veterinario que pide.",
       "ejemplo": "1518",
-      "estado": "Provisional",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "1518 es el valor usado en las pruebas.",
-      "pregunta": 3
+      "pregunta": null
     },
     {
       "bloque": "Encabezado del pedido",
       "campo": "ID_DEUDOR",
       "doc": "CHAR 10, obligatorio (CODIGO CLIENTE)",
       "origen": "Código de interfaz (SAP) del cliente de la preventa, sin rellenar.",
-      "porque": "Código SAP del cliente; con o sin ceros se acepta.",
-      "descripcion": "Cliente que hace el pedido.",
+      "porque": "El cliente de la preventa siempre es el asociado, aunque en pantalla se vea la finca; la finca es su Cliente_Relacionado (PV_Preventa_Encabezado). Si no tiene relación, el cliente es el cliente. Coincide con el ejemplo del documento de construcción: deudor 0000040000 con finca 43.",
+      "descripcion": "Asociado (deudor SAP) que hace el pedido.",
       "ejemplo": "40000",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -254,24 +272,28 @@
       "bloque": "Encabezado del pedido",
       "campo": "FINCA",
       "doc": "CHAR 10, obligatorio (código de finca; si no hay, el código del cliente)",
-      "origen": "El mismo código del cliente (ID_DEUDOR).",
-      "porque": "LDCOM no registra fincas; el contrato permite mandar el cliente.",
+      "origen": "Código de interfaz (SAP) del Cliente_Relacionado de la preventa (la finca). Si la preventa no tiene finca relacionada, el mismo código del cliente (ID_DEUDOR).",
+      "porque": "El cliente de la preventa siempre es el asociado, aunque en pantalla se vea la finca; la finca es su Cliente_Relacionado (PV_Preventa_Encabezado). Si no tiene relación, el cliente es el cliente. Es lo que pide el contrato: si no hay finca, el código del cliente. LDCOM manda los dos códigos en el documento (Integrations no lee su base).",
       "descripcion": "Finca donde se entrega; si no hay, el cliente.",
-      "ejemplo": "40000",
+      "ejemplo": "43",
       "estado": "Decidido por nosotros",
-      "nota": "Probado (E04) en desarrollo.",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Probado (E04) en desarrollo con finca = deudor; falta probar en dev un asociado con finca distinta.",
       "pregunta": null
     },
     {
       "bloque": "Encabezado del pedido",
       "campo": "TIPO",
       "doc": "CHAR 1, obligatorio (G = GRANEL)",
-      "origen": "Parámetro del evento TIPO = G.",
-      "porque": "Siempre G: esta interfaz solo envía preventas granel.",
+      "origen": "CrossReference: tipo de preventa de LDCOM -> tipo de pedido de Dos Pinos (granel = G).",
+      "porque": "El documento se llama Pedidos graneles / otros y su ejemplo manda N: el tipo se mapea sin tocar código si se agregan otros tipos de preventa.",
       "descripcion": "Tipo de pedido: G = granel.",
       "ejemplo": "G",
       "estado": "Decidido por nosotros",
-      "nota": "El servicio también acepta N, pero no aplica.",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "El servicio acepta G y N.",
       "pregunta": null
     },
     {
@@ -283,6 +305,8 @@
       "descripcion": "Proveedor del transporte (acreedor SAP) de la sucursal.",
       "ejemplo": "0000100234",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "Ejemplo ilustrativo.",
       "pregunta": null
     },
@@ -295,6 +319,8 @@
       "descripcion": "Comentarios del pedido.",
       "ejemplo": "Entregar en bodega 2",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -307,6 +333,8 @@
       "descripcion": "Pedido al que pertenece la línea.",
       "ejemplo": "1-19-1-62",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -314,11 +342,13 @@
       "bloque": "Detalle (una por artículo)",
       "campo": "POSICION",
       "doc": "CHAR 6, obligatorio",
-      "origen": "Orden de la línea, de 10 en 10.",
-      "porque": "Así numera SAP las posiciones, igual que POS-24.",
-      "descripcion": "Número de línea: 10, 20, 30...",
-      "ejemplo": "10",
+      "origen": "Número de la línea dentro del pedido: 1, 2, 3...",
+      "porque": "Es la posición SAP de la línea (POSNR). El ejemplo del documento de construcción numera 1, 2.",
+      "descripcion": "Número de línea: 1, 2, 3...",
+      "ejemplo": "1",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -331,6 +361,8 @@
       "descripcion": "Código SAP del producto (MATNR).",
       "ejemplo": "16008248",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     },
@@ -338,11 +370,13 @@
       "bloque": "Detalle (una por artículo)",
       "campo": "CANTIDAD",
       "doc": "INT4 10, obligatorio",
-      "origen": "Cantidad total de la línea, tal cual, sin redondear (con decimales si los tiene).",
-      "porque": "No se cambia lo que se pidió. Si Dos Pinos lo rechaza, el rechazo queda en el Monitor 360.",
+      "origen": "Cantidad real de la línea, tal cual, sin redondear (con decimales si los tiene).",
+      "porque": "Decidido por el desarrollador: se manda la cantidad real y Dos Pinos decide si la rechaza. Si Dos Pinos la rechaza, el motivo del rechazo queda en Events y se envía al Monitor 360; el correo sale solo si el Monitor 360 falla.",
       "descripcion": "Cuánto se pide del producto.",
       "ejemplo": "2.5",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "Hoy el servicio rechaza decimales ('CANTIDAD debe ser entero').",
       "pregunta": 1
     },
@@ -355,6 +389,8 @@
       "descripcion": "Unidad (UN, KG...).",
       "ejemplo": "UN",
       "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
       "nota": "",
       "pregunta": null
     }

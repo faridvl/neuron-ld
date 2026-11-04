@@ -33,6 +33,8 @@ COLORES_ESTADO = {
     "Pregunta a Dos Pinos": ("F8CBCB", "9C0006"),
 }
 ESTADOS_PENDIENTES = ("Provisional", "Pregunta a Dos Pinos")
+RELLENO_DUDA = PatternFill("solid", fgColor="F8CBCB")
+LETRA_DUDA = "9C0006"
 
 # Relleno de la fila entera en la hoja Avance; "Sin empezar" queda en blanco a propósito
 COLORES_AVANCE = {
@@ -50,6 +52,8 @@ COLUMNAS_CAMPOS = [
     ("Qué significa (en palabras simples)", 52, "descripcion"),
     ("Ejemplo", 30, "ejemplo"),
     ("Estado", 22, "estado"),
+    ("Duda", 40, "duda"),
+    ("Por qué es duda", 40, "porque_duda"),
     ("Nota", 46, "nota"),
     ("Pregunta N.º", 11, "pregunta"),
 ]
@@ -96,8 +100,19 @@ def altura_fila(valores, anchos):
     return min(15 * lineas + 4, 400)
 
 
+def en_duda(campo):
+    return campo.get("estado") in ESTADOS_PENDIENTES or bool(campo.get("duda"))
+
+
+def pintar_duda(hoja, fila, columnas):
+    for col in range(1, columnas + 1):
+        celda = hoja.cell(row=fila, column=col)
+        celda.fill = RELLENO_DUDA
+        celda.font = Font(name="Calibri", bold=celda.font.bold, color=LETRA_DUDA)
+
+
 def pendientes(integracion):
-    return sum(1 for c in integracion["campos"] if c.get("estado") in ESTADOS_PENDIENTES)
+    return sum(1 for c in integracion["campos"] if en_duda(c))
 
 
 def hoja_integracion(libro, integracion, nombre):
@@ -131,6 +146,8 @@ def hoja_integracion(libro, integracion, nombre):
         hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
         hoja.cell(row=fila, column=len(COLUMNAS_CAMPOS)).alignment = Alignment(horizontal="center", vertical="top")
         pintar_estado(hoja.cell(row=fila, column=8), campo.get("estado"))
+        if en_duda(campo):
+            pintar_duda(hoja, fila, ultima)
         hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
 
     hoja.auto_filter.ref = f"A{fila_encabezado}:{get_column_letter(ultima)}{fila}"
@@ -269,8 +286,8 @@ def hoja_avance(libro, avance):
 def hoja_variables(libro, integraciones):
     hoja = libro.create_sheet("Variables")
     hoja.sheet_view.showGridLines = False
-    titulos = ["Integración", "Campo Dos Pinos", "Qué manda LDCOM", "Ejemplo", "Por qué", "Estado"]
-    anchos = [12, 22, 52, 28, 60, 20]
+    titulos = ["Integración", "Campo Dos Pinos", "Qué manda LDCOM", "Ejemplo", "Por qué", "Estado", "Duda"]
+    anchos = [12, 22, 52, 28, 60, 20, 40]
     for col, ancho in enumerate(anchos, start=1):
         hoja.column_dimensions[get_column_letter(col)].width = ancho
     encabezado_tabla(hoja, 1, titulos)
@@ -279,7 +296,7 @@ def hoja_variables(libro, integraciones):
         for campo in integracion["campos"]:
             fila += 1
             valores = [integracion["codigo"], campo.get("campo"), campo.get("origen"),
-                       campo.get("ejemplo"), campo.get("porque"), campo.get("estado")]
+                       campo.get("ejemplo"), campo.get("porque"), campo.get("estado"), campo.get("duda")]
             for col, valor in enumerate(valores, start=1):
                 celda = hoja.cell(row=fila, column=col, value=valor)
                 celda.alignment = AJUSTE
@@ -289,6 +306,8 @@ def hoja_variables(libro, integraciones):
             hoja.cell(row=fila, column=1).font = Font(name="Calibri", bold=True)
             hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
             pintar_estado(hoja.cell(row=fila, column=6), campo.get("estado"))
+            if en_duda(campo):
+                pintar_duda(hoja, fila, len(titulos))
             hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
     hoja.auto_filter.ref = f"A1:{get_column_letter(len(titulos))}{max(fila, 2)}"
     hoja.freeze_panes = "C2"
