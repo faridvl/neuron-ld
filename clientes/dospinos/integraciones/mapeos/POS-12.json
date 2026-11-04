@@ -570,12 +570,12 @@
       "bloque": "Cabecera",
       "campo": "AUTORIZADO",
       "doc": "CHAR 20, requerido: Sí. Dos Pinos dice: vacío",
-      "origen": "Vacío según el mapeo oficial de Dos Pinos.",
-      "porque": "El servicio lo exige no vacío aunque el contrato lo marca opcional.",
-      "descripcion": "Es un código de autorización. Solo existe cuando el crédito pasó por SFA.",
+      "origen": "Cliente autorizado que hizo la compra (Afiliado_Id de la factura), 10 dígitos con ceros a la izquierda.",
+      "porque": "Decisión del usuario (2026-11-04): es el id del cliente autorizado de la factura.",
+      "descripcion": "Es la persona autorizada que compró a nombre del cliente, cuando la hay.",
       "ejemplo": "0000165922",
-      "estado": "Pregunta a Dos Pinos",
-      "nota": "El mapeo oficial dice 'vacío', pero el servicio de dev responde 'AUTORIZADO es requerido' si va vacío. Hay que preguntar a Dos Pinos qué mandar (¿un espacio, un guion?).",
+      "estado": "Provisional",
+      "nota": "Suposición del usuario. Calza con el ejemplo de Informática (0000165922, código de cliente de 10). El mapeo oficial dice 'vacío' y el servicio lo exige: falta definir qué va cuando la factura no tiene autorizado.",
       "pregunta": 3
     },
     {
