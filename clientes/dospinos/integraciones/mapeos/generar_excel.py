@@ -9,11 +9,13 @@ import os
 import re
 
 from openpyxl import Workbook
+from openpyxl.formatting.rule import DataBarRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 CARPETA = os.path.dirname(os.path.abspath(__file__))
 SALIDA = os.path.join(CARPETA, "Mapeo-Integraciones-DosPinos.xlsx")
+ARCHIVO_AVANCE = "avance.json"
 
 AZUL_OSCURO = "2F4A63"
 FILA_ALTERNA = "EEF2F6"
@@ -31,6 +33,13 @@ COLORES_ESTADO = {
     "Pregunta a Dos Pinos": ("F8CBCB", "9C0006"),
 }
 ESTADOS_PENDIENTES = ("Provisional", "Pregunta a Dos Pinos")
+
+# Relleno de la fila entera en la hoja Avance; "Sin empezar" queda en blanco a propósito
+COLORES_AVANCE = {
+    "Implementada": "C6EFCE",
+    "En curso": "FFF2CC",
+    "Sin empezar": None,
+}
 
 COLUMNAS_CAMPOS = [
     ("Bloque", 18, "bloque"),
@@ -175,6 +184,88 @@ def hoja_indice(libro, integraciones, nombres):
     hoja.sheet_properties.tabColor = "1F4E79"
 
 
+def hoja_avance(libro, avance):
+    hoja = libro.create_sheet("Avance", 0)
+    hoja.sheet_view.showGridLines = False
+    columnas = [
+        ("Carpeta", 9, "carpeta"),
+        ("Interfaz", 13, "codigo"),
+        ("Nombre", 34, "nombre"),
+        ("Sentido", 20, "sentido"),
+        ("Estado", 14, "estado"),
+        ("% avance", 10, "porcentaje"),
+        ("Qué está hecho", 52, "hecho"),
+        ("Qué falta", 60, "falta"),
+        ("Bloqueo / depende de", 34, "bloqueo"),
+    ]
+    anchos = [c[1] for c in columnas]
+    for col, ancho in enumerate(anchos, start=1):
+        hoja.column_dimensions[get_column_letter(col)].width = ancho
+    ultima = len(columnas)
+    columna_porcentaje = 6
+
+    interfaces = avance["interfaces"]
+    promedio = sum(i["porcentaje"] for i in interfaces) / len(interfaces)
+    conteo = {estado: sum(1 for i in interfaces if i["estado"] == estado) for estado in COLORES_AVANCE}
+
+    hoja.cell(row=1, column=1, value="Avance de interfaces LDCOM - Dos Pinos").font = Font(
+        name="Calibri", bold=True, size=16, color=AZUL_OSCURO)
+    hoja.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ultima)
+    resumen = (f"Corte {avance['fecha_corte']}: {round(promedio)} % en total. "
+               + f"{conteo['Implementada']} implementadas, {conteo['En curso']} en curso, {conteo['Sin empezar']} sin empezar"
+               + ". Verde: implementada. Amarillo: en curso. Blanco: sin empezar.")
+    hoja.cell(row=2, column=1, value=resumen).font = Font(name="Calibri", bold=True)
+    hoja.merge_cells(start_row=2, start_column=1, end_row=2, end_column=ultima)
+    criterio = hoja.cell(row=3, column=1, value=avance.get("criterio"))
+    criterio.font = Font(name="Calibri", italic=True, color="555555")
+    criterio.alignment = AJUSTE
+    hoja.merge_cells(start_row=3, start_column=1, end_row=3, end_column=ultima)
+    hoja.row_dimensions[3].height = 30
+
+    fila_encabezado = 5
+    encabezado_tabla(hoja, fila_encabezado, [c[0] for c in columnas])
+    fila = fila_encabezado
+    for interfaz in interfaces:
+        fila += 1
+        valores = [interfaz.get(clave) for _, _, clave in columnas]
+        color = COLORES_AVANCE.get(interfaz["estado"])
+        for col, valor in enumerate(valores, start=1):
+            celda = hoja.cell(row=fila, column=col, value=valor if valor != "" else None)
+            celda.alignment = AJUSTE
+            celda.border = BORDE
+            if color:
+                celda.fill = PatternFill("solid", fgColor=color)
+        hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
+        hoja.cell(row=fila, column=5).font = Font(name="Calibri", bold=True)
+        celda_porcentaje = hoja.cell(row=fila, column=columna_porcentaje)
+        celda_porcentaje.value = interfaz["porcentaje"] / 100
+        celda_porcentaje.number_format = "0%"
+        celda_porcentaje.alignment = Alignment(horizontal="center", vertical="top")
+        hoja.cell(row=fila, column=1).alignment = Alignment(horizontal="center", vertical="top")
+        hoja.row_dimensions[fila].height = altura_fila([texto(v) for v in valores], anchos)
+
+    fila += 1
+    hoja.cell(row=fila, column=5, value="Total").font = Font(name="Calibri", bold=True)
+    total = hoja.cell(row=fila, column=columna_porcentaje,
+                      value=f"=AVERAGE({get_column_letter(columna_porcentaje)}{fila_encabezado + 1}:"
+                            f"{get_column_letter(columna_porcentaje)}{fila - 1})")
+    total.number_format = "0%"
+    total.font = Font(name="Calibri", bold=True)
+    total.alignment = Alignment(horizontal="center")
+
+    letra = get_column_letter(columna_porcentaje)
+    hoja.conditional_formatting.add(
+        f"{letra}{fila_encabezado + 1}:{letra}{fila - 1}",
+        DataBarRule(start_type="num", start_value=0, end_type="num", end_value=1, color="5B9BD5"))
+    hoja.auto_filter.ref = f"A{fila_encabezado}:{get_column_letter(ultima)}{fila - 1}"
+    hoja.freeze_panes = hoja.cell(row=fila_encabezado + 1, column=3)
+    hoja.sheet_properties.tabColor = "70AD47"
+    hoja.page_setup.orientation = "landscape"
+    hoja.page_setup.fitToWidth = 1
+    hoja.page_setup.fitToHeight = 0
+    hoja.sheet_properties.pageSetUpPr.fitToPage = True
+
+
 def hoja_variables(libro, integraciones):
     hoja = libro.create_sheet("Variables")
     hoja.sheet_view.showGridLines = False
@@ -271,13 +362,15 @@ def hoja_preguntas(libro, integraciones):
 def main():
     integraciones = []
     for ruta in sorted(glob.glob(os.path.join(CARPETA, "*.json"))):
+        if os.path.basename(ruta) == ARCHIVO_AVANCE:
+            continue
         with open(ruta, encoding="utf-8") as archivo:
             integraciones.append(json.load(archivo))
     if not integraciones:
         raise SystemExit("No hay archivos .json de integraciones en la carpeta.")
 
     libro = Workbook()
-    usados = {"indice", "variables", "reglas", "preguntas a dos pinos"}
+    usados = {"avance", "indice", "variables", "reglas", "preguntas a dos pinos"}
     nombres = [nombre_hoja(i["codigo"], usados) for i in integraciones]
     hoja_indice(libro, integraciones, nombres)
     hoja_variables(libro, integraciones)
@@ -285,6 +378,10 @@ def main():
         hoja_integracion(libro, integracion, nombre)
     hoja_reglas(libro, integraciones)
     hoja_preguntas(libro, integraciones)
+    ruta_avance = os.path.join(CARPETA, ARCHIVO_AVANCE)
+    if os.path.exists(ruta_avance):
+        with open(ruta_avance, encoding="utf-8") as archivo:
+            hoja_avance(libro, json.load(archivo))
     libro.save(SALIDA)
     print(f"Generado {SALIDA} con {len(integraciones)} integración(es).")
 
