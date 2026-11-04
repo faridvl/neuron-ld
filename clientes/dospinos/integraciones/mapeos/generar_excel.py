@@ -36,6 +36,7 @@ COLUMNAS_CAMPOS = [
     ("Bloque", 18, "bloque"),
     ("Campo Dos Pinos", 20, "campo"),
     ("Sale de LDCOM (qué mandamos)", 46, "origen"),
+    ("Por qué", 40, "porque"),
     ("Tipo / largo / obligatorio (según su documento)", 24, "doc"),
     ("Qué significa (en palabras simples)", 52, "descripcion"),
     ("Ejemplo", 30, "ejemplo"),
@@ -120,7 +121,7 @@ def hoja_integracion(libro, integracion, nombre):
                 celda.fill = RELLENO_ALTERNO
         hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
         hoja.cell(row=fila, column=len(COLUMNAS_CAMPOS)).alignment = Alignment(horizontal="center", vertical="top")
-        pintar_estado(hoja.cell(row=fila, column=7), campo.get("estado"))
+        pintar_estado(hoja.cell(row=fila, column=8), campo.get("estado"))
         hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
 
     hoja.auto_filter.ref = f"A{fila_encabezado}:{get_column_letter(ultima)}{fila}"
@@ -172,6 +173,35 @@ def hoja_indice(libro, integraciones, nombres):
     hoja.auto_filter.ref = f"A4:{get_column_letter(len(titulos))}{fila}"
     hoja.freeze_panes = "A5"
     hoja.sheet_properties.tabColor = "1F4E79"
+
+
+def hoja_variables(libro, integraciones):
+    hoja = libro.create_sheet("Variables")
+    hoja.sheet_view.showGridLines = False
+    titulos = ["Integración", "Campo Dos Pinos", "Qué manda LDCOM", "Ejemplo", "Por qué", "Estado"]
+    anchos = [12, 22, 52, 28, 60, 20]
+    for col, ancho in enumerate(anchos, start=1):
+        hoja.column_dimensions[get_column_letter(col)].width = ancho
+    encabezado_tabla(hoja, 1, titulos)
+    fila = 1
+    for integracion in integraciones:
+        for campo in integracion["campos"]:
+            fila += 1
+            valores = [integracion["codigo"], campo.get("campo"), campo.get("origen"),
+                       campo.get("ejemplo"), campo.get("porque"), campo.get("estado")]
+            for col, valor in enumerate(valores, start=1):
+                celda = hoja.cell(row=fila, column=col, value=valor)
+                celda.alignment = AJUSTE
+                celda.border = BORDE
+                if fila % 2 == 1:
+                    celda.fill = RELLENO_ALTERNO
+            hoja.cell(row=fila, column=1).font = Font(name="Calibri", bold=True)
+            hoja.cell(row=fila, column=2).font = Font(name="Calibri", bold=True)
+            pintar_estado(hoja.cell(row=fila, column=6), campo.get("estado"))
+            hoja.row_dimensions[fila].height = altura_fila(valores, anchos)
+    hoja.auto_filter.ref = f"A1:{get_column_letter(len(titulos))}{max(fila, 2)}"
+    hoja.freeze_panes = "C2"
+    hoja.sheet_properties.tabColor = "548235"
 
 
 def hoja_reglas(libro, integraciones):
@@ -247,9 +277,10 @@ def main():
         raise SystemExit("No hay archivos .json de integraciones en la carpeta.")
 
     libro = Workbook()
-    usados = {"indice", "reglas", "preguntas a dos pinos"}
+    usados = {"indice", "variables", "reglas", "preguntas a dos pinos"}
     nombres = [nombre_hoja(i["codigo"], usados) for i in integraciones]
     hoja_indice(libro, integraciones, nombres)
+    hoja_variables(libro, integraciones)
     for integracion, nombre in zip(integraciones, nombres):
         hoja_integracion(libro, integracion, nombre)
     hoja_reglas(libro, integraciones)
