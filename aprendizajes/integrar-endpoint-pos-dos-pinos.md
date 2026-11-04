@@ -52,7 +52,8 @@ LDCOM lo mínimo (ver §4).
 - **Credenciales:** nunca en git. Si hacen falta temporales en código, constantes vacías en un archivo excluido
   (`.git/info/exclude`) que se borra antes del primer commit.
 - **Simulador:** el simulador CIH (repo privado `simulador-cih-dospinos`) reproduce las respuestas por rangos de
-  monto; Integrations solo acepta http hacia localhost. Sirve para E2E y para probar el POS sin tocar Dos Pinos.
+  monto; Integrations solo acepta http hacia localhost. Sirve para forzar casos que el real no da (caída, timeout,
+  formatos raros); no cuenta como prueba de que la interfaz funciona (ver §6).
 
 ## 4. Tablas y procesos de mayor riesgo (devoluciones y cierres de caja)
 
@@ -85,8 +86,12 @@ después de responder al POS, con su propio timeout y sin bloquear nunca la vent
 
 ## 6. Pruebas mínimas antes de dar un POS por terminado
 
-1. Integrations: unitarias del clasificador y del mapeo (cada campo con su prueba) + E2E con el Runner real contra
-   el simulador (cada formato de respuesta, 401/403, timeout, evento inactivo, reintento con la misma referencia).
+El orden de trabajo (prueba real primero, checklist del ambiente, mapeo aprobado antes de programar) está en
+`receta-interfaz-saliente-dos-pinos.md`.
+
+1. Integrations: unitarias del clasificador y del mapeo (cada campo con su prueba) + envío con el Runner real a la
+   URL real de dev de Dos Pinos desde el primer día. El simulador solo para lo que el real no da (timeout, caída,
+   401/403 forzados).
 2. LDCOM: compilar la rama en su worktree y correr Facturacion.Tests y CATALOGOS.Tests.
 3. POS real automatizado (ver `automatizar-pos-recorridos.md`) contra Docker + Integrations local:
    cada resultado, contingencia, venta de contado, facturación local, sincronización, cierre de caja y
