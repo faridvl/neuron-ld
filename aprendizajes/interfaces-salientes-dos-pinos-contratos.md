@@ -76,6 +76,10 @@ en largos, constantes y en cómo responde el rechazo en todas las que se probaro
 - **Dónde queda el rastro:** todo en Integrations (`OutboundNotification` + `Events` + Monitor 360, y correo si falla
   el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va con
   `Save_Msg` a `MSG_MESSAGE` (255 caracteres) con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
+- **Regla para todas las integraciones: GUID = `TransactionId` que se guarda en el Monitor.** El GUID que va a
+  Dos Pinos es siempre el `TransactionId` del aviso, el mismo que queda registrado en `Events` y en el Monitor 360.
+  Nunca se genera uno nuevo, nunca se usa el número de documento, aunque el contrato lo permita ("NUMEROPREVENTA o
+  GUID"). Lo único que cambia por interfaz es el formato (con o sin guiones), según el largo del contrato.
 - **Excepción:** POS-10 (y POS-11) siguen síncronos porque el POS necesita la respuesta del SFA para facturar.
 - Nombres genéricos: nada lleva nombre de interfaz ni de cliente, tampoco los builders (se nombran por lo que arman,
   p. ej. movimientos de caja). El código POS19/POS24 vive solo en el evento y su seed. Regla en `reglas.md` (Código).

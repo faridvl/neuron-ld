@@ -31,9 +31,13 @@ Si no está, eso es lo primero.
 - cada campo de Dos Pinos con el dato de LDCOM que lo llena (`origen`) y la cita de la documentación (`doc`: tipo,
   largo, obligatorio, de qué documento o página de Confluence sale);
 - los campos de control (GUID, consecutivos, referencia, usuario) decididos igual que en las interfaces ya hechas,
-  salvo que el contrato diga otra cosa: GUID = `TransactionId` de la bitácora, usuario = el cajero o quien dispara el
+  salvo que el contrato diga otra cosa. El GUID no tiene excepción: siempre es el `TransactionId` que se guarda en el
+  Monitor (ver `interfaces-salientes-dos-pinos-contratos.md` §4). Usuario = el cajero o quien dispara el
   documento, referencia y agrupación armadas con los IDs de LDCOM separados por guiones, recortadas al largo del
   contrato;
+- los nombres de campo son abreviaturas de SAP (`BUKRS` = sociedad, `MATNR` = material, `WERKS` = centro...): ante la
+  duda de qué lleva un campo, buscar su significado en la documentación de SAP antes de proponer. Los del bloque de
+  control (`IDITZ`, `CSAGR`, `NROEJ`, `DATEE`, `HOURE`) son propios de Dos Pinos y no aparecen en internet;
 - lo que no se sepa va como `Provisional` o `Pregunta a Dos Pinos`, nunca inventado;
 - se regenera el Excel y el usuario lo revisa. Su aprobación es el visto bueno para programar;
 - **apenas se aprueba, el json se commitea y se sube en neuron-ld**, para que la sesión de la otra PC trabaje con el
