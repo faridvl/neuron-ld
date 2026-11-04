@@ -12,3 +12,5 @@
 - [Restaurar packages.config con feed local](restaurar-packagesconfig-feed-local-msbuild.md) — RestoreConfigFile fuera del repo + SolutionDir; Reference directa en tests.
 - [POS WCF timeouts y Cliente_Relacionado](pos-wcf-timeouts-y-cliente-relacionado.md) — timeout real sale de codigo/WS_Timeout_*, no del App.config; Cliente_Relacionado no siempre es finca; CRLF.
 - [Confluence Buscar falla; publicar puede denegarse](confluence-buscar-claves-duplicadas.md) — usar Leer por id; dejar .nuevo.xml listo si el permiso se deniega.
+- [Pruebas .NET con SQL y Write LF](dotnet-pruebas-sql-y-write-lf.md) — LF del Write, lambda en Record.ExceptionAsync, CHECK de IntegrationEvent, variable SQL propia.
+- [WCF caja: trampas](wcf-caja-pruebas-trampas.md) — token sembrado, example con --, artifacts-path, SP sin Tipo_Id, CRLF.
