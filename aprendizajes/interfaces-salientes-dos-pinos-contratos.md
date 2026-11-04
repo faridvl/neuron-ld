@@ -77,5 +77,5 @@ en largos, constantes y en cómo responde el rechazo en todas las que se probaro
   el monitor). **LDCOM no guarda nada** salvo un error al comunicarse con Integrations (`Recibido = false`), que va al
   log de NEGOCIO con el hecho y la referencia; **nunca detiene ni revierte** la venta, el cierre o la preventa.
 - **Excepción:** POS-10 (y POS-11) siguen síncronos porque el POS necesita la respuesta del SFA para facturar.
-- Nombres genéricos: lo común (Notificar, pendientes, despacho, suscripción) no lleva nombre de interfaz ni de
-  cliente; solo los builders llevan POS19, POS24...
+- Nombres genéricos: nada lleva nombre de interfaz ni de cliente, tampoco los builders (se nombran por lo que arman,
+  p. ej. movimientos de caja). El código POS19/POS24 vive solo en el evento y su seed. Regla en `reglas.md` (Código).
