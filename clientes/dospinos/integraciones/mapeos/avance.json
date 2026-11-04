@@ -85,10 +85,10 @@
       "nombre": "Ventas y devoluciones",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 35,
-      "hecho": "Contrato en borrador v1.0, requests en Bruno y handler en el Runner de Integrations.",
-      "falta": "Pasarla a la base Notificar, aviso desde LDCOM, respuesta real de Dos Pinos en Bruno, monitor y campos por confirmar.",
-      "bloqueo": "URL, autenticación y timeout de Dos Pinos."
+      "porcentaje": 40,
+      "hecho": "Contrato real probado en Bruno (320 casos contra el servicio de desarrollo), investigación del código de LDCOM y mapeo de los 57 campos. Sin código nuevo todavía.",
+      "falta": "Builder y seed en Integrations, hecho nuevo de ventas y aviso desde LDCOM, envío real desde el POS, monitor y catálogos por agencia y bodega.",
+      "bloqueo": "Respuestas de Dos Pinos a 18 preguntas del mapeo y URL de QA/producción."
     },
     {
       "carpeta": "08",

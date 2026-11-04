@@ -1,0 +1,858 @@
+{
+  "codigo": "POS-12",
+  "nombre": "Ventas y devoluciones",
+  "sentido": "LDCOM -> Dos Pinos (saliente)",
+  "endpoint": "POST {salesReplicationBaseUrl}/p_POS12_ReplicarVentas (ambiente de desarrollo de Informática; hoy no hay URL de producción)",
+  "autenticacion": "Basic (usuario y clave). Con Bearer o el token OAuth2 de Informática responde 401.",
+  "dispara": "Dos hechos de LDCOM: el cierre de caja (consolidado de ventas y devoluciones de contado y de crédito a asociados) y la venta o devolución a crédito de un distribuidor (un documento por envío).",
+  "cuando_se_envia": "El crédito a distribuidores sale al instante, un documento por envío. Todo lo demás sale junto, por caja, cuando la caja se cierra.",
+  "fuente_documentacion": "Confluence POS-12 (id 389152769, v1), diagrama FL-01, PDF de BD Consultores, pruebas reales de 320 casos en Bruno contra el ambiente de desarrollo de Dos Pinos (CONTRATO-REAL.md), investigación del código de LDCOM y decisiones del usuario del 2026-11-04.",
+  "estado_general": "Provisional",
+  "notas_generales": "Este mapeo parte de lo que respondió el servicio real, que contradice varios valores del contrato (IDITZ, AUART, VKORG, SPART, ZZFACT). Varios campos que el servicio exige no vacíos no tienen dato en LDCOM y están como pregunta a Dos Pinos. Todavía no hay código: es análisis y contrato real.",
+  "reglas": [
+    {
+      "tema": "Cuándo se envía",
+      "regla": "Al cerrar cada caja sale un consolidado con las ventas y devoluciones de contado y las de crédito a asociados. El crédito a distribuidores (venta y devolución) sale aparte, al instante y un documento por envío; nunca va en el consolidado. Cada caja manda su consolidado por separado."
+    },
+    {
+      "tema": "Las seis clases del flujo",
+      "regla": "1 venta de contado y 6 devolución de contado: van en el consolidado. 3 venta a crédito y 5 devolución a crédito de asociados: van en el consolidado. 2 venta y 4 devolución a crédito de distribuidores: tiempo real. Distribuidor = tipo de cliente con comportamiento 1 en LDCOM; el crédito es el tipo de documento 4, no una forma de pago."
+    },
+    {
+      "tema": "Valores fijos",
+      "regla": "IDITZ, BUKRS, VKORG, VTWEG, SPART, WAERK, UMSKZ, ZZFACT, ZZRPRE y los AUART de cada tipo de documento son parámetros del evento, nunca van escritos en el código. Cambiarlos no pide publicar código."
+    },
+    {
+      "tema": "Mapeo por agencia",
+      "regla": "WERKS, ZZRENT, SALES_OFF, SALES_DIST y ROUNA (transportista de la agencia) salen de un mapeo por sucursal que se carga en el Admin. Si Dos Pinos confirma el cliente genérico de contado, también va en ese mapeo."
+    },
+    {
+      "tema": "Mapeo por bodega y catálogos",
+      "regla": "LGORT sale de un mapeo por bodega. ZTERM (por plazo), KSCHL (por tipo de condición) y la forma de pago (hoy sin campo en el mensaje) son catálogos de LDCOM a Dos Pinos."
+    },
+    {
+      "tema": "Un mapeo, una función",
+      "regla": "Cada mapeo de campo (de LDCOM a Dos Pinos) es una función propia y con su prueba unitaria. Un campo sin prueba no se considera mapeado."
+    },
+    {
+      "tema": "Existencia de maestros",
+      "regla": "Clientes y artículos se buscan en LDCOM por su código SAP sin ceros; la tabla CrossReference no decide."
+    },
+    {
+      "tema": "GUID y NROEJ",
+      "regla": "GUID es el TransactionId del aviso, el mismo que se reporta al Monitor 360, igual en cada reintento. NROEJ es el Id del aviso."
+    },
+    {
+      "tema": "Duplicados",
+      "regla": "Dos Pinos rechaza con 'Dato de control ya existe' cuando coinciden CSAGR y NROEJ. El GUID y el DCNUM no cuentan. Con NROEJ igual al Id del aviso, un reintento del mismo aviso es seguro; un NROEJ nuevo se aceptaría y duplicaría la venta."
+    },
+    {
+      "tema": "Respuesta del servicio",
+      "regla": "Responde HTTP 200 siempre que el cuerpo llegue a la lógica; el resultado va en el cuerpo: status_code 200 'Interface recibida satisfactoriamente' o 400 con el motivo (Validacion: ... o Error al registrar recibe_pos_12 ...). No devuelve identificador de recepción ni número de documento."
+    },
+    {
+      "tema": "Qué valida Dos Pinos",
+      "regla": "Valida estructura, obligatorios, largos, formatos y algunos catálogos (AUART, VKORG, VTWEG, SPART, UMSKZ, ZZFACT, moneda, KSCHL, SALES_OFF, SALES_DIST). No valida clientes, materiales, centros, almacenes, fechas imposibles ni que los importes cuadren."
+    },
+    {
+      "tema": "Fallas",
+      "regla": "Una falla de esta integración nunca detiene ni revierte la venta, la devolución ni el cierre de caja en el POS. El rastro queda en Integrations (Monitor 360)."
+    }
+  ],
+  "preguntas": [
+    {
+      "numero": 1,
+      "tema": "Valores fijos definitivos",
+      "pregunta": "El servicio exige IDITZ POS12, VKORG CR02, VTWEG 11, SPART 11, ZZFACT I y UMSKZ L, distintos del contrato. ¿Son definitivos? ¿Qué pasa con otras sociedades u organizaciones de ventas? ¿Se actualiza el documento?",
+      "campos": "IDITZ, VKORG, VTWEG, SPART, ZZFACT, UMSKZ"
+    },
+    {
+      "numero": 2,
+      "tema": "Clases de documento",
+      "pregunta": "ZVNH y ZREH del contrato se rechazan; solo pasan ZVNA y ZVNB. ¿Cuál es la clase de venta y cuál la de devolución? ¿Hay más clases (crédito, asociados, distribuidores, devolución de crédito)?",
+      "campos": "AUART"
+    },
+    {
+      "numero": 3,
+      "tema": "Obligatorios sin dato en LDCOM",
+      "pregunta": "XBLNR, IHREZ, AUTORIZADO, LIBREUSO, KUNNR2, KUNNR3 y PRCTR son obligatorios no vacíos en el servicio, aunque el contrato los marca opcionales o vacíos. ¿Qué valor llevan cuando no aplican?",
+      "campos": "XBLNR, IHREZ, AUTORIZADO, LIBREUSO, KUNNR2, KUNNR3, PRCTR"
+    },
+    {
+      "numero": 4,
+      "tema": "Clientes (KUNNR, KUNNR2 y KUNNR3)",
+      "pregunta": "¿Qué es KUNNR2 y KUNNR3? ¿Qué KUNNR llevan las ventas de contado y los clientes sin código (cliente genérico por sucursal)? ¿Y las ventas a fincas, donde LDCOM factura al asociado o a la finca según el caso?",
+      "campos": "KUNNR, KUNNR2, KUNNR3"
+    },
+    {
+      "numero": 5,
+      "tema": "ROUNA",
+      "pregunta": "ROUNA: ¿es el transportista o la ruta de la agencia? ¿Qué valor lleva cuando la agencia no tiene? El servicio rechaza vacío.",
+      "campos": "ROUNA"
+    },
+    {
+      "numero": 6,
+      "tema": "UMSKZ según el tipo de documento",
+      "pregunta": "UMSKZ: en dev solo pasa L. ¿Cambia según sea factura o no, o según contado o crédito? ¿Es opcional en producción?",
+      "campos": "UMSKZ"
+    },
+    {
+      "numero": 7,
+      "tema": "ZZRPRE",
+      "pregunta": "ZZRPRE: ¿qué significa de verdad (ruta de preventa)? ¿Qué debe llevar en ventas de mostrador, si LDCOM no tiene preventa? Hoy se manda P1514 fijo en cabecera y en cada línea.",
+      "campos": "ZZRPRE"
+    },
+    {
+      "numero": 8,
+      "tema": "Catálogos por agencia y bodega",
+      "pregunta": "Necesitamos por cada agencia WERKS, ZZRENT, SALES_OFF y SALES_DIST (y el catálogo válido de estos dos), y por cada bodega el LGORT. ¿Quién los entrega y en qué formato?",
+      "campos": "WERKS, ZZRENT, SALES_OFF, SALES_DIST, LGORT"
+    },
+    {
+      "numero": 9,
+      "tema": "Número de documento y factura original",
+      "pregunta": "DCNUM y FACTN: ¿cómo se arman (formato del ejemplo 518F502067)? ¿Dónde va la factura original de una devolución? ¿Qué se manda si un documento aún no tiene factura electrónica (ZDOC_FIS_XML y ZZCAE son obligatorios)? ¿Por qué no se detectan DCNUM ni documento fiscal repetidos?",
+      "campos": "DCNUM, FACTN, ZDOC_FIS_XML, ZZCAE"
+    },
+    {
+      "numero": 10,
+      "tema": "Llave de duplicados, reintentos y tiempo real",
+      "pregunta": "¿La llave oficial de duplicado es CSAGR + NROEJ? ¿Qué debe hacer LDCOM ante un reenvío rechazado: el mismo NROEJ o uno nuevo? ¿Qué CSAGR llevan los documentos de crédito a distribuidores en tiempo real, que no tienen cierre? ¿Se amplía la columna de CSAGR (hoy 14)?",
+      "campos": "CSAGR, NROEJ"
+    },
+    {
+      "numero": 11,
+      "tema": "Forma de pago y tipo de cliente",
+      "pregunta": "Confluence dice que el consolidado va 'con cada método de pago usando el código DP' e incluye el tipo de cliente, pero el mensaje no tiene campo para ninguno. ¿En qué campo van y con qué catálogo (EFEC, THOT, SIN1, DEPT, CHEQ, MIXTO...)?",
+      "campos": "(sin campo en el mensaje)"
+    },
+    {
+      "numero": 12,
+      "tema": "Condición de pago (ZTERM)",
+      "pregunta": "Catálogo de ZTERM: ¿qué código va para contado y para cada plazo de crédito? ¿El de la línea debe ser igual al de la cabecera?",
+      "campos": "ZTERM"
+    },
+    {
+      "numero": 13,
+      "tema": "Condiciones y precios",
+      "pregunta": "¿Qué KSCHL corresponde a precio, descuento, impuesto, bonificación y promoción? ¿Los descuentos van con signo negativo? ¿NETPR y KBETR van con o sin IVA? ¿Se va a validar que cuadren?",
+      "campos": "KSCHL, KBETR, NETPR"
+    },
+    {
+      "numero": 14,
+      "tema": "Cantidad y unidad",
+      "pregunta": "KWMENG solo acepta enteros: ¿cómo se mandan los productos a granel con decimales? ¿La devolución va con cantidad positiva? ¿Qué códigos de unidad (VRKME) usa Dos Pinos?",
+      "campos": "KWMENG, VRKME"
+    },
+    {
+      "numero": 15,
+      "tema": "Campos opcionales sin descripción",
+      "pregunta": "BSTNK (en la devolución del ejemplo DV6), AUGRU (motivo, B00), XREFF, IND_CME y KBETR de cabecera: ¿qué significan y cuándo deben ir? LDCOM no guarda motivo de devolución.",
+      "campos": "BSTNK, AUGRU, XREFF, IND_CME, KBETR"
+    },
+    {
+      "numero": 16,
+      "tema": "Límites y respuesta del servicio",
+      "pregunta": "¿Máximo de documentos por envío (200 pasa) y de líneas por documento? ¿La respuesta puede traer un identificador de recepción para conciliar? ¿Se validarán en el futuro fechas imposibles, clientes y materiales contra maestros y la consistencia de importes?",
+      "campos": "(respuesta y validaciones del servicio)"
+    },
+    {
+      "numero": 17,
+      "tema": "Casos de crédito y devoluciones especiales",
+      "pregunta": "¿A qué clase pertenece un crédito a un cliente público sin plan (hay casos)? ¿Cómo se informan las ventas anuladas y las devoluciones hechas en otra caja o sucursal que la venta? ¿Entran en esta interfaz los movimientos del CEDI?",
+      "campos": "AUART, KUNNR"
+    },
+    {
+      "numero": 18,
+      "tema": "Sociedad, referencia y caja",
+      "pregunta": "BUKRS: ¿cuál es la sociedad real (CR01 del ejemplo no se valida)? REFERENCIA: ¿qué formato esperan? CAJA: ¿el formato real de la caja?",
+      "campos": "BUKRS, REFERENCIA, CAJA"
+    }
+  ],
+  "campos": [
+    {
+      "bloque": "Control",
+      "campo": "IDITZ",
+      "doc": "Texto, 6, obligatorio",
+      "origen": "Parámetro del evento IDITZ = POS12.",
+      "porque": "Dos Pinos lo usa para saber de qué interfaz viene el mensaje.",
+      "descripcion": "Es el código fijo que le dice a Dos Pinos de qué interfaz viene el mensaje. Siempre es POS12.",
+      "ejemplo": "POS12",
+      "estado": "Confirmado",
+      "nota": "Probado en el servicio real: exige exactamente POS12. El contrato (Confluence) decía FSD-12 y se rechaza.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Control",
+      "campo": "CSAGR",
+      "doc": "Texto, 20 según el contrato (14 reales), obligatorio",
+      "origen": "Identificador del cierre de caja en LDCOM (empresa, sucursal, caja y cierre), igual que en POS-19.",
+      "porque": "Es el grupo natural del consolidado: todo lo de un mismo cierre de caja lleva el mismo CSAGR. Junto con NROEJ es la llave con la que Dos Pinos detecta repetidos.",
+      "descripcion": "Es el número del cierre de caja al que pertenece el mensaje. Así Dos Pinos puede juntar todo lo de un mismo cierre.",
+      "ejemplo": "1-19-4-16",
+      "estado": "Provisional",
+      "nota": "La base de Dos Pinos solo acepta 14 caracteres (con 15 da error ORA-12899). Para el crédito a distribuidores, que se envía al instante y sin cierre, no está definido qué CSAGR lleva. El ejemplo es ilustrativo.",
+      "pregunta": 10
+    },
+    {
+      "bloque": "Control",
+      "campo": "NROEJ",
+      "doc": "Texto, obligatorio",
+      "origen": "Id del aviso en Integrations (el mismo en cada reintento).",
+      "porque": "Con CSAGR forma la llave de duplicados de Dos Pinos. Usar el Id del aviso hace que reenviar el mismo aviso sea seguro.",
+      "descripcion": "Es el número de ejecución del envío. Cada aviso de LDCOM tiene el suyo y no cambia si se reintenta.",
+      "ejemplo": "2127249",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: reenviar el mismo CSAGR + NROEJ responde 'Dato de control ya existe'; con NROEJ nuevo se acepta y duplica la venta.",
+      "pregunta": 10
+    },
+    {
+      "bloque": "Control",
+      "campo": "DATEE",
+      "doc": "Texto AAAAMMDD, obligatorio",
+      "origen": "Fecha de envío, hora de Costa Rica.",
+      "porque": "Dos Pinos la pide como fecha de ejecución.",
+      "descripcion": "Es la fecha en que LDCOM manda el mensaje.",
+      "ejemplo": "20261104",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: el servicio solo valida el formato AAAAMMDD.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "HOURE",
+      "doc": "Texto HH:MM:SS, obligatorio",
+      "origen": "Hora de envío, hora de Costa Rica.",
+      "porque": "Dos Pinos la pide como hora de ejecución.",
+      "descripcion": "Es la hora en que LDCOM manda el mensaje.",
+      "ejemplo": "12:00:00",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: el servicio solo valida el formato HH:MM:SS.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "BUKRS",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento BUKRS.",
+      "porque": "Sociedad SAP a la que se asienta la venta.",
+      "descripcion": "Es la empresa (sociedad) de Dos Pinos en SAP. Es un valor fijo.",
+      "ejemplo": "CR01",
+      "estado": "Provisional",
+      "nota": "Probado: el servicio no lo valida contra su maestro (hasta XXXX pasa). CR01 viene del ejemplo de Confluence; falta el valor real.",
+      "pregunta": 18
+    },
+    {
+      "bloque": "Control",
+      "campo": "REFERENCIA",
+      "doc": "Texto, 50, obligatorio",
+      "origen": "Armada por LDCOM: para el consolidado la del cierre (CIERRE-empresa-sucursal-caja-cierre, como POS-19); para tiempo real VTA-empresa-tipo de documento-sucursal-caja-factura.",
+      "porque": "Dos Pinos la usa como referencia de la liquidación en SAP.",
+      "descripcion": "Es un texto que identifica de qué liquidación viene el mensaje, para poder buscarla después.",
+      "ejemplo": "LIQUIDACION/AA-341110~0149",
+      "estado": "Provisional",
+      "nota": "El ejemplo de Dos Pinos tiene otro formato (LIQUIDACION/...~sucursal). Nuestra propuesta no está confirmada. Máximo 50 caracteres.",
+      "pregunta": 18
+    },
+    {
+      "bloque": "Control",
+      "campo": "USER",
+      "doc": "Texto, obligatorio",
+      "origen": "Usuario que cerró la caja (consolidado) o que emitió el documento (tiempo real).",
+      "porque": "Dos Pinos pide el usuario que ejecuta.",
+      "descripcion": "Es el usuario de LDCOM que hizo el cierre o la venta.",
+      "ejemplo": "JOSLOPEZMO",
+      "estado": "Decidido por nosotros",
+      "nota": "Sale del cierre de caja o de la factura en LDCOM.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Control",
+      "campo": "GUID",
+      "doc": "Texto (UUID), obligatorio, 36 de largo",
+      "origen": "TransactionId del aviso en Integrations.",
+      "porque": "Regla de todas las integraciones: el mismo identificador que se reporta al Monitor 360, igual en cada reintento.",
+      "descripcion": "Es un código único de este mensaje. Si el mensaje se reintenta, lleva el mismo código.",
+      "ejemplo": "7f143cb3-3c62-4df2-b66c-b430a05e2f09",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: el servicio no lo usa para detectar repetidos; con 37 caracteres falla (ORA-06502). Acepta cualquier texto de hasta 36.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "DCNUM",
+      "doc": "Texto, obligatorio",
+      "origen": "Folio del documento en LDCOM (Factura_Folio_Electronico). Derivación del número de Dos Pinos sin confirmar.",
+      "porque": "Identifica el documento de venta en SAP; los detalles y condiciones lo repiten para quedar ligados.",
+      "descripcion": "Es el número del documento de venta o devolución. Cada línea del detalle y de las condiciones lo repite.",
+      "ejemplo": "518F502067",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El ejemplo de Dos Pinos parece armarse con los últimos dígitos de la ruta, una letra (F factura, N nota de crédito) y los últimos dígitos del consecutivo. Es una deducción nuestra. El servicio no detecta DCNUM repetidos.",
+      "pregunta": 9
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "AUART",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetros del evento: un valor por tipo de documento (venta, devolución).",
+      "porque": "Dos Pinos distingue venta y devolución por la clase de documento SAP.",
+      "descripcion": "Es la clase de documento en SAP: dice si es una venta o una devolución.",
+      "ejemplo": "ZVNA",
+      "estado": "Provisional",
+      "nota": "El servicio real rechaza ZVNH y ZREH del contrato; solo acepta ZVNA y ZVNB. Falta saber cuál es venta y cuál devolución, y si hay más clases (crédito, asociados).",
+      "pregunta": "2, 17"
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "VKORG",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento VKORG.",
+      "porque": "Organización de ventas de Dos Pinos en SAP.",
+      "descripcion": "Es la organización de ventas en SAP. Es un valor fijo.",
+      "ejemplo": "CR02",
+      "estado": "Confirmado",
+      "nota": "Probado: el servicio exige CR02 (el contrato decía CR01).",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "VTWEG",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento VTWEG.",
+      "porque": "Canal de distribución en SAP.",
+      "descripcion": "Es el canal por el que se vende, en SAP. Es un valor fijo.",
+      "ejemplo": "11",
+      "estado": "Confirmado",
+      "nota": "Probado: el servicio exige 11.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "SPART",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento SPART.",
+      "porque": "Sector (división) en SAP.",
+      "descripcion": "Es el sector del negocio en SAP. Es un valor fijo.",
+      "ejemplo": "11",
+      "estado": "Confirmado",
+      "nota": "Probado: el servicio exige 11 (el contrato decía 10).",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "KUNNR",
+      "doc": "Texto, 10, obligatorio",
+      "origen": "Código SAP del cliente del documento (Codigo_Interfaz del cliente en LDCOM). Para contado, un cliente genérico por sucursal en el mapeo por sucursal, si Dos Pinos confirma que así funciona.",
+      "porque": "SAP necesita saber a quién se le vendió.",
+      "descripcion": "Es el número del cliente en SAP, con 10 dígitos.",
+      "ejemplo": "0001062288",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El servicio no lo valida contra sus maestros pero no acepta vacío. Falta saber qué lleva cuando el cliente no tiene código (contado, público). El cliente se busca en LDCOM por código SAP sin ceros, nunca por CrossReference. En el cuaderno se anotó que podría ser un código de almacén; Confluence dice cliente.",
+      "pregunta": "4, 17"
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "WAERK",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento WAERK.",
+      "porque": "Moneda del documento.",
+      "descripcion": "Es la moneda del documento. Es un valor fijo.",
+      "ejemplo": "CRC",
+      "estado": "Confirmado",
+      "nota": "Probado: CRC y USD pasan; otras monedas no se probaron. Si LDCOM factura en dólares falta definir cómo se manda.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "FACTN",
+      "doc": "Texto, obligatorio",
+      "origen": "Mismo valor que DCNUM; en devoluciones, sin confirmar si debe ir la factura original.",
+      "porque": "Número de factura en SAP.",
+      "descripcion": "Es el número de la factura. En el ejemplo de una devolución repite el número del propio documento.",
+      "ejemplo": "518F502067",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "En el ejemplo de devolución FACTN es igual a DCNUM. LDCOM sí guarda la factura original (Factura_Devolucion) pero no hay campo que la reciba.",
+      "pregunta": 9
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "BSTNK",
+      "doc": "Texto, 20, opcional",
+      "origen": "Sin origen en LDCOM (no hay pedido del cliente). Va vacío.",
+      "porque": "El contrato lo llama orden de compra del cliente.",
+      "descripcion": "Es el número de pedido del cliente. Como LDCOM no lo tiene, no se envía.",
+      "ejemplo": "DV6",
+      "estado": "Decidido por nosotros",
+      "nota": "Decisión del cuaderno: opcional. El ejemplo de devolución trae DV6 sin explicación.",
+      "pregunta": 15
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "XBLNR",
+      "doc": "Texto, obligatorio",
+      "origen": "Sin origen en LDCOM.",
+      "porque": "El servicio lo exige no vacío aunque el contrato lo marca opcional.",
+      "descripcion": "Es una referencia externa del documento. Dos Pinos la exige pero LDCOM no tiene un dato equivalente.",
+      "ejemplo": "(pendiente)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El servicio responde 'XBLNR es requerido' si va vacío. Falta saber qué valor lleva cuando no aplica.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "IHREZ",
+      "doc": "Texto, obligatorio",
+      "origen": "Sin origen en LDCOM.",
+      "porque": "El servicio lo exige no vacío aunque el contrato lo marca opcional.",
+      "descripcion": "Es la referencia del cliente. Dos Pinos la exige pero LDCOM no tiene un dato equivalente.",
+      "ejemplo": "(pendiente)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El servicio responde 'IHREZ es requerido' si va vacío. Falta el valor para cuando no aplica.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ZZRPRE",
+      "doc": "Texto, opcional en la cabecera (obligatorio en el detalle)",
+      "origen": "Parámetro del evento ZZRPRE (P1514 provisional).",
+      "porque": "Dos Pinos lo trae en el contrato como ruta de preventa.",
+      "descripcion": "Según Confluence es la ruta de preventa. LDCOM no tiene ese dato, así que se manda un valor fijo.",
+      "ejemplo": "P1514",
+      "estado": "Provisional",
+      "nota": "Decisión del usuario: fijo con el valor del ejemplo, como parámetro del evento. El PDF y el docx solo traen ejemplos, sin descripción.",
+      "pregunta": 7
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ZZRENT",
+      "doc": "Texto, opcional",
+      "origen": "Mapeo por sucursal (agencia) cargado en el Admin.",
+      "porque": "Ruta de entrega de la agencia en SAP.",
+      "descripcion": "Es el código de la ruta de entrega de la agencia donde se vendió.",
+      "ejemplo": "1518",
+      "estado": "Provisional",
+      "nota": "En LDCOM Sucursal.Codigo_Interfaz está vacío. El valor real lo debe dar Dos Pinos por cada agencia.",
+      "pregunta": 8
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "BSTDK",
+      "doc": "Texto AAAAMMDD, obligatorio",
+      "origen": "Fecha de la factura (Factura_Fecha).",
+      "porque": "Fecha del pedido del cliente en SAP.",
+      "descripcion": "Es la fecha de la venta.",
+      "ejemplo": "20261104",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: solo se valida el formato; fechas imposibles pasan.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "VDATU",
+      "doc": "Texto AAAAMMDD, obligatorio",
+      "origen": "Fecha de la factura (Factura_Fecha).",
+      "porque": "Fecha de entrega en SAP.",
+      "descripcion": "Es la fecha de entrega. Como la venta es en mostrador, es la misma de la venta.",
+      "ejemplo": "20261104",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: solo se valida el formato.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ROUNA",
+      "doc": "Texto, obligatorio",
+      "origen": "Mapeo por sucursal (agencia): transportista de la agencia. Alternativa: Prov_Id del transportista de la factura.",
+      "porque": "El servicio lo exige no vacío.",
+      "descripcion": "Es un código que Dos Pinos asocia al transportista o ruta de la agencia.",
+      "ejemplo": "0001088949",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El cuaderno decía 'solo si existe', pero el servicio rechaza si va vacío. El ejemplo tiene 10 dígitos, como un código de proveedor SAP. Falta saber qué lleva cuando no existe.",
+      "pregunta": 5
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "UMSKZ",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento UMSKZ.",
+      "porque": "Indicador de libro mayor especial en SAP.",
+      "descripcion": "Es una marca contable de SAP. Hoy se manda siempre la misma letra.",
+      "ejemplo": "L",
+      "estado": "Provisional",
+      "nota": "El servicio solo acepta L y la exige. El usuario recuerda que cambia según sea factura o no, o que es opcional; en dev no se pudo comprobar.",
+      "pregunta": "1, 6"
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ZZFACT",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento ZZFACT.",
+      "porque": "Campo propio de Dos Pinos sin descripción en el contrato.",
+      "descripcion": "Es un campo propio de Dos Pinos cuyo significado no nos dieron. Se manda siempre la misma letra.",
+      "ejemplo": "I",
+      "estado": "Confirmado",
+      "nota": "Probado: el servicio exige I. El contrato no lo describe y el ejemplo traía 2 o vacío.",
+      "pregunta": 1
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "AUGRU",
+      "doc": "Texto, opcional",
+      "origen": "Parámetro del evento (B00 en devoluciones) mientras no haya motivo de devolución en LDCOM.",
+      "porque": "Motivo del pedido; en una devolución sería la razón.",
+      "descripcion": "Es el motivo de la devolución. LDCOM no guarda ese dato.",
+      "ejemplo": "B00",
+      "estado": "Provisional",
+      "nota": "Probado: vacío y B00 pasan. LDCOM no tiene motivos de devolución; se usa el B00 del ejemplo.",
+      "pregunta": 15
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "XREFF",
+      "doc": "Texto, opcional",
+      "origen": "No se envía.",
+      "porque": "Referencia cruzada en el contrato, sin descripción.",
+      "descripcion": "Es una referencia cruzada de Dos Pinos. No sabemos qué lleva, así que va vacía.",
+      "ejemplo": "1518CRE20250919",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "En el ejemplo parece ruta + CRE + fecha, pero es una deducción. Probado: opcional.",
+      "pregunta": 15
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "KOSTL",
+      "doc": "Texto, opcional",
+      "origen": "Centro de costo del documento (Ceco_Id del encabezado, Codigo_Interfaz del CECO), si existe.",
+      "porque": "Centro de costo en SAP.",
+      "descripcion": "Es el centro de costo al que se carga la venta, si tiene.",
+      "ejemplo": "",
+      "estado": "Provisional",
+      "nota": "Probado: opcional. Falta saber si Dos Pinos lo usa en ventas.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "KBETR",
+      "doc": "Decimal, opcional",
+      "origen": "No se envía en la cabecera.",
+      "porque": "Importe de la condición; el importe real va en Condiciones.",
+      "descripcion": "Es un importe que el contrato trae en la cabecera sin explicar. El importe real va en las condiciones de cada línea.",
+      "ejemplo": "0.82",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Probado: opcional y no se valida contra nada (0.53 o 0.82 pasan).",
+      "pregunta": 15
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "SALES_OFF",
+      "doc": "Texto, obligatorio",
+      "origen": "Mapeo por sucursal (agencia) cargado en el Admin.",
+      "porque": "Oficina de ventas de la agencia en SAP.",
+      "descripcion": "Es el código de la oficina de ventas de la agencia.",
+      "ejemplo": "8006",
+      "estado": "Provisional",
+      "nota": "El servicio lo valida contra un catálogo que no conocemos. LDCOM no tiene este código.",
+      "pregunta": 8
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "SALES_DIST",
+      "doc": "Texto, obligatorio",
+      "origen": "Mapeo por sucursal (agencia) cargado en el Admin.",
+      "porque": "Zona (distrito) de ventas de la agencia en SAP.",
+      "descripcion": "Es el código de la zona de ventas de la agencia.",
+      "ejemplo": "122",
+      "estado": "Provisional",
+      "nota": "El servicio lo valida contra un catálogo que no conocemos. LDCOM no tiene este código.",
+      "pregunta": 8
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "AUTORIZADO",
+      "doc": "Texto, obligatorio",
+      "origen": "Solo hay dato para asociados con crédito financiado (referencia o solicitud de crédito de SFA); en los demás casos sin origen.",
+      "porque": "El servicio lo exige no vacío aunque el contrato lo marca opcional.",
+      "descripcion": "Es un código de autorización. Solo existe cuando el crédito pasó por SFA.",
+      "ejemplo": "0000165922",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Falta saber qué lleva cuando no hay autorización (contado, distribuidores).",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "IND_CME",
+      "doc": "Texto, opcional",
+      "origen": "No se envía.",
+      "porque": "Indicador CME en el contrato, sin descripción.",
+      "descripcion": "Es un indicador de Dos Pinos que no nos explicaron. Va vacío.",
+      "ejemplo": "",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Probado: opcional. Puede ser el libro mayor especial, como UMSKZ, pero es una suposición.",
+      "pregunta": 15
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "LIBREUSO",
+      "doc": "Texto, obligatorio",
+      "origen": "Sin origen en LDCOM.",
+      "porque": "Campo libre; el servicio lo exige no vacío.",
+      "descripcion": "Es un campo libre de Dos Pinos. Lo exigen lleno aunque LDCOM no tiene qué poner.",
+      "ejemplo": "(pendiente)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El servicio responde 'LIBREUSO es requerido' si va vacío.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ZDOC_FIS_XML",
+      "doc": "Texto, 20, obligatorio",
+      "origen": "Consecutivo de la factura electrónica (Factura_Folio_Electronico).",
+      "porque": "Número del documento fiscal que firmó Hacienda.",
+      "descripcion": "Es el consecutivo de la factura electrónica de Hacienda, de 20 dígitos.",
+      "ejemplo": "20000149030000044185",
+      "estado": "Decidido por nosotros",
+      "nota": "Obligatorio: sin él el servicio rechaza. Si un documento todavía no tiene factura electrónica no está definido qué pasa. Probado: no detecta repetidos.",
+      "pregunta": 9
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ZZCAE",
+      "doc": "Texto, 50, obligatorio",
+      "origen": "Clave numérica de la factura electrónica (Factura_Clave_Numerica).",
+      "porque": "Clave de Hacienda de la factura.",
+      "descripcion": "Es la clave de 50 dígitos de la factura electrónica.",
+      "ejemplo": "50611052600300404500220000149030000044185177836718",
+      "estado": "Decidido por nosotros",
+      "nota": "Obligatorio: sin él el servicio rechaza.",
+      "pregunta": 9
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "KUNNR2",
+      "doc": "Texto, obligatorio",
+      "origen": "Sin origen cierto. Hipótesis: distribuidor dueño del crédito (relación entre clientes de LDCOM).",
+      "porque": "El servicio lo exige no vacío; el contrato no lo describe.",
+      "descripcion": "Es un segundo cliente del documento. Dos Pinos no explicó para qué.",
+      "ejemplo": "(pendiente)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Probado: acepta cualquier valor no vacío, exista o no. La hipótesis es nuestra.",
+      "pregunta": "3, 4"
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "KUNNR3",
+      "doc": "Texto, obligatorio",
+      "origen": "Sin origen cierto. Hipótesis: asociado o finca, o el autorizado de la venta.",
+      "porque": "El servicio lo exige no vacío; el contrato no lo describe.",
+      "descripcion": "Es un tercer cliente del documento. Dos Pinos no explicó para qué.",
+      "ejemplo": "(pendiente)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Probado: acepta cualquier valor no vacío. En LDCOM la finca No REA queda guardada como texto, habría que separarla.",
+      "pregunta": "3, 4"
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "CAJA",
+      "doc": "Texto, 10, obligatorio",
+      "origen": "Caja de la factura (Caja_Id).",
+      "porque": "Dos Pinos la usa para saber en qué caja se vendió.",
+      "descripcion": "Es el número de la caja donde se hizo la venta.",
+      "ejemplo": "S16C2",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: acepta cualquier formato hasta 10 caracteres (XXXX, 0001 y S16C2 pasan); vacío rechaza.",
+      "pregunta": 18
+    },
+    {
+      "bloque": "Cabecera",
+      "campo": "ZTERM",
+      "doc": "Texto, obligatorio",
+      "origen": "Catálogo LDCOM a Dos Pinos: plazo en días y tipo de documento (contado o crédito) a la condición de pago.",
+      "porque": "Condición de pago en SAP.",
+      "descripcion": "Es el código de la condición de pago: contado o los días de crédito.",
+      "ejemplo": "Z001",
+      "estado": "Provisional",
+      "nota": "El servicio no lo valida contra maestros pero no acepta vacío. Falta el catálogo de códigos por plazo.",
+      "pregunta": 12
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "DCNUM",
+      "doc": "Texto, obligatorio",
+      "origen": "El mismo DCNUM de la cabecera.",
+      "porque": "Liga la línea con su documento.",
+      "descripcion": "Es el número del documento al que pertenece la línea.",
+      "ejemplo": "518F502067",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Depende de la pregunta del DCNUM de la cabecera. Probado: el servicio no revisa que coincida con la cabecera.",
+      "pregunta": 9
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "POSNR",
+      "doc": "Texto, obligatorio",
+      "origen": "Número de línea de la factura (Detalle_Id).",
+      "porque": "Posición de la línea en el documento.",
+      "descripcion": "Es el número de la línea dentro del documento: 1, 2, 3...",
+      "ejemplo": "1",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: no detecta posiciones repetidas.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "MATNR",
+      "doc": "Texto, 18, obligatorio",
+      "origen": "Código del artículo (Articulo_Id, que en LDCOM es el código SAP). Se busca en LDCOM, no por CrossReference.",
+      "porque": "Código de material de SAP.",
+      "descripcion": "Es el código del producto en SAP.",
+      "ejemplo": "20008184",
+      "estado": "Decidido por nosotros",
+      "nota": "El servicio no lo valida contra sus maestros.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "KWMENG",
+      "doc": "Entero, obligatorio",
+      "origen": "Cantidad de la línea (Detalle_Cantidad). En devoluciones LDCOM la guarda negativa.",
+      "porque": "Cantidad vendida.",
+      "descripcion": "Es la cantidad de producto de la línea.",
+      "ejemplo": "2",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El servicio solo acepta enteros: negativo y decimal se rechazan. Falta saber cómo se mandan los productos a granel (decimales) y si la devolución va en positivo.",
+      "pregunta": 14
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "VRKME",
+      "doc": "Texto, obligatorio",
+      "origen": "Unidad del artículo en LDCOM.",
+      "porque": "Unidad de medida de venta.",
+      "descripcion": "Es la unidad en que se vende el producto, por ejemplo UN.",
+      "ejemplo": "UN",
+      "estado": "Provisional",
+      "nota": "Decisión del cuaderno: por unidad del artículo. En LDCOM el símbolo de unidad no tiene código de Dos Pinos y en Docker viene vacío. El servicio no lo valida.",
+      "pregunta": 14
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "ZTERM",
+      "doc": "Texto, opcional",
+      "origen": "El mismo ZTERM de la cabecera.",
+      "porque": "Condición de pago de la línea.",
+      "descripcion": "Es la condición de pago de la línea. Es la misma del documento.",
+      "ejemplo": "Z005",
+      "estado": "Provisional",
+      "nota": "Probado: opcional en el detalle. No se valida que sea igual al de la cabecera.",
+      "pregunta": 12
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "NETPR",
+      "doc": "Decimal con fracción, obligatorio",
+      "origen": "Precio de la línea (Detalle_Precio_Unitario menos descuento), por confirmar si va con o sin impuesto.",
+      "porque": "Precio neto de la línea.",
+      "descripcion": "Es el precio por unidad de la línea.",
+      "ejemplo": "10112.36",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Probado: cero y coma se rechazan; no revisa que NETPR por cantidad cuadre con las condiciones. Falta saber si va con o sin IVA.",
+      "pregunta": 13
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "PRCTR",
+      "doc": "Texto, obligatorio",
+      "origen": "Sin origen en LDCOM.",
+      "porque": "Centro de beneficio; el servicio lo exige no vacío.",
+      "descripcion": "Es el centro de beneficio de SAP. LDCOM no lo tiene.",
+      "ejemplo": "(pendiente)",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "El servicio responde 'PRCTR es requerido' si va vacío.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "ZZRPRE",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento ZZRPRE (P1514 provisional).",
+      "porque": "Ruta de preventa; el servicio la exige en cada línea.",
+      "descripcion": "Es la ruta de preventa de la línea. Se manda el mismo valor fijo de la cabecera.",
+      "ejemplo": "P1514",
+      "estado": "Provisional",
+      "nota": "En la cabecera es opcional; en el detalle el servicio la exige. No se valida contra maestros.",
+      "pregunta": 7
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "WERKS",
+      "doc": "Texto, 4, obligatorio",
+      "origen": "Mapeo por sucursal (agencia) cargado en el Admin.",
+      "porque": "Centro (planta) en SAP; es la agencia.",
+      "descripcion": "Es el código de la agencia en SAP.",
+      "ejemplo": "1518",
+      "estado": "Provisional",
+      "nota": "Hoy Sucursal.Codigo_Interfaz está vacío en LDCOM. Los códigos reales los debe dar Dos Pinos.",
+      "pregunta": 8
+    },
+    {
+      "bloque": "Detalle",
+      "campo": "LGORT",
+      "doc": "Texto, 4, obligatorio",
+      "origen": "Mapeo por bodega cargado en el Admin.",
+      "porque": "Almacén en SAP.",
+      "descripcion": "Es el código del almacén (bodega) en SAP.",
+      "ejemplo": "2207",
+      "estado": "Provisional",
+      "nota": "LDCOM no tiene código de Dos Pinos en la bodega. Se arma un mapeo bodega a almacén; falta que Dos Pinos dé los valores.",
+      "pregunta": 8
+    },
+    {
+      "bloque": "Condiciones",
+      "campo": "DCNUM",
+      "doc": "Texto, obligatorio",
+      "origen": "El mismo DCNUM de la cabecera.",
+      "porque": "Liga la condición con su documento.",
+      "descripcion": "Es el número del documento al que pertenece la condición.",
+      "ejemplo": "518F502067",
+      "estado": "Pregunta a Dos Pinos",
+      "nota": "Depende de la pregunta del DCNUM de la cabecera. Las condiciones son obligatorias: sin ellas el servicio rechaza.",
+      "pregunta": 9
+    },
+    {
+      "bloque": "Condiciones",
+      "campo": "POSNR",
+      "doc": "Texto, obligatorio",
+      "origen": "El mismo número de línea del detalle.",
+      "porque": "Liga la condición con su línea.",
+      "descripcion": "Es el número de la línea a la que se aplica la condición.",
+      "ejemplo": "1",
+      "estado": "Decidido por nosotros",
+      "nota": "Probado: no revisa que exista la línea.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Condiciones",
+      "campo": "KSCHL",
+      "doc": "Texto, 4, obligatorio",
+      "origen": "Catálogo LDCOM a Dos Pinos: tipo de condición (precio, descuento, impuesto, bonificación o promoción).",
+      "porque": "Tipo de condición de precio en SAP.",
+      "descripcion": "Es el tipo de cobro de la línea: precio, descuento, impuesto, etc.",
+      "ejemplo": "ZPR1",
+      "estado": "Provisional",
+      "nota": "El servicio valida que sea una clase válida. Solo se conoce ZPR1 (precio); las demás clases no las definió Dos Pinos.",
+      "pregunta": 13
+    },
+    {
+      "bloque": "Condiciones",
+      "campo": "KBETR",
+      "doc": "Decimal, obligatorio",
+      "origen": "Importe de la condición: para ZPR1 el precio de la línea; para el resto, monto o porcentaje de LDCOM.",
+      "porque": "Importe de la condición.",
+      "descripcion": "Es el monto o porcentaje de cada tipo de cobro.",
+      "ejemplo": "10112.36",
+      "estado": "Provisional",
+      "nota": "Probado: no se revisa que cuadre con NETPR ni con la cantidad. Falta definir el signo de descuentos y la forma de impuestos.",
+      "pregunta": 13
+    }
+  ]
+}
