@@ -8,7 +8,7 @@
   "cuando_se_envia": "Al instante, cuando se guarda la preventa granel. Se puede reintentar: un reenvío idéntico vuelve como 'dato de control ya existe' y se toma como enviado.",
   "fuente_documentacion": "Contrato '(LDP10) Pedidos Graneles.xlsx', hoja 'Formato Informatica' (Diego Arias, 2026-09-21), y la carpeta 'POS-14 Pedidos Graneles' de Bruno corrida contra el desarrollo de Dos Pinos el 2026-11-04 (obligatorios, largos y reenvíos).",
   "estado_general": "Provisional",
-  "notas_generales": "Aprobado por el desarrollador el 2026-11-04. El contrato se probó completo en Bruno: todos los campos del control, encabezado y detalle son obligatorios salvo TEXTO_LIBRE. Varios largos del contrato no coinciden con lo que acepta el servicio (CSAGR 14, NROEJ 14 y numérico, CANTIDAD entera).",
+  "notas_generales": "Aprobado por el desarrollador el 2026-11-04. El contrato se probó completo en Bruno: todos los campos del control, encabezado y detalle son obligatorios salvo TEXTO_LIBRE. Varios largos del contrato no coinciden con lo que acepta el servicio (CSAGR 14, NROEJ 14 y numérico, CANTIDAD entera). CANTIDAD se manda entera, redondeada (decisión del desarrollador, 2026-11-04).",
   "reglas": [
     {
       "tema": "Cuándo se envía",
@@ -36,7 +36,7 @@
     },
     {
       "tema": "Cantidades",
-      "regla": "Se manda la cantidad real, sin redondear. Si Dos Pinos la rechaza, el motivo del rechazo queda en Events y se envía al Monitor 360; el correo sale solo si el Monitor 360 falla."
+      "regla": "Se mandan enteras: Dos Pinos solo acepta enteros. La cantidad de la línea se redondea a la unidad más cercana y el .5 sube (7.5 kg va como 8; 12.375 va como 12). Si una línea redondea a 0 (por ejemplo 0.4 kg), el aviso no se envía y el motivo queda en Events y llega al Monitor 360."
     },
     {
       "tema": "Fallas",
@@ -46,12 +46,6 @@
   "preguntas": [
     {
       "numero": 1,
-      "tema": "Cantidad con decimales",
-      "pregunta": "El contrato define CANTIDAD como INT4 y el servicio rechaza 2.5 ('CANTIDAD debe ser entero'). LDCOM manda la cantidad total de la línea tal cual, con decimales cuando los tiene (granel por kilo). Hoy esas líneas quedarían rechazadas. ¿Pueden aceptar decimales?",
-      "campos": "CANTIDAD"
-    },
-    {
-      "numero": 2,
       "tema": "Reenvío con otro CSAGR",
       "pregunta": "Un reenvío con el mismo GUID pero otro CSAGR se acepta como pedido nuevo. ¿SAP detecta el duplicado por NUM_DOC o lo registra dos veces?",
       "campos": "GUID, CSAGR, NUM_DOC"
@@ -370,15 +364,14 @@
       "bloque": "Detalle (una por artículo)",
       "campo": "CANTIDAD",
       "doc": "INT4 10, obligatorio",
-      "origen": "Cantidad real de la línea, tal cual, sin redondear (con decimales si los tiene).",
-      "porque": "Decidido por el desarrollador: se manda la cantidad real y Dos Pinos decide si la rechaza. Si Dos Pinos la rechaza, el motivo del rechazo queda en Events y se envía al Monitor 360; el correo sale solo si el Monitor 360 falla.",
+      "origen": "Cantidad de la línea redondeada a entero: la mitad sube (7.5 → 8, 12.375 → 12).",
+      "porque": "Decidido por el desarrollador el 2026-11-04: el contrato es INT4 y el servicio rechaza decimales ('CANTIDAD debe ser entero'), así que mandamos enteros. Una línea que redondea a 0 no se envía.",
       "descripcion": "Cuánto se pide del producto.",
-      "ejemplo": "2.5",
+      "ejemplo": "8",
       "estado": "Decidido por nosotros",
       "duda": "",
       "porque_duda": "",
-      "nota": "Hoy el servicio rechaza decimales ('CANTIDAD debe ser entero').",
-      "pregunta": 1
+      "nota": "Probado desde el POS: preventa granel de 7.5 kg aceptada por Dos Pinos con CANTIDAD 8."
     },
     {
       "bloque": "Detalle (una por artículo)",
