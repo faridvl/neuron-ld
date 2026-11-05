@@ -12,7 +12,7 @@
   "reglas": [
     {
       "tema": "Cuándo se envía",
-      "regla": "Solo las preventas de tipo granel, al guardarlas. El nombre del tipo es un parámetro del evento que se cambia en el Admin."
+      "regla": "Solo las preventas de tipo granel, al guardarlas. El nombre del tipo es un parámetro del evento, cargado en el seed 04__webhooks.sql de Integrations."
     },
     {
       "tema": "Qué es éxito",

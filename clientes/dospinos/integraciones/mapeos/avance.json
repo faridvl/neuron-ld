@@ -158,7 +158,7 @@
       "porcentaje": 20,
       "hecho": "Contrato y 50 requests en Bruno, todos con respuesta (PR 1331). Dirección resuelta con el documento de construcción (LDCOM -> Romana) y mapeo de campos en POS-26.json.",
       "falta": "Construirla sobre la base Notificar: en Integrations clonar las piezas de POS-24; en LDCOM abrir el aviso a traslados y avisar al guardar el traslado (GU).",
-      "bloqueo": "Definición de Dos Pinos: cómo se reconoce un traslado de melaza y qué va en NOMBRE_CENTRO_SOLICITANTE."
+      "bloqueo": "Definición de Dos Pinos: cómo se reconoce un traslado de melaza y si el centro solicitante es la sucursal de origen o la de destino."
     }
   ]
 }

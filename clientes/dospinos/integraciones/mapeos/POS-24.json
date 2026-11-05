@@ -12,7 +12,7 @@
   "reglas": [
     {
       "tema": "Cuándo se envía",
-      "regla": "Solo se envían las preventas de tipo romana, al momento de guardarlas. El nombre del tipo se compara sin importar mayúsculas, tildes ni espacios y se cambia en el Admin (parámetro TIPO_PREVENTA_ROMANA)."
+      "regla": "Solo se envían las preventas de tipo romana, al momento de guardarlas. El nombre del tipo se compara sin importar mayúsculas, tildes ni espacios (parámetro TIPO_PREVENTA_ROMANA del evento, cargado en el seed 04__webhooks.sql de Integrations)."
     },
     {
       "tema": "Duplicados",
@@ -141,7 +141,7 @@
       "descripcion": "El mandante (ambiente) de SAP donde se registra el pedido.",
       "ejemplo": "600",
       "estado": "Provisional",
-      "nota": "Es el valor del ejemplo del contrato y funciona en desarrollo. Se cambia en el Admin sin tocar código.",
+      "nota": "Es el valor del ejemplo del contrato y funciona en desarrollo. Se cambia por ambiente en el seed 04__webhooks.sql de Integrations; el Admin no permite editar los parámetros del evento.",
       "pregunta": 3
     },
     {

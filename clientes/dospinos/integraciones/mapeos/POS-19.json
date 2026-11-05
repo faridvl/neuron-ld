@@ -131,7 +131,7 @@
       "campo": "BUKRS",
       "doc": "Texto, 4, obligatorio",
       "origen": "Parámetro del evento BUKRS = CR01.",
-      "porque": "Todo Costa Rica es la sociedad CR01. Va como parámetro del evento para cambiarlo desde el Admin sin tocar código.",
+      "porque": "Todo Costa Rica es la sociedad CR01. Va como parámetro del evento cargado en el seed 04__webhooks.sql de Integrations, para cambiarlo por ambiente sin tocar código.",
       "descripcion": "La sociedad financiera de SAP a la que se carga el movimiento. Para Costa Rica siempre es CR01.",
       "ejemplo": "CR01",
       "estado": "Confirmado",
