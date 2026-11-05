@@ -1,0 +1,284 @@
+{
+  "codigo": "POS-26",
+  "nombre": "Traslado a Romana (traslados de melaza)",
+  "sentido": "LDCOM -> Dos Pinos (saliente)",
+  "endpoint": "POST https://usw3-gw.dm-us.informaticacloud.com/devapi.dospinos.com/agv/v1/p_POS26_TrasladoRomana (desarrollo; hoy no hay URL de producción). Informatica lo pasa a Romana Miel (RecibirROM01).",
+  "autenticacion": "OAuth2 client_credentials: token Bearer pedido a https://dm-us.informaticacloud.com/authz-service/oauth/token",
+  "dispara": "El hecho TRASLADO_CREADO de LDCOM: cuando se guarda en el Admin un traslado de inventario de melaza (queda en estado GU, pendiente). Falta definir cómo se reconoce que un traslado es de melaza; los demás traslados no se envían.",
+  "cuando_se_envia": "Al instante, una sola vez, cuando el traslado se guarda (antes de aplicarlo). Así Dos Pinos puede pesar en Romana y corregir las cantidades con LD-07, que solo edita traslados guardados sin aplicar. Si falla no se reintenta sola: Romana registraría el traslado dos veces.",
+  "fuente_documentacion": "Excel '(POS26) Integración de Traslados Romana.xlsx' (hoja Formato Informatica), documento de construcción de BD Consultores v2.0 del 12/08/2026 (diagrama, mapeo, ejemplos y pruebas), página LD-07 de Confluence (flujo del traslado de melaza) y la carpeta POS-26 de Bruno con respuestas reales del ambiente de desarrollo.",
+  "estado_general": "Provisional",
+  "notas_generales": "Ni LDCOM ni Integrations envían todavía. En Integrations se reutiliza todo lo de POS-24 (aviso, cola, token, envío y Monitor); en LDCOM hay que abrir el aviso, que hoy solo acepta preventas, para que acepte traslados. Faltan dos definiciones de Dos Pinos: cómo se reconoce un traslado de melaza y qué va en NOMBRE_CENTRO_SOLICITANTE.",
+  "reglas": [
+    {
+      "tema": "Cuándo se envía",
+      "regla": "Solo los traslados de melaza, al momento de guardarlos en el Admin (estado GU). No se espera a que se apliquen, porque Dos Pinos necesita el traslado pendiente para corregirlo con LD-07 después de pesar en Romana."
+    },
+    {
+      "tema": "Qué traslados son de melaza",
+      "regla": "Por definir con Dos Pinos (pregunta 1). La propuesta es un parámetro del evento con los códigos de material de melaza (por ejemplo 19000257): se envía el traslado si alguna línea trae uno de esos materiales."
+    },
+    {
+      "tema": "Duplicados",
+      "regla": "Romana no detecta repetidos: si recibe el mismo traslado dos veces, lo registra dos veces. Por eso cada traslado se manda una sola vez. El número de movimiento se repite entre sucursales, así que el control interno de duplicados usa empresa, sucursal, bodega y número de movimiento."
+    },
+    {
+      "tema": "Reintentos",
+      "regla": "No hay reintentos automáticos (un solo intento). Si no hay respuesta, hay un timeout o un error 500, no se sabe si Romana lo recibió: el aviso queda fallido con el mensaje 'Revisalo en Romana antes de volver a enviarlo'."
+    },
+    {
+      "tema": "Qué es éxito",
+      "regla": "Solo la respuesta 'ROM01 recibido correctamente' cuenta como enviado. Dos Pinos responde los rechazos de validación también con 200 y un texto 'Validacion: ...', y eso se registra como rechazo con su texto."
+    },
+    {
+      "tema": "Qué valida Dos Pinos",
+      "regla": "En desarrollo aceptó cantidad 0 o negativa, traslados repetidos y un conteo de líneas distinto; con una fecha que no existe respondió 500. Por eso LDCOM valida antes de enviar: cantidad mayor que 0, MATERIAL de máximo 18 caracteres, fechas reales en AAAAMMDD y cada línea con material y descripción."
+    },
+    {
+      "tema": "Identificación en la bitácora",
+      "regla": "El GUID del mensaje es el mismo identificador de la transacción que se ve en la bitácora de eventos y en el Monitor 360, y la marca de agrupación es la hora en que LDCOM avisó el traslado. Si el mensaje se vuelve a armar, salen los mismos valores."
+    },
+    {
+      "tema": "Fallas",
+      "regla": "Una falla de esta integración nunca detiene ni revierte el traslado en LDCOM. Los fallos llegan al Monitor 360 (nivel de aviso ERRORS_ONLY)."
+    }
+  ],
+  "preguntas": [
+    {
+      "numero": 1,
+      "tema": "Qué traslados se envían",
+      "pregunta": "¿Cómo reconocemos un traslado de melaza? Proponemos una lista de códigos de material (por ejemplo 19000257, MELAZA KG) que se configura en el Admin: si alguna línea del traslado trae uno de esos materiales, se envía. ¿Sirve así, o es por la sucursal de origen o de destino, o se envían todos los traslados?",
+      "campos": "Todo el envío"
+    },
+    {
+      "numero": 2,
+      "tema": "Centro solicitante",
+      "pregunta": "¿Qué esperan en NOMBRE_CENTRO_SOLICITANTE? ¿Es la sucursal que pide la melaza (destino del traslado) o la que la despacha (origen)? ¿Va el código de centro SAP o el nombre? En el ejemplo del documento viene vacío.",
+      "campos": "NOMBRE_CENTRO_SOLICITANTE"
+    },
+    {
+      "numero": 3,
+      "tema": "Largos oficiales de ROM01",
+      "pregunta": "¿Cuál es el largo máximo de REFERENCIA, NUMERO_ENTREGA y NOMBRE_CENTRO_SOLICITANTE? Para MATERIAL (18) y DESCRIPCION (70) Romana sí rechaza los que se pasan; de los demás no encontramos límite.",
+      "campos": "REFERENCIA, NUMERO_ENTREGA, NOMBRE_CENTRO_SOLICITANTE"
+    },
+    {
+      "numero": 4,
+      "tema": "Mandante",
+      "pregunta": "¿Confirman que el MANDANTE es 600 en todos los ambientes, incluido producción?",
+      "campos": "MANDANTE"
+    }
+  ],
+  "campos": [
+    {
+      "bloque": "Encabezado",
+      "campo": "REFERENCIA",
+      "doc": "Texto, largo no documentado, obligatorio",
+      "origen": "Fecha del traslado (AAAAMMDD) + guion + sucursal + guion + bodega + guion + número de movimiento.",
+      "porque": "El número de movimiento se repite entre sucursales; con sucursal y bodega el traslado queda identificado sin ambigüedad y se puede buscar en Romana y en el Monitor.",
+      "descripcion": "Es el nombre con que LDCOM identifica este traslado. Sirve para buscarlo en Romana y en nuestro monitor.",
+      "ejemplo": "20261105-6-1-11",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Ejemplo ilustrativo (Staging: RIO FRIO, bodega 1, movimiento 11). Romana no rechaza una REFERENCIA repetida: la registra otra vez.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "SOCIEDAD_FINANCIERA",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento SOCIEDAD_FINANCIERA = CR01.",
+      "porque": "Todo Costa Rica es la sociedad CR01, igual que en POS-12, POS-19 y POS-24. Va como parámetro del evento.",
+      "descripcion": "La sociedad financiera de SAP a la que pertenece el traslado. Para Costa Rica siempre es CR01.",
+      "ejemplo": "CR01",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Mismo valor que el ejemplo del documento de construcción.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "CONS_AGRUPA_TRANS",
+      "doc": "Texto, 14 (AAAAMMDDHHMMSS), obligatorio",
+      "origen": "Fecha y hora (hora de Costa Rica) en que LDCOM avisó el traslado a Integrations.",
+      "porque": "Un traslado no tiene un grupo natural. La hora del aviso no cambia aunque el mensaje se arme de nuevo y coincide con la bitácora. Es la misma regla de POS-24.",
+      "descripcion": "Una marca de agrupación del envío. Es la hora del aviso, así que siempre es la misma para el mismo traslado aunque el mensaje se vuelva a armar.",
+      "ejemplo": "20261105093015",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "CONS_TRANSACCION",
+      "doc": "Número, obligatorio",
+      "origen": "Número de movimiento del traslado en LDCOM (Mov_Id).",
+      "porque": "Es el número con que el traslado se ve en el Admin. El contrato lo pide numérico, así que la sucursal y la bodega van en REFERENCIA.",
+      "descripcion": "El número del traslado en LDCOM.",
+      "ejemplo": "11",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Se repite entre sucursales; para distinguirlo está REFERENCIA.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "FECHA_CREACION",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "Fecha del traslado (Mov_Fecha).",
+      "porque": "Es el día en que se registró el traslado. Siempre va como AAAAMMDD y con una fecha real, porque una fecha inexistente hace que Romana responda 500.",
+      "descripcion": "El día en que se registró el traslado.",
+      "ejemplo": "20261105",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "CANTIDAD_REG_INTEGRAR",
+      "doc": "Número, obligatorio",
+      "origen": "Cantidad de líneas del detalle.",
+      "porque": "Para que Romana compruebe que el traslado llegó completo. Se manda el conteo real porque Dos Pinos no lo valida.",
+      "descripcion": "Cuántos artículos trae el traslado. Sirve para que Romana compruebe que llegó completo.",
+      "ejemplo": "1",
+      "estado": "Confirmado",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Dos Pinos aceptó un conteo distinto del detalle en desarrollo; LDCOM siempre manda el real.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "MANDANTE",
+      "doc": "Texto, obligatorio",
+      "origen": "Parámetro del evento MANDANTE = 600.",
+      "porque": "Es el valor del ejemplo del contrato. Va como parámetro para cambiarlo por ambiente sin tocar código.",
+      "descripcion": "El mandante (ambiente) de SAP donde se registra el traslado.",
+      "ejemplo": "600",
+      "estado": "Provisional",
+      "duda": "Si 600 vale también en producción.",
+      "porque_duda": "Solo lo vimos en el ejemplo y en desarrollo.",
+      "nota": "Se cambia en el Admin sin tocar código.",
+      "pregunta": 4
+    },
+    {
+      "bloque": "Encabezado",
+      "campo": "GUID_VALUE",
+      "doc": "Texto, 32 (UUID sin guiones), obligatorio",
+      "origen": "Identificador de la transacción del aviso en Integrations, sin guiones: el mismo que se ve en la bitácora y en el Monitor 360.",
+      "porque": "Es el de la bitácora para cruzar el envío con el Monitor. Va sin guiones como en POS-24, que usa el mismo formato de Informatica.",
+      "descripcion": "Un código único del envío. Con él se encuentra el mismo traslado en nuestro monitor y en Dos Pinos.",
+      "ejemplo": "cdfbab5e6f5c4b46805fb000b22b8fec",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Ejemplo ilustrativo.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "NUMERO_ENTREGA",
+      "doc": "Texto, largo no documentado (el ejemplo trae 10), obligatorio",
+      "origen": "Número de movimiento del traslado (Mov_Id) con ceros a la izquierda hasta 10 dígitos. Se repite en cada línea.",
+      "porque": "El ejemplo del contrato trae 10 dígitos con ceros a la izquierda, como numera SAP las entregas. Es el mismo número de CONS_TRANSACCION.",
+      "descripcion": "El número del traslado al que pertenece la línea.",
+      "ejemplo": "0000000011",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Ejemplo del documento: 0008193610.",
+      "pregunta": 3
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "NOMBRE_CENTRO_SOLICITANTE",
+      "doc": "Texto, largo no documentado, obligatorio (en el ejemplo viene vacío)",
+      "origen": "Código de interfaz de la sucursal destino del traslado (Sucursal.Codigo_Interfaz). Vacío si la sucursal no lo tiene.",
+      "porque": "El centro que solicita la melaza es el que la recibe. Es una suposición nuestra hasta que Dos Pinos confirme.",
+      "descripcion": "El centro de Dos Pinos que pide la melaza.",
+      "ejemplo": "",
+      "estado": "Pregunta a Dos Pinos",
+      "duda": "Si es la sucursal destino u origen, y si va el código de centro SAP o el nombre.",
+      "porque_duda": "El ejemplo del documento lo manda vacío y en Staging el código de interfaz de las sucursales está vacío.",
+      "nota": "Romana lo aceptó vacío en desarrollo.",
+      "pregunta": "2, 3"
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "FECHA_TRASLADO",
+      "doc": "Texto, 8 (AAAAMMDD), obligatorio",
+      "origen": "Fecha del traslado (Mov_Fecha), la misma de FECHA_CREACION.",
+      "porque": "El aviso sale al guardar el traslado, cuando todavía no tiene fecha de aplicado. La fecha del traslado es la que se registró en el Admin.",
+      "descripcion": "El día del traslado.",
+      "ejemplo": "20261105",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Bruno usaba la fecha de aplicado; no sirve porque se avisa antes de aplicar. Una fecha inexistente hace que Romana responda 500.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "MATERIAL",
+      "doc": "Texto, máximo 18 (Romana rechaza más), obligatorio",
+      "origen": "ArticuloId de la línea, que es el código SAP del material (no el código principal, que puede ser uno local de LDCOM).",
+      "porque": "Romana trabaja con códigos SAP, igual que en POS-24. El código principal puede ser uno local de LDCOM que no existe en SAP.",
+      "descripcion": "El código SAP del artículo trasladado.",
+      "ejemplo": "19000257",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Ejemplo del documento (MELAZA KG). Si pasa de 18 caracteres el envío falla con un mensaje claro en vez de cortarse.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "DESCRIPCION",
+      "doc": "Texto, máximo 70 (Romana rechaza más), obligatorio",
+      "origen": "Nombre del artículo de la línea (Articulo_Nombre).",
+      "porque": "Es solo para leer en Romana. En LDCOM el nombre tiene máximo 60 caracteres, así que siempre cabe.",
+      "descripcion": "El nombre del artículo, para que se lea en Romana.",
+      "ejemplo": "MELAZA KG",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Si llegara a pasar de 70 se recorta (es solo informativa). Los largos cuentan caracteres, no bytes.",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "POSICION",
+      "doc": "Número, obligatorio",
+      "origen": "Orden de la línea en el traslado, de 10 en 10.",
+      "porque": "Va de 10 en 10 como en el ejemplo del contrato, que es como SAP numera las líneas.",
+      "descripcion": "El número de línea dentro del traslado: 10, 20, 30...",
+      "ejemplo": "10",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "",
+      "pregunta": null
+    },
+    {
+      "bloque": "Detalle (una por artículo)",
+      "campo": "CANTIDAD_PEDIDO",
+      "doc": "Número decimal, obligatorio",
+      "origen": "Cantidad de la línea del traslado (Detalle_Cantidad), sin redondear, con punto decimal y hasta 3 decimales.",
+      "porque": "Va sin redondear para no cambiar lo que se trasladó; la melaza se mueve en kilos con decimales.",
+      "descripcion": "Cuánto se traslada del artículo, en su unidad (por ejemplo, kilos de melaza).",
+      "ejemplo": "11000.000",
+      "estado": "Decidido por nosotros",
+      "duda": "",
+      "porque_duda": "",
+      "nota": "Debe ser mayor que 0; Dos Pinos aceptaba 0 y negativos. Es la cantidad que Dos Pinos corrige después con LD-07 según lo que pese la romana.",
+      "pregunta": null
+    }
+  ]
+}

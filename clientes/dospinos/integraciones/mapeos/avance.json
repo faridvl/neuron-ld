@@ -153,12 +153,12 @@
       "carpeta": "13",
       "codigo": "POS-26",
       "nombre": "Traslado Romana",
-      "sentido": "Por definir",
+      "sentido": "LDCOM -> Dos Pinos (saliente)",
       "estado": "Sin empezar",
-      "porcentaje": 15,
-      "hecho": "Contrato y 50 requests en Bruno, todos con respuesta (PR 1331).",
-      "falta": "Definir la dirección real (los documentos se contradicen) y construirla sobre la base Notificar.",
-      "bloqueo": "Definición de Dos Pinos."
+      "porcentaje": 20,
+      "hecho": "Contrato y 50 requests en Bruno, todos con respuesta (PR 1331). Dirección resuelta con el documento de construcción (LDCOM -> Romana) y mapeo de campos en POS-26.json.",
+      "falta": "Construirla sobre la base Notificar: en Integrations clonar las piezas de POS-24; en LDCOM abrir el aviso a traslados y avisar al guardar el traslado (GU).",
+      "bloqueo": "Definición de Dos Pinos: cómo se reconoce un traslado de melaza y qué va en NOMBRE_CENTRO_SOLICITANTE."
     }
   ]
 }
