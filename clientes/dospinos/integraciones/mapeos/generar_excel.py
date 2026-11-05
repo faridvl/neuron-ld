@@ -11,6 +11,7 @@ import re
 from copy import copy
 
 from openpyxl import Workbook, load_workbook
+from openpyxl.comments import Comment
 from openpyxl.drawing.image import Image
 from openpyxl.formatting.rule import DataBarRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -204,6 +205,14 @@ def hoja_indice(libro, integraciones, nombres):
     hoja.sheet_properties.tabColor = "1F4E79"
 
 
+def nota_para_completar(interfaz):
+    """Comentario del % : qué le falta para el 100 % (para_100, o lo que falta si no se detalló)."""
+    if interfaz["porcentaje"] >= 100:
+        return ""
+    pendiente = interfaz.get("para_100") or interfaz.get("falta")
+    return f"Para llegar al 100 %: {pendiente}" if pendiente else ""
+
+
 def hoja_avance(libro, avance):
     hoja = libro.create_sheet("Avance", 0)
     hoja.sheet_view.showGridLines = False
@@ -261,6 +270,9 @@ def hoja_avance(libro, avance):
         celda_porcentaje.value = interfaz["porcentaje"] / 100
         celda_porcentaje.number_format = "0%"
         celda_porcentaje.alignment = Alignment(horizontal="center", vertical="top")
+        nota_porcentaje = nota_para_completar(interfaz)
+        if nota_porcentaje:
+            celda_porcentaje.comment = Comment(nota_porcentaje, "Avance", width=420, height=220)
         hoja.cell(row=fila, column=1).alignment = Alignment(horizontal="center", vertical="top")
         hoja.row_dimensions[fila].height = altura_fila([texto(v) for v in valores], anchos)
 

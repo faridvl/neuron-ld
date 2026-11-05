@@ -11,7 +11,8 @@ una hoja "Reglas" con el endpoint, cuándo se envía y las reglas de cada integr
 
 `avance.json` lleva el estado de todas las interfaces (una por carpeta de Documentos-DosPinos-Interfaces):
 `estado` (Implementada en verde, En curso en amarillo, Sin empezar en blanco), `porcentaje`, `hecho`, `falta`
-y `bloqueo`, con PRs como evidencia. Se actualiza `fecha_corte` y la fila de la interfaz cada vez que avanza
+y `bloqueo`, con PRs como evidencia. `para_100` (opcional) dice qué le falta para el 100 % y sale como comentario
+en la celda del porcentaje; si no está, el comentario usa `falta`. Se actualiza `fecha_corte` y la fila de la interfaz cada vez que avanza
 (un PR mergeado, una prueba contra Dos Pinos) y se regenera el Excel.
 
 ## Agregar una integración

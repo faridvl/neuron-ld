@@ -88,7 +88,8 @@
       "porcentaje": 90,
       "hecho": "Integrations en develop (PR 1386) y LDCOM listo (PR 1420), con el SDK 1.5.2.8197. Probado desde el POS contra desarrollo de Dos Pinos: respuesta 200, Events, Monitor 360 y correo de respaldo.",
       "falta": "Llevarlo al release, credencial de SALE_NOTIFICATION por ambiente, URLs de QA y producción, y probar contra QA de Dos Pinos. Decidir el reintento del crédito a distribuidor, el cierre con un documento malo y las otras rutas de facturación sin aviso.",
-      "bloqueo": "Respuestas de Dos Pinos a 18 preguntas del mapeo (duplicados, folio en contingencia, largos) y URL de QA/producción."
+      "bloqueo": "Respuestas de Dos Pinos a 18 preguntas del mapeo (duplicados, folio en contingencia, largos) y URL de QA/producción.",
+      "para_100": "Lo de LD está terminado (Integrations y LDCOM en develop, probado contra desarrollo de Dos Pinos). Falta: (1) URLs de QA y producción de Dos Pinos y probar contra QA; (2) respuestas de Dos Pinos a las 18 preguntas del mapeo (duplicados, folio en contingencia, largos); (3) llevarlo al release; (4) credencial de SALE_NOTIFICATION en cada ambiente."
     },
     {
       "carpeta": "08",
@@ -99,7 +100,8 @@
       "porcentaje": 85,
       "hecho": "Integrations en develop (PR 1402): pedido LDP10 al guardar una preventa granel. LDCOM ya avisa la preventa creada (PR 1349). Probado desde el POS contra desarrollo de Dos Pinos (7.5 kg aceptado como 8).",
       "falta": "PR de LDCOM para que el aviso de preventa mande el SMTP de Parámetros Generales; cargar CrossReference por ambiente (transportista, centro, unidades), activar el evento, llevarlo al release y URLs de QA y producción.",
-      "bloqueo": "Dos Pinos: qué finca lleva una REA y si SAP detecta duplicados por NUM_DOC."
+      "bloqueo": "Dos Pinos: qué finca lleva una REA y si SAP detecta duplicados por NUM_DOC.",
+      "para_100": "Integrations y el aviso de preventa de LDCOM en develop, probado contra desarrollo de Dos Pinos. Falta: (1) PR de LDCOM para que el aviso de preventa mande el SMTP de Parámetros Generales; (2) URLs de QA y producción y probar contra QA; (3) respuestas de Dos Pinos: finca de una REA y duplicados por NUM_DOC; (4) CrossReference por ambiente y activar el evento; (5) llevarlo al release."
     },
     {
       "carpeta": "09",
@@ -132,7 +134,8 @@
       "porcentaje": 90,
       "hecho": "Integrations en develop (PR 1359) y LDCOM en develop (PR 1365). Probado desde el POS contra desarrollo de Dos Pinos.",
       "falta": "Llevarlo al release, URLs de QA y producción, catálogo LIBRO_CAJA.",
-      "bloqueo": "URLs de QA y producción (Dos Pinos)."
+      "bloqueo": "URLs de QA y producción (Dos Pinos).",
+      "para_100": "Lo de LD está terminado (Integrations y LDCOM en develop, probado contra desarrollo de Dos Pinos). Falta: (1) URLs de QA y producción de Dos Pinos y probar contra QA; (2) respuestas de Dos Pinos a sus 3 preguntas y el catálogo LIBRO_CAJA; (3) llevarlo al release."
     },
     {
       "carpeta": "12",
@@ -143,7 +146,8 @@
       "porcentaje": 90,
       "hecho": "Integrations en develop (PR 1348) y LDCOM en develop (PR 1349). Preventas de Romana desde el POS recibidas por Dos Pinos.",
       "falta": "Llevarlo al release, que el aviso de preventa mande el SMTP de Parámetros Generales, URLs de QA y producción, respuesta de Dos Pinos sobre duplicados.",
-      "bloqueo": "Romana acepta duplicados: falta la regla de Dos Pinos."
+      "bloqueo": "Romana acepta duplicados: falta la regla de Dos Pinos.",
+      "para_100": "Lo de LD está terminado (Integrations y LDCOM en develop, probado contra desarrollo de Dos Pinos). Falta: (1) URLs de QA y producción de Dos Pinos y probar contra QA; (2) la regla de Dos Pinos para duplicados en Romana; (3) llevarlo al release; (4) PR de LDCOM para que el aviso de preventa mande el SMTP de Parámetros Generales."
     },
     {
       "carpeta": "13",
