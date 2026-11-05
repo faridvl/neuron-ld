@@ -85,9 +85,9 @@
       "nombre": "Ventas y devoluciones",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 80,
-      "hecho": "Integrations en develop (PR 1386) y LDCOM en revisión (PR 1420), con el SDK 1.5.2.8197. Probado desde el POS contra desarrollo de Dos Pinos: respuesta 200, Events, Monitor 360 y correo de respaldo.",
-      "falta": "Aprobar y mergear el PR 1420, llevarlo al release, credencial de SALE_NOTIFICATION por ambiente, URLs de QA y producción. Decidir el reintento del crédito a distribuidor, el cierre con un documento malo y las otras rutas de facturación sin aviso.",
+      "porcentaje": 90,
+      "hecho": "Integrations en develop (PR 1386) y LDCOM listo (PR 1420), con el SDK 1.5.2.8197. Probado desde el POS contra desarrollo de Dos Pinos: respuesta 200, Events, Monitor 360 y correo de respaldo.",
+      "falta": "Llevarlo al release, credencial de SALE_NOTIFICATION por ambiente, URLs de QA y producción, y probar contra QA de Dos Pinos. Decidir el reintento del crédito a distribuidor, el cierre con un documento malo y las otras rutas de facturación sin aviso.",
       "bloqueo": "Respuestas de Dos Pinos a 18 preguntas del mapeo (duplicados, folio en contingencia, largos) y URL de QA/producción."
     },
     {
