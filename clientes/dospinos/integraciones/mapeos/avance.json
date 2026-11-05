@@ -1,5 +1,5 @@
 {
-  "fecha_corte": "2026-11-04",
+  "fecha_corte": "2026-11-05",
   "criterio": "El % suma: contrato cerrado 15, Integrations 30, lado LDCOM 25, pruebas contra Dos Pinos 20, monitor y documentación 10. Es una estimación sobre la evidencia (PRs, ramas, Bruno), no una medición.",
   "interfaces": [
     {
@@ -74,9 +74,9 @@
       "nombre": "Monitor 360",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 60,
-      "hecho": "Reportan las 5 colas de datos maestros y los envíos de la base Notificar (POS-19 y POS-24), con correo de respaldo si el monitor falla.",
-      "falta": "Reporte de POS-10, POS-12 y endpoints LD-xx; probar el correo de respaldo; destinatarios en el Admin (hoy quemados en el seed 03); URL de producción; codEC por interfaz.",
+      "porcentaje": 70,
+      "hecho": "Reportan las 5 colas de datos maestros y los envíos de la base Notificar (POS-19, POS-24, POS-12 y POS-14). El correo de respaldo se probó con POS-12 y POS-14, con el SMTP de Parámetros Generales que manda LDCOM.",
+      "falta": "Reporte de POS-10 y de los endpoints LD-xx; destinatarios en el Admin (hoy en el seed 03); URL de producción; codEC por interfaz.",
       "bloqueo": "codEC y llave por ambiente (Dos Pinos)."
     },
     {
@@ -85,10 +85,10 @@
       "nombre": "Ventas y devoluciones",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 40,
-      "hecho": "Contrato real probado en Bruno (320 casos contra el servicio de desarrollo), investigación del código de LDCOM y mapeo de los 57 campos. Sin código nuevo todavía.",
-      "falta": "Builder y seed en Integrations, hecho nuevo de ventas y aviso desde LDCOM, envío real desde el POS, monitor y catálogos por agencia y bodega.",
-      "bloqueo": "Respuestas de Dos Pinos a 18 preguntas del mapeo y URL de QA/producción."
+      "porcentaje": 80,
+      "hecho": "Integrations en develop (PR 1386) y LDCOM en revisión (PR 1420), con el SDK 1.5.2.8197. Probado desde el POS contra desarrollo de Dos Pinos: respuesta 200, Events, Monitor 360 y correo de respaldo.",
+      "falta": "Aprobar y mergear el PR 1420, llevarlo al release, credencial de SALE_NOTIFICATION por ambiente, URLs de QA y producción. Decidir el reintento del crédito a distribuidor, el cierre con un documento malo y las otras rutas de facturación sin aviso.",
+      "bloqueo": "Respuestas de Dos Pinos a 18 preguntas del mapeo (duplicados, folio en contingencia, largos) y URL de QA/producción."
     },
     {
       "carpeta": "08",
@@ -96,10 +96,10 @@
       "nombre": "Pedidos graneles",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 40,
-      "hecho": "Solo existe el endpoint de entrada LD-02 (preventas).",
-      "falta": "Todo: contrato DP-01 y estados logísticos; después construir sobre la base Notificar.",
-      "bloqueo": "Contrato de Dos Pinos."
+      "porcentaje": 85,
+      "hecho": "Integrations en develop (PR 1402): pedido LDP10 al guardar una preventa granel. LDCOM ya avisa la preventa creada (PR 1349). Probado desde el POS contra desarrollo de Dos Pinos (7.5 kg aceptado como 8).",
+      "falta": "PR de LDCOM para que el aviso de preventa mande el SMTP de Parámetros Generales; cargar CrossReference por ambiente (transportista, centro, unidades), activar el evento, llevarlo al release y URLs de QA y producción.",
+      "bloqueo": "Dos Pinos: qué finca lleva una REA y si SAP detecta duplicados por NUM_DOC."
     },
     {
       "carpeta": "09",
@@ -129,9 +129,9 @@
       "nombre": "Operaciones de caja",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 85,
-      "hecho": "Integrations en develop (PR 1359). Probado desde el POS contra desarrollo de Dos Pinos.",
-      "falta": "Aprobar y mergear el PR 1365 de LDCOM, llevarlo al release, URLs de QA y producción, catálogo LIBRO_CAJA.",
+      "porcentaje": 90,
+      "hecho": "Integrations en develop (PR 1359) y LDCOM en develop (PR 1365). Probado desde el POS contra desarrollo de Dos Pinos.",
+      "falta": "Llevarlo al release, URLs de QA y producción, catálogo LIBRO_CAJA.",
       "bloqueo": "URLs de QA y producción (Dos Pinos)."
     },
     {
@@ -140,9 +140,9 @@
       "nombre": "Preventa de Romana",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 85,
-      "hecho": "Integrations en develop (PR 1348) y LDCOM en revisión (PR 1349).",
-      "falta": "Aprobar y mergear el PR 1349, llevarlo al release, URLs de QA y producción, respuesta de Dos Pinos sobre duplicados.",
+      "porcentaje": 90,
+      "hecho": "Integrations en develop (PR 1348) y LDCOM en develop (PR 1349). Preventas de Romana desde el POS recibidas por Dos Pinos.",
+      "falta": "Llevarlo al release, que el aviso de preventa mande el SMTP de Parámetros Generales, URLs de QA y producción, respuesta de Dos Pinos sobre duplicados.",
       "bloqueo": "Romana acepta duplicados: falta la regla de Dos Pinos."
     },
     {
