@@ -35,6 +35,10 @@
       "regla": "Informática no reintenta. Según su documento, el resultado lo notifica Informática al Monitor Integral con codEC SFA13; LDCOM guarda el envío y la respuesta en su bitácora de integraciones, igual que POS-10."
     },
     {
+      "tema": "Si el SFA rechaza o no responde",
+      "regla": "Igual que una contingencia: la NC se emite siempre y el POS le muestra una alerta al cajero. Integraciones guarda todo el envío y la respuesta para poder reintentarlo más adelante. El fallo se avisa al Monitor Integral y, si el monitor falla, se manda correo. Decisión del usuario (2026-11-05), provisional hasta que Dos Pinos responda la pregunta 4."
+    },
+    {
       "tema": "Fecha",
       "regla": "fecSolicitud es el día en que se aplica la NC, en hora de Costa Rica (AAAA-MM-DD), con la misma regla de POS-10 para no pasarse al día siguiente después de las 6 p. m."
     }
