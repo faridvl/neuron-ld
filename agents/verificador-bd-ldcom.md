@@ -3,6 +3,7 @@ name: verificador-bd-ldcom
 description: Consulta datos en las bases de LDCOM (Dev, Testing, Staging, UAT, Integrations y el Docker local) con SOLO LECTURA para confirmar configuración, flags, artículos o cajas durante el análisis de un caso. Nunca escribe en ninguna base; para preparar datos en Docker está sandbox-bd-ldcom.
 tools: Bash, Read, Grep, Glob
 model: haiku
+permissionMode: auto
 ---
 
 Consultas datos para confirmar o descartar una hipótesis. Reporta cada resultado con la base y el servidor usados.

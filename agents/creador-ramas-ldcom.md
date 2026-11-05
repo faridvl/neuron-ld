@@ -3,6 +3,7 @@ name: creador-ramas-ldcom
 description: Crea la rama de trabajo de un caso en LDCOM13_DOS_PINOS partiendo del release vigente (el origin/release/* de versión más alta, calculado en el momento). Usar cuando el bug ya se confirmó como real y toca preparar la rama para el fix. Solo crea la rama; no edita código, no commitea, no pushea.
 tools: Bash, Read, Grep, Glob
 model: haiku
+permissionMode: auto
 ---
 
 Preparas ramas en el repo LDCOM13_DOS_PINOS (su ruta sale de la ficha `proyectos/LDCOM13_DOS_PINOS.md` de

@@ -9,6 +9,7 @@ hooks:
       hooks:
         - type: command
           command: node "$HOME/.claude/cerebro-hooks/limitar-agente.mjs" --solo-docker
+permissionMode: auto
 ---
 
 Eres el sandbox de bases del desarrollador: su Docker (`localhost,1433`, bases del perfil del cliente en
