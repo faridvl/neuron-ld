@@ -1,11 +1,11 @@
 {
   "codigo": "POS-11",
   "nombre": "Notas de crédito de venta financiada (SFA13)",
-  "sentido": "LDCOM -> Dos Pinos (saliente, sincrónica, hacia el SFA)",
+  "sentido": "LDCOM -> Dos Pinos (saliente, asíncrona por la base Notificar, hacia el SFA)",
   "endpoint": "POST https://usw3-cai.dm-us.informaticacloud.com/active-bpel/rt/p_SFA13_NotasCredito (desarrollo; hoy no hay URL de QA ni de producción). El cuerpo va envuelto en un objeto Body.",
   "autenticacion": "Basic, con un usuario propio del servicio (integrador_sfa_dev@dospinos.com en desarrollo). No sirve el de SFA15: con ese responde 403. A diferencia de SFA15, no lleva usuario ni clave dentro del cuerpo.",
   "dispara": "Guardar en el POS una nota de crédito, devolución o anulación de una factura que se financió con el SFA (POS-10): la factura original tiene plan de financiamiento y una referencia de crédito SFA guardada (Factura_Credito_SFA_Referencia).",
-  "cuando_se_envia": "Al instante, cuando se aplica la nota de crédito, una sola vez por nota. El SFA responde en la misma llamada si reversó el crédito (total o parcial) o por qué lo rechazó.",
+  "cuando_se_envia": "Cuando la NC llega a la central (sincronización), como aviso del hecho NOTA_CREDITO (el mismo de POS-12); el builder solo aplica si la factura original trae referencia SFA. El POS no espera ni se entera. El SFA responde en la misma llamada HTTP si reversó el crédito (total o parcial) o por qué lo rechazó; eso queda en Events.",
   "fuente_documentacion": "Documento de construcción SFA13 de BD Consultores v1.0 (02-09-2026, con las capturas de la prueba integral con Dos Pinos), xlsx y docx 'SFA13 Notas de crédito y devoluciones' (14-08-2026), 11 envíos de validación en Bruno contra desarrollo (03-11-2026) y el código de POS-10 en develop (issue 3700).",
   "estado_general": "Provisional",
   "notas_generales": "La NC no es un documento nuevo para el SFA: es la reversa del crédito que se pidió con POS-10. El SFA encuentra ese crédito por numReferencia, que debe ser exactamente el idExterno que LDCOM mandó al autorizar la venta. Los campos del contrato están probados contra desarrollo; faltan probar casos reales (reversan créditos) y las respuestas de Dos Pinos de la hoja de preguntas.",
@@ -36,7 +36,7 @@
     },
     {
       "tema": "Si el SFA rechaza o no responde",
-      "regla": "Igual que una contingencia: la NC se emite siempre y el POS le muestra una alerta al cajero. Integraciones guarda todo el envío y la respuesta para poder reintentarlo más adelante. El fallo se avisa al Monitor Integral y, si el monitor falla, se manda correo. Decisión del usuario (2026-11-05), provisional hasta que Dos Pinos responda la pregunta 4."
+      "regla": "El POS no se entera: sigue su flujo normal. La NC viaja como aviso de la base Notificar (hecho NOTA_CREDITO, el mismo de POS-12) y el envío queda registrado en Events, desde donde se puede reenviar. El fallo se avisa al Monitor Integral y, si el monitor falla, se manda correo. Decisión del usuario (2026-11-05), provisional hasta que Dos Pinos responda la pregunta 4."
     },
     {
       "tema": "Fecha",
