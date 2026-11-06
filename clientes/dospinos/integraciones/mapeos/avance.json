@@ -1,5 +1,5 @@
 {
-  "fecha_corte": "2026-11-05",
+  "fecha_corte": "2026-11-06",
   "criterio": "El % suma: contrato cerrado 15, Integrations 30, lado LDCOM 25, pruebas contra Dos Pinos 20, monitor y documentación 10. Es una estimación sobre la evidencia (PRs, ramas, Bruno), no una medición.",
   "interfaces": [
     {
@@ -120,10 +120,11 @@
       "nombre": "Notas de crédito de venta financiada (SFA13)",
       "sentido": "LDCOM -> Dos Pinos",
       "estado": "En curso",
-      "porcentaje": 25,
-      "hecho": "Contrato y requests en Bruno (PR 1331); validaciones de formato probadas contra desarrollo; mapeo de los 13 campos definido (numReferencia = referencia de crédito SFA de POS-10, confirmado por Dos Pinos).",
-      "falta": "Respuestas de Dos Pinos a 6 preguntas del mapeo; casos reales que reversan créditos; construir Integrations y LDCOM (la NC lee Factura_Credito_SFA_Referencia de la factura original).",
-      "bloqueo": "SFA de pruebas de Dos Pinos caído (504), credencial Basic propia de SFA13 y OK para reversar créditos."
+      "porcentaje": 85,
+      "hecho": "Integrations en develop (PR 1425, con la cédula del asociado por el catálogo IDENTIFICATION_TYPE). LDCOM en el PR 1427 hacia develop, ya con el SDK sin stage (PR 1426). Probado de punta a punta desde el POS contra el SFA13 de desarrollo: venta financiada (POS-10), NC total y NC parcial aplicadas, con Events y Monitor. Escenarios reales en Bruno.",
+      "falta": "Merge del PR 1427 de LDCOM; respuestas de Dos Pinos a 7 preguntas del mapeo (números externos, segunda NC el mismo día, IVA del monto, contingencia, usuario, parcial aplicada como total, códigos DIMEX/NITE); reenvío desde Events; probar la NC de una venta de contado (no debe enviarse); URLs de QA y producción.",
+      "para_100": "PR 1427 mergeado, respuestas de Dos Pinos a las preguntas abiertas y una prueba contra su ambiente de QA.",
+      "bloqueo": "Respuestas de Dos Pinos y URLs/credenciales de QA y producción del SFA13."
     },
     {
       "carpeta": "11",
