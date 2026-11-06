@@ -14,3 +14,4 @@
 - [Confluence Buscar falla; publicar puede denegarse](confluence-buscar-claves-duplicadas.md) — usar Leer por id; dejar .nuevo.xml listo si el permiso se deniega.
 - [Pruebas .NET con SQL y Write LF](dotnet-pruebas-sql-y-write-lf.md) — LF del Write, lambda en Record.ExceptionAsync, CHECK de IntegrationEvent, variable SQL propia.
 - [WCF caja: trampas](wcf-caja-pruebas-trampas.md) — token sembrado, example con --, artifacts-path, SP sin Tipo_Id, CRLF.
+- [WCF publicar: restore previo y POS abierto](ldcom-wcf-publicar-restore-previo.md) — restore con RestoreConfigFile antes de publicar; Web.config se pisa; POS abierto bloquea build.

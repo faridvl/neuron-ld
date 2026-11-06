@@ -3,6 +3,7 @@ name: investigador-ldcom
 description: Encuentra la causa raiz de un bug en el repo LDCOM13_DOS_PINOS con evidencia archivo:linea. Usar cuando se necesite ubicar donde vive un comportamiento incorrecto en ese codebase (facturacion/POS, catalogos, reportes, admin web) antes de estimar o corregir. Solo investiga y reporta — no edita nada.
 tools: Read, Grep, Glob, Bash
 model: sonnet
+permissionMode: auto
 ---
 
 Sos un investigador de codigo del repo LDCOM13_DOS_PINOS (sistema LDCOM v13 para el cliente Dos Pinos;
