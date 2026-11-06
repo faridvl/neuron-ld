@@ -155,11 +155,12 @@
       "codigo": "POS-26",
       "nombre": "Traslado Romana",
       "sentido": "LDCOM -> Dos Pinos (saliente)",
-      "estado": "Sin empezar",
-      "porcentaje": 20,
-      "hecho": "Contrato y 50 requests en Bruno, todos con respuesta (PR 1331). Dirección resuelta con el documento de construcción (LDCOM -> Romana) y mapeo de campos en POS-26.json.",
-      "falta": "Construirla sobre la base Notificar: en Integrations clonar las piezas de POS-24; en LDCOM abrir el aviso a traslados y avisar al guardar el traslado (GU).",
-      "bloqueo": "Definición de Dos Pinos: cómo se reconoce un traslado de melaza y si el centro solicitante es la sucursal de origen o la de destino."
+      "estado": "Implementada",
+      "porcentaje": 100,
+      "hecho": "Integrations en develop (PR 1424) y LDCOM en PR 1428: el traslado guardado en SITE_INVENTARIO_WEB avisa a Romana con solo las líneas de melaza. Probado de punta a punta contra desarrollo de Dos Pinos (ROM01 recibido correctamente). Bruno con el envío real (PR 1429).",
+      "falta": "Completar el PR 1428, llevarlo al release, URLs de QA y producción, largos oficiales de ROM01 y MANDANTE de producción.",
+      "bloqueo": "",
+      "para_100": "Lo de LD está terminado. Falta: (1) completar el PR 1428 de LDCOM; (2) llevarlo al release; (3) URLs de QA y producción de Dos Pinos y probar contra QA."
     }
   ]
 }
