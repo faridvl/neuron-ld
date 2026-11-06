@@ -12,7 +12,17 @@
     "site": "Default Web Site",
     "root": "C:\\inetpub\\wwwroot\\dp",
     "urlBase": "http://localhost/dp",
-    "appsWcf": [ "ServiciosWCF", "SERVICIOSWCF_LINQ" ]
+    "appsWcf": [ "ServiciosWCF", "SERVICIOSWCF_LINQ" ],
+    "sitiosWeb": [
+      {
+        "clave": "inventario",
+        "app": "SITE_INVENTARIO_WEB",
+        "proyecto": "INTERFACE\\SITE_INVENTARIO_WEB\\SITE_INVENTARIO_WEB\\SITE_INVENTARIO_WEB.csproj",
+        "restaurar": [ "NEGOCIO\\LD_COM_Negocio.sln", "NEGOCIO LINQ\\NEGOCIO LINQ.sln", "INTERFACE\\SITE_INVENTARIO_WEB\\SITE_INVENTARIO_WEB.sln" ],
+        "rutinasAnyCpu": true,
+        "poolSufijo": "inventario"
+      }
+    ]
   },
   "slots": {
     "principal":    { "repo": "ldcom", "worktree": "LDCOM13_DOS_PINOS",             "ambiente": "dev", "reportPath": "/LDCOM13_DP_PRUEBA", "dockerServer": "{PC},1433" },

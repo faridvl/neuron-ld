@@ -35,7 +35,7 @@ es seguro. `dp` es el nombre viejo y sigue funcionando.
 
 ## Día a día
 
-- Cambió NEGOCIO → `rig publish` antes de `rig pos` (el POS usa los WCF publicados, no lo compilado). Se puede elegir: `rig publish wcf` (ServiciosWCF y WS Express), `rig publish linq` (solo WS Express), `rig publish admin`.
+- Cambió NEGOCIO → `rig publish` antes de `rig pos` (el POS usa los WCF publicados, no lo compilado). Se puede elegir: `rig publish wcf` (ServiciosWCF y WS Express), `rig publish linq` (solo WS Express), `rig publish admin`. La restauración de paquetes de Azure DevOps es sin interacción y usa la variable de usuario `AZURE_DEVOPS_PAT` (nuget.config temporal en `%TEMP%`); si falta, falla rápido. Con los paquetes ya restaurados: `-SinRestaurar` (también en `rig pos`, `rig admin`, `rig seguridad`).
 - Solo cambió Facturación → `rig pos -SoloFacturacion -Reiniciar`. Preventa → `-Preventa`.
 - Cambió JS/CSS del Admin → `rig admin -ConAssets`.
 - Se apagó la PC → `rig docker`.
