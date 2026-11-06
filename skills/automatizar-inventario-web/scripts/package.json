@@ -1,0 +1,8 @@
+{
+  "name": "automatizar-inventario-web",
+  "private": true,
+  "description": "Scripts Playwright para SITE_INVENTARIO_WEB de LDCOM",
+  "dependencies": {
+    "playwright-core": "^1.65.0"
+  }
+}

@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 skills/automatizar-pos/scripts/capturas/
+skills/automatizar-inventario-web/scripts/node_modules/
+skills/automatizar-inventario-web/scripts/capturas/

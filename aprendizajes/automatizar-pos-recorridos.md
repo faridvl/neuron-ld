@@ -51,6 +51,7 @@ Mapa de pantallas (auto_id): Login `Frm_Login` (`tbUsuario`, `tbContrasena`, `bC
   esperado, no un fallo de la automatizacion).
 - Cuando una prueba cambia datos del Docker, dejar la lista de lo creado y su script de reversa junto a los
   resultados; el POS no tiene pantalla de traslados (se verifica por existencia del articulo).
+  Los traslados se crean con la skill `automatizar-inventario-web`.
 
 ## 3. Diseno: explorar -> grabar -> ejecutar rapido -> reparar -> registrar
 
