@@ -5,6 +5,7 @@ autorizador; este flujo no las escribe, las debe teclear quien tenga permiso (o 
 Requiere un subdocumento del Doc 5 (Nota_Credito) visible para la sucursal (en una sucursal sin FE: no electronico)."""
 import time
 
+import win32con
 import win32gui
 from pywinauto.controls.common_controls import ListViewWrapper
 
@@ -30,6 +31,22 @@ def _filas(dialogo):
 def _campo_numero(dialogo):
     return next(h for h in base.descendientes(dialogo)
                 if base.clase(h).endswith("EDIT.app.0.34f5582_r14_ad1") and win32gui.IsWindowVisible(h))
+
+
+def _marcar_lineas(detalle, lineas):
+    """Marca cada linea (1 = primera fila): la grilla FlexCell se recorre con flecha abajo y 'Marcar Linea' alterna la fila activa."""
+    grilla = next((h for h in base.descendientes(detalle) if "Grid" in base.clase(h) or "FlexCell" in base.clase(h)), None)
+    fila_activa = 1
+    for linea in sorted(lineas):
+        if linea > fila_activa and grilla is None:
+            raise base.PasoFallido("No se encontro la grilla del detalle para moverse a la linea %s" % linea)
+        while fila_activa < linea:
+            win32gui.PostMessage(grilla, win32con.WM_KEYDOWN, win32con.VK_DOWN, 0)
+            win32gui.PostMessage(grilla, win32con.WM_KEYUP, win32con.VK_DOWN, 0)
+            time.sleep(0.3)
+            fila_activa += 1
+        base.clic_boton(detalle, "Marcar L")
+        time.sleep(0.5)
 
 
 def ejecutar(pos, numero_ticket, lineas=None):
@@ -59,7 +76,7 @@ def ejecutar(pos, numero_ticket, lineas=None):
     if lineas is None:
         base.clic_boton(detalle, "Marcar Todo")
     else:
-        raise base.PasoFallido("Devolucion parcial (lineas=%s) aun no automatizada" % (lineas,))
+        _marcar_lineas(detalle, lineas)
     time.sleep(1.5)
     base.clic_boton(detalle, "Cargar")
     if not base.esperar_cierre(detalle, 20):
