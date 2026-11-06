@@ -1,14 +1,14 @@
 {
   "codigo": "POS-11",
   "nombre": "Notas de crédito de venta financiada (SFA13)",
-  "sentido": "LDCOM -> Dos Pinos (saliente, sincrónica, hacia el SFA)",
+  "sentido": "LDCOM -> Dos Pinos (saliente, asíncrona por la base Notificar, hacia el SFA)",
   "endpoint": "POST https://usw3-cai.dm-us.informaticacloud.com/active-bpel/rt/p_SFA13_NotasCredito (desarrollo; hoy no hay URL de QA ni de producción). El cuerpo va envuelto en un objeto Body.",
   "autenticacion": "Basic, con un usuario propio del servicio (integrador_sfa_dev@dospinos.com en desarrollo). No sirve el de SFA15: con ese responde 403. A diferencia de SFA15, no lleva usuario ni clave dentro del cuerpo.",
   "dispara": "Guardar en el POS una nota de crédito, devolución o anulación de una factura que se financió con el SFA (POS-10): la factura original tiene plan de financiamiento y una referencia de crédito SFA guardada (Factura_Credito_SFA_Referencia).",
-  "cuando_se_envia": "Al instante, cuando se aplica la nota de crédito, una sola vez por nota. El SFA responde en la misma llamada si reversó el crédito (total o parcial) o por qué lo rechazó.",
-  "fuente_documentacion": "Documento de construcción SFA13 de BD Consultores v1.0 (02-09-2026, con las capturas de la prueba integral con Dos Pinos), xlsx y docx 'SFA13 Notas de crédito y devoluciones' (14-08-2026), 11 envíos de validación en Bruno contra desarrollo (03-11-2026) y el código de POS-10 en develop (issue 3700).",
-  "estado_general": "Provisional",
-  "notas_generales": "La NC no es un documento nuevo para el SFA: es la reversa del crédito que se pidió con POS-10. El SFA encuentra ese crédito por numReferencia, que debe ser exactamente el idExterno que LDCOM mandó al autorizar la venta. Los campos del contrato están probados contra desarrollo; faltan probar casos reales (reversan créditos) y las respuestas de Dos Pinos de la hoja de preguntas.",
+  "cuando_se_envia": "Cuando la NC llega a la central (sincronización), como aviso del hecho NOTA_CREDITO (el mismo de POS-12); el builder solo aplica si la factura original trae referencia SFA. El POS no espera ni se entera. El SFA responde en la misma llamada HTTP si reversó el crédito (total o parcial) o por qué lo rechazó; eso queda en Events.",
+  "fuente_documentacion": "Documento de construcción SFA13 de BD Consultores v1.0 (02-09-2026, con las capturas de la prueba integral con Dos Pinos), xlsx y docx 'SFA13 Notas de crédito y devoluciones' (14-08-2026), 11 envíos de validación en Bruno contra desarrollo (03-11-2026), escenarios reales en Bruno y desde el POS contra el SFA13 de desarrollo (05-11-2026) y el código de POS-10 en develop (issue 3700).",
+  "estado_general": "Implementada y probada contra el SFA de desarrollo; quedan preguntas abiertas",
+  "notas_generales": "La NC no es un documento nuevo para el SFA: es la reversa del crédito que se pidió con POS-10. El SFA encuentra ese crédito por numReferencia, que debe ser exactamente el idExterno que LDCOM mandó al autorizar la venta. Probado de punta a punta desde el POS contra el SFA13 de desarrollo (05-11-2026): venta financiada con POS-10, NC total y NC parcial, las dos aplicadas (indEstado A), registradas en Events y avisadas al Monitor. Integrations en develop (PR 1425); LDCOM en el PR 1427. Quedan abiertas las preguntas 1, 2, 3, 5, 6, 7 y 8 (la 4 la decidimos nosotros mientras tanto) y las URLs de QA y producción.",
   "reglas": [
     {
       "tema": "Qué NC se envían",
@@ -24,19 +24,19 @@
     },
     {
       "tema": "Repetidos",
-      "regla": "El SFA rechaza la misma solicitud para la misma factura en la misma fecha (código 60773, 'ya se encuentra procesada'). Por eso un reintento manda el cuerpo idéntico: si el primero sí se aplicó, el rechazo 60773 significa que la NC ya está reversada en el SFA, no que falló."
+      "regla": "El SFA rechaza con 60773 ('ya se encuentra procesada') CUALQUIER segunda devolución de la misma factura el mismo día, aunque traiga otro numDevolucionExterno (probado contra el real, 2026-11-05). Por eso 60773 solo significa 'ya reversada' en un reintento del mismo aviso; en el primer envío es un rechazo (otra NC de esa factura ya se aplicó hoy) y queda para revisión."
     },
     {
       "tema": "Respuesta",
-      "regla": "Aplicada: HTTP 200 con indEstado A, tipTransaccion T o P, idSecuencia y monDisponibleLinea. Rechazo de negocio: HTTP 200 con indEstado R y el código y motivo en observaciones (ej. 60791 crédito ya devuelto en total). Rechazo de validación: HTTP 200 con indEstado R, desIndEstadoTransaccion 'RECHAZADO VALIDACION' y todos los errores juntos en observaciones. Error técnico o timeout: HTTP 500 con error.detail (code y details)."
+      "regla": "Aplicada: HTTP 200 con indEstado A, tipTransaccion T o P, idSecuencia y monDisponibleLinea. Rechazo de negocio: HTTP 200 con indEstado R y el código y motivo en observaciones (ej. 60791 crédito ya devuelto en total). Rechazo de validación: HTTP 200 con indEstado R, desIndEstadoTransaccion 'RECHAZADO VALIDACION' y todos los errores juntos en observaciones. Error técnico o timeout: HTTP 500 con error.detail (code y details). Ojo: el SFA13 también devuelve algunos rechazos de negocio como HTTP 500 con 'Codigo: HTTP_400' dentro de details (ej. 'El cliente 3664 no existe'); LDCOM los trata como rechazo, no como caída."
     },
     {
       "tema": "Reintentos y monitor",
-      "regla": "Informática no reintenta. Según su documento, el resultado lo notifica Informática al Monitor Integral con codEC SFA13; LDCOM guarda el envío y la respuesta en su bitácora de integraciones, igual que POS-10."
+      "regla": "Informática no reintenta. Según su documento, el resultado lo notifica Informática al Monitor Integral con codEC SFA13. LDCOM guarda cada envío con su respuesta en Events y avisa el resultado al Monitor (probado: SENT y A/TOTAL en el Monitor). Hoy no hay reintento automático ni botón de reenvío: un aviso fallido queda en Events con su error y el reenvío está pendiente de construir."
     },
     {
       "tema": "Si el SFA rechaza o no responde",
-      "regla": "Igual que una contingencia: la NC se emite siempre y el POS le muestra una alerta al cajero. Integraciones guarda todo el envío y la respuesta para poder reintentarlo más adelante. El fallo se avisa al Monitor Integral y, si el monitor falla, se manda correo. Decisión del usuario (2026-11-05), provisional hasta que Dos Pinos responda la pregunta 4."
+      "regla": "El POS no se entera: sigue su flujo normal. La NC viaja como aviso de la base Notificar (hecho NOTA_CREDITO, el mismo de POS-12) y el envío queda registrado en Events (el reenvío desde ahí está pendiente de construir). El fallo se avisa al Monitor Integral y, si el monitor falla, se manda correo. Decisión del usuario (2026-11-05), provisional hasta que Dos Pinos responda la pregunta 4."
     },
     {
       "tema": "Fecha",
@@ -53,8 +53,14 @@
     {
       "numero": 2,
       "tema": "Varias NC de la misma factura el mismo día",
-      "pregunta": "Si un cliente hace dos devoluciones parciales de la misma factura el mismo día, cada una con su propio numDevolucionExterno, ¿el SFA aplica la segunda o la rechaza con 60773? En la prueba integral el rechazo 60773 fue con el cuerpo idéntico, así que no sabemos si cuenta el número de la devolución.",
+      "pregunta": "Probado contra el SFA13 real (2026-11-05): una segunda devolución de la misma factura el mismo día, con otro numDevolucionExterno, se rechaza con 60773. ¿Es el comportamiento esperado? Un asociado puede devolver dos veces el mismo día (dos NC parciales); ¿cómo debe informarse la segunda?",
       "campos": "numDevolucionExterno, fecSolicitud"
+    },
+    {
+      "numero": 7,
+      "tema": "Devolución parcial que el SFA aplica como total",
+      "pregunta": "Probado contra el SFA13 de desarrollo (2026-11-05): una devolución de 0.40 sobre un crédito de 1.00 y otra de 5.00 sobre un crédito de 1.00 respondieron indEstado A con tipTransaccion T (TOTAL), y el disponible de la línea subió 1.00 en ambos casos. Una de 0.01 sobre un crédito de 19.55 sí respondió P (PARCIAL). ¿Hay un saldo mínimo por debajo del cual el SFA cancela el crédito completo? ¿Una devolución mayor al saldo no debería rechazarse?",
+      "campos": "monDevolucion"
     },
     {
       "numero": 3,
@@ -79,6 +85,12 @@
       "tema": "Usuario, credencial y URLs",
       "pregunta": "¿codUsuario es el usuario fijo de la integración (en la prueba integral usaron INTEGRACIONSFA) o el usuario del cajero? ¿Cuáles son el usuario Basic y las URLs de QA y producción?",
       "campos": "codUsuario"
+    },
+    {
+      "numero": 8,
+      "tema": "Tipo de identificación DIMEX y NITE",
+      "pregunta": "El SFA13 necesita codTipoId con la cédula del asociado. Para cédula física usamos CEDPF y para jurídica CEDJU (aceptados por desarrollo). ¿Qué código usan para DIMEX y para NITE? Mientras no lo tengamos, la NC de un asociado con esos tipos no se envía y queda el error en el Monitor.",
+      "campos": "codTipoId"
     }
   ],
   "campos": [
@@ -107,32 +119,32 @@
       "estado": "Provisional",
       "duda": "En el SFA de pruebas solo existe la agencia 001; no tenemos los códigos reales de cada sucursal.",
       "porque_duda": "Dos Pinos no ha entregado la tabla de agencias del SFA por sucursal; con 002 el servicio no llegó a responder (SFA caído) y no sabemos si la rechaza.",
-      "nota": "Comparte catálogo con POS-10: cuando se llene para uno, sirve para los dos.",
+      "nota": "Comparte catálogo con POS-10: cuando se llene para uno, sirve para los dos. En las pruebas reales la sucursal 19 se mapeó a 001 y el SFA aplicó.",
       "pregunta": ""
     },
     {
       "bloque": "Body",
       "campo": "codTipoId",
-      "doc": "Varchar 5, opcional. Solo si no viene codCliente.",
-      "origen": "Vacío.",
-      "porque": "LDCOM siempre manda codCliente (el asociado), igual que en POS-10, así que la identificación no hace falta.",
-      "descripcion": "Tipo de cédula del cliente. Solo se usa cuando no se conoce el código de cliente.",
-      "ejemplo": "",
-      "estado": "Decidido por nosotros",
+      "doc": "Varchar 5, opcional según el xlsx (solo si no viene codCliente).",
+      "origen": "Tipo de identificación del asociado de la factura original (Cliente.Cliente_Tipo_Identificacion = Tipo_Formato_id del catálogo Tipo_Identificacion de LDCOM: 1 física, 2 jurídica, 3 DIMEX, 4 NITE), traducido al código del SFA con el catálogo IDENTIFICATION_TYPE de Integraciones (CrossReference). Hoy: 1 = CEDPF, 2 = CEDJU; DIMEX y NITE sin código (el aviso falla visible en el Monitor hasta que se mapeen).",
+      "porque": "Probado contra el SFA13 real (2026-11-05): con solo codCliente el SFA rechaza 60766 'el cliente de la solicitud de devolución es diferente al cliente del crédito'; con codTipoId + numId del asociado (solos o junto con codCliente) aplica. El ejemplo de Dos Pinos también manda los dos.",
+      "descripcion": "Tipo de cédula del asociado dueño del crédito.",
+      "ejemplo": "CEDPF",
+      "estado": "Confirmado",
       "duda": "",
       "porque_duda": "",
-      "nota": "El servicio exige codCliente o bien codTipoId junto con numId (probado, V04).",
-      "pregunta": ""
+      "nota": "Antes se dejaba vacío; se corrigió por la prueba real. El catálogo se llena en Integraciones (CrossReference IDENTIFICATION_TYPE), no en código. Falta el código de DIMEX y NITE.",
+      "pregunta": 8
     },
     {
       "bloque": "Body",
       "campo": "numId",
-      "doc": "Varchar 30, opcional. Solo si no viene codCliente.",
-      "origen": "Vacío.",
-      "porque": "Igual que codTipoId: va el código de cliente.",
-      "descripcion": "Número de cédula del cliente. Solo se usa cuando no se conoce el código de cliente.",
-      "ejemplo": "",
-      "estado": "Decidido por nosotros",
+      "doc": "Varchar 30, opcional según el xlsx (solo si no viene codCliente).",
+      "origen": "Cédula del asociado de la factura original (Cliente_Cedula), solo dígitos, sin guiones.",
+      "porque": "Igual que codTipoId: sin la identificación el SFA13 rechaza 60766 (probado contra el real, 2026-11-05: CEDPF 101700900 del asociado 4000010 aplicó).",
+      "descripcion": "Número de cédula del asociado dueño del crédito.",
+      "ejemplo": "101700900",
+      "estado": "Confirmado",
       "duda": "",
       "porque_duda": "",
       "nota": "",
@@ -198,28 +210,28 @@
       "bloque": "Body",
       "campo": "numReferenciaExterno",
       "doc": "Varchar 15 en el xlsx (17 en el Postman de Dos Pinos), no obligatorio.",
-      "origen": "Número interno de la factura original en LDCOM: sucursal-caja-número (Suc_Id-Caja_Id-Factura_Id).",
+      "origen": "Número interno de la factura original en LDCOM: tipo de documento-sucursal-caja-número (TipoDoc_Id-Suc_Id-Caja_Id-Factura_Id). Lleva el tipo porque Factura_Id es consecutivo por tipo de documento: sin él, documentos de distinto tipo de la misma caja repiten el número.",
       "porque": "Permite que alguien de Dos Pinos encuentre la factura en LDCOM desde el SFA; el consecutivo de Hacienda (20 dígitos) no cabe.",
       "descripcion": "El número de la factura original, para consulta.",
-      "ejemplo": "16-2-9",
+      "ejemplo": "4-19-4-100",
       "estado": "Pregunta a Dos Pinos",
       "duda": "No sabemos qué número esperan ni si el largo es 15 o 17.",
       "porque_duda": "El xlsx y el Postman de Dos Pinos no coinciden en el largo y su ejemplo 'F001-002-0001-001' no corresponde a ningún número de LDCOM.",
-      "nota": "Decisión provisional nuestra: el servicio no lo valida (aceptó textos de prueba).",
+      "nota": "Decisión provisional nuestra: el servicio no lo valida y aceptó '4-19-4-103' desde el POS. LDCOM no recorta: si el número pasa de 15 caracteres el aviso falla visible.",
       "pregunta": 1
     },
     {
       "bloque": "Body",
       "campo": "numDevolucionExterno",
       "doc": "Varchar 15 en el xlsx (17 en el Postman de Dos Pinos), no obligatorio.",
-      "origen": "Número interno de la nota de crédito en LDCOM: sucursal-caja-número (Suc_Id-Caja_Id-Factura_Id de la NC).",
+      "origen": "Número interno de la nota de crédito en LDCOM: tipo de documento-sucursal-caja-número (TipoDoc_Id-Suc_Id-Caja_Id-Factura_Id de la NC). Con el tipo, una devolución (3) y una nota de crédito (5) con el mismo número en la misma caja no se repiten.",
       "porque": "Cada NC lleva su propio número para distinguir dos devoluciones de la misma factura y para conciliar.",
       "descripcion": "El número de la nota de crédito que se hizo en el POS.",
-      "ejemplo": "16-2-1",
+      "ejemplo": "5-19-4-27",
       "estado": "Pregunta a Dos Pinos",
       "duda": "No sabemos el formato ni el largo, ni si el SFA lo usa para aceptar una segunda NC de la misma factura el mismo día.",
-      "porque_duda": "Igual que numReferenciaExterno; y el rechazo 60773 de la prueba integral se dio con el cuerpo idéntico, no con otro número de devolución.",
-      "nota": "Un reintento manda el mismo número.",
+      "porque_duda": "Igual que numReferenciaExterno. Además, probado contra el real: una segunda NC de la misma factura el mismo día se rechaza con 60773 aunque traiga otro numDevolucionExterno, así que el SFA no lo usa para distinguirlas.",
+      "nota": "Un reintento manda el mismo número. El SFA aceptó '5-19-4-30' desde el POS.",
       "pregunta": "1, 2"
     },
     {
@@ -233,8 +245,8 @@
       "estado": "Pregunta a Dos Pinos",
       "duda": "No sabemos si va con o sin IVA.",
       "porque_duda": "El contrato no lo dice; si no está en la misma base que el monto pedido en SFA15, una NC total dejaría saldo o se pasaría.",
-      "nota": "Se manda como número. Con 3 decimales responde 'debe ser numérico con máximo 14 enteros y 2 decimales' (probado, V09).",
-      "pregunta": 3
+      "nota": "Se manda como número con dos decimales (1500.50). Con 3 decimales responde 'debe ser numérico con máximo 14 enteros y 2 decimales' (probado, V09). En desarrollo una devolución parcial pequeña se aplicó como TOTAL (pregunta 7).",
+      "pregunta": "3, 7"
     },
     {
       "bloque": "Body",
@@ -261,7 +273,7 @@
       "estado": "Provisional",
       "duda": "No sabemos si debe ser el usuario fijo de la integración o el del cajero.",
       "porque_duda": "El contrato solo dice 'código de usuario'; el valor de la prueba integral fue de ellos, no una regla escrita.",
-      "nota": "El usuario del cajero tendría que existir en el SFA, por eso se usa el de la integración.",
+      "nota": "El usuario del cajero tendría que existir en el SFA, por eso se usa el de la integración. El SFA de desarrollo aceptó INTEGRACIONSFA en todas las pruebas reales.",
       "pregunta": 6
     }
   ]
