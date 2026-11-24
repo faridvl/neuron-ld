@@ -4,23 +4,27 @@
   "sentido": "LDCOM -> Dos Pinos (saliente)",
   "endpoint": "POST https://usw3-gw.dm-us.informaticacloud.com/devapi.dospinos.com/agv/v1/p_POS26_TrasladoRomana (desarrollo; hoy no hay URL de producción). Informatica lo pasa a Romana Miel (RecibirROM01).",
   "autenticacion": "OAuth2 client_credentials: token Bearer pedido a https://dm-us.informaticacloud.com/authz-service/oauth/token",
-  "dispara": "El hecho TRASLADO_CREADO de LDCOM: cuando se guarda un traslado de inventario en SITE_INVENTARIO_WEB (estado GU, pendiente; el POS no tiene pantalla de traslados). Se envía solo si alguna línea trae un material del parámetro MATERIALES_MELAZA del evento (hoy 19000257, MELAZA KG); los demás traslados no se envían.",
+  "dispara": "El hecho TRASLADO_CREADO de LDCOM: cuando se guarda un traslado de inventario en SITE_INVENTARIO_WEB (estado GU, pendiente; el POS no tiene pantalla de traslados). Integrations lo envía solo si la sucursal ORIGEN del traslado tiene en LDCOM el parámetro de sucursal 'Sucursal de romana' (Sucursal_Romana) y alguna línea es de un artículo del tipo indicado en el parámetro general 'Tipo de artículo de romana' (Tipo_Articulo_Romana); los demás traslados no se envían.",
   "cuando_se_envia": "Al instante, una sola vez, cuando el traslado se guarda (antes de aplicarlo). Así Dos Pinos puede pesar en Romana y corregir las cantidades con LD-07, que solo edita traslados guardados sin aplicar. Si falla no se reintenta sola: Romana registraría el traslado dos veces.",
   "fuente_documentacion": "Excel '(POS26) Integración de Traslados Romana.xlsx' (hoja Formato Informatica), documento de construcción de BD Consultores v2.0 del 12/08/2026 (diagrama, mapeo, ejemplos y pruebas), página LD-07 de Confluence (flujo del traslado de melaza) y la carpeta POS-26 de Bruno con respuestas reales del ambiente de desarrollo.",
   "estado_general": "Decidido por nosotros",
-  "notas_generales": "Construida: Integrations en develop (PR 1424) y LDCOM en PR 1428, probada de punta a punta contra Romana de desarrollo (traslado guardado en SITE_INVENTARIO_WEB, aviso SENT con 'ROM01 recibido correctamente'). Integrations reutiliza lo de POS-24 (aviso, cola, token, envío y Monitor). Las dos definiciones que faltaban se decidieron sin preguntarle a Dos Pinos: melaza = lista de materiales en MATERIALES_MELAZA, y el centro solicitante es la sucursal destino. Quedan abiertos los largos oficiales de ROM01, el MANDANTE de producción y las URLs de QA y producción.",
+  "notas_generales": "Construida: Integrations en develop (PR 1424) y LDCOM en PR 1428, probada de punta a punta contra Romana de desarrollo (traslado guardado en SITE_INVENTARIO_WEB, aviso SENT con 'ROM01 recibido correctamente'). Integrations reutiliza lo de POS-24 (aviso, cola, token, envío y Monitor). Las dos definiciones que faltaban se decidieron sin preguntarle a Dos Pinos: el centro solicitante es la sucursal destino (y la melaza se definía con una lista de materiales, regla ya reemplazada). Quedan abiertos los largos oficiales de ROM01, el MANDANTE de producción y las URLs de QA y producción. Regla nueva (pendiente de merge): el traslado a Romana sale por sucursal de origen de romana y por tipo de artículo, ya no por la lista MATERIALES_MELAZA, que se retiró. La rama es feature/romana-por-tipo-articulo-y-sucursal (Integrations y LDCOM, commits locales sin mergear).",
   "reglas": [
     {
       "tema": "Cuándo se envía",
-      "regla": "Solo los traslados con melaza, al momento de guardarlos en SITE_INVENTARIO_WEB (estado GU). No se espera a que se apliquen, porque Dos Pinos necesita el traslado pendiente para corregirlo con LD-07 después de pesar en Romana."
+      "regla": "Solo los traslados de una sucursal de romana con artículos de romana, al momento de guardarlos en SITE_INVENTARIO_WEB (estado GU). No se espera a que se apliquen, porque Dos Pinos necesita el traslado pendiente para corregirlo con LD-07 después de pesar en Romana."
     },
     {
       "tema": "Qué traslados son de melaza",
-      "regla": "Decidido por nosotros: el parámetro MATERIALES_MELAZA del evento (seed 04__webhooks.sql) trae los códigos de material de melaza (hoy 19000257). Se envía el traslado si alguna línea trae uno de esos materiales, y solo viajan esas líneas: en un traslado mixto las demás no se mandan y POSICION se numera 10, 20… sobre las que van. Si el parámetro está vacío, el envío falla ('El parámetro MATERIALES_MELAZA no está configurado.') en vez de mandar todo."
+      "regla": "Decidido por nosotros: se envía si (a) la sucursal ORIGEN del traslado tiene el parámetro de sucursal de LDCOM 'Sucursal de romana' (Sucursal_Romana) y (b) hay líneas cuyo artículo es del tipo indicado en el parámetro general de LDCOM 'Tipo de artículo de romana' (Tipo_Articulo_Romana, un id de tipo de artículo). LDCOM informa SucursalEsRomana en el documento y ArticuloEsRomana en cada línea; Integrations filtra por esos datos. Solo viajan las líneas de romana: en un traslado mixto las demás no se mandan y POSICION se numera 10, 20… sobre las que van. Si no aplica, el aviso se ignora sin error. Los parámetros MATERIALES_MELAZA y TIPO_ARTICULO_ROMANA del evento se retiraron. Cambio en la rama feature/romana-por-tipo-articulo-y-sucursal de Integrations y LDCOM, pendiente de merge: hasta entonces rige la regla anterior en develop."
+    },
+    {
+      "tema": "Datos nuevos que informa LDCOM en el documento",
+      "regla": "SucursalEsRomana (documento): sale del parámetro de sucursal Sucursal_Romana (valor SI) de la sucursal ORIGEN del traslado. ArticuloEsRomana (línea): verdadero si el tipo del artículo es el del parámetro general Tipo_Articulo_Romana. Si el emisor no informa alguno, Integrations lo toma como falso y no envía. Los campos que viajan a Dos Pinos no cambiaron de nombre ni de origen. Cambio en la rama feature/romana-por-tipo-articulo-y-sucursal de Integrations y LDCOM, pendiente de merge: hasta entonces rige la regla anterior en develop."
     },
     {
       "tema": "Configuración",
-      "regla": "El evento y todos sus parámetros (MANDANTE, SOCIEDAD_FINANCIERA y la lista de materiales de melaza) se registran en el seed 04__webhooks.sql de Integrations, junto a los de POS-24 y POS-14. No se agregan archivos de seed. El Admin no permite editar los parámetros del evento: se cambian por ambiente en ese seed. El centro sale del catálogo STORE de CrossReference."
+      "regla": "El evento y sus parámetros (MANDANTE y SOCIEDAD_FINANCIERA) se registran en el seed 04__webhooks.sql de Integrations, junto a los de POS-24 y POS-14; el seed borra los parámetros retirados. No se agregan archivos de seed. El Admin no permite editar los parámetros del evento: se cambian por ambiente en ese seed. Qué sucursal y qué artículo son de romana se configura en LDCOM (parámetro de sucursal y parámetro general), no en Integrations. El centro sale del catálogo STORE de CrossReference."
     },
     {
       "tema": "Duplicados",
@@ -140,9 +144,9 @@
       "bloque": "Encabezado",
       "campo": "CANTIDAD_REG_INTEGRAR",
       "doc": "Número, obligatorio",
-      "origen": "Cantidad de líneas del detalle.",
+      "origen": "Cantidad de líneas de romana que se envían (las demás líneas del traslado no cuentan).",
       "porque": "Para que Romana compruebe que el traslado llegó completo. Se manda el conteo real porque Dos Pinos no lo valida.",
-      "descripcion": "Cuántos artículos trae el traslado. Sirve para que Romana compruebe que llegó completo.",
+      "descripcion": "Cuántos artículos de romana trae el traslado. Sirve para que Romana compruebe que llegó completo.",
       "ejemplo": "1",
       "estado": "Confirmado",
       "duda": "",
@@ -252,7 +256,7 @@
       "bloque": "Detalle (una por artículo)",
       "campo": "POSICION",
       "doc": "Número, obligatorio",
-      "origen": "Orden de la línea entre las que se envían (solo las de melaza), de 10 en 10.",
+      "origen": "Orden de la línea entre las de romana que se envían, de 10 en 10.",
       "porque": "Va de 10 en 10 como en el ejemplo del contrato, que es como SAP numera las líneas.",
       "descripcion": "El número de línea dentro del traslado: 10, 20, 30...",
       "ejemplo": "10",

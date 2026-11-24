@@ -4,15 +4,23 @@
   "sentido": "LDCOM -> Dos Pinos (saliente)",
   "endpoint": "POST https://usw3-gw.dm-us.informaticacloud.com/devapi.dospinos.com/agv/v1/p_POS24_PedidosRomana (desarrollo; hoy no hay URL de producción)",
   "autenticacion": "OAuth2 client_credentials: token Bearer pedido a https://dm-us.informaticacloud.com/authz-service/oauth/token",
-  "dispara": "El hecho PREVENTA_CREADA de LDCOM: cuando se guarda en el POS una preventa cuyo tipo es el del parámetro TIPO_PREVENTA_ROMANA (por defecto 'Romana'). Las preventas de otro tipo no se envían.",
-  "cuando_se_envia": "Al instante, una sola vez, cuando la preventa romana se guarda. Si falla no se reintenta sola: Romana registraría el pedido dos veces.",
+  "dispara": "El hecho PREVENTA_CREADA de LDCOM: cuando se guarda en el POS una preventa. Integrations la envía solo si la sucursal del encabezado de la preventa tiene en LDCOM el parámetro de sucursal 'Sucursal de romana' (Sucursal_Romana) y alguna línea es de un artículo del tipo indicado en el parámetro general 'Tipo de artículo de romana' (Tipo_Articulo_Romana). El tipo de la preventa ya no decide.",
+  "cuando_se_envia": "Al instante, una sola vez, cuando se guarda una preventa de una sucursal de romana con artículos de romana. Si falla no se reintenta sola: Romana registraría el pedido dos veces.",
   "fuente_documentacion": "Ejemplo del contrato ROM03 de Informática (escenario 'Alta de pedido' en Bruno), 40 envíos de prueba en Bruno contra el ambiente de desarrollo de Dos Pinos, preventas reales guardadas desde el POS (#54, #55, #61, #62 y #63) y DECISIONS.md de Integraciones (POS-24).",
   "estado_general": "Provisional",
-  "notas_generales": "La integración ya envía de verdad al ambiente de desarrollo de Dos Pinos desde el POS y responde 'ROM03 recibido correctamente'. Faltan los largos oficiales de los campos y saber qué espera Dos Pinos en NUMERO_PEDIDO_CLIENTE.",
+  "notas_generales": "La integración ya envía de verdad al ambiente de desarrollo de Dos Pinos desde el POS y responde 'ROM03 recibido correctamente'. Faltan los largos oficiales de los campos y saber qué espera Dos Pinos en NUMERO_PEDIDO_CLIENTE. Regla nueva (pendiente de merge): la preventa a Romana sale por sucursal de romana y por tipo de artículo, ya no por el tipo de preventa; viajan solo las líneas de artículos de romana. La rama es feature/romana-por-tipo-articulo-y-sucursal (Integrations y LDCOM, commits locales sin mergear).",
   "reglas": [
     {
       "tema": "Cuándo se envía",
-      "regla": "Solo se envían las preventas de tipo romana, al momento de guardarlas. El nombre del tipo se compara sin importar mayúsculas, tildes ni espacios (parámetro TIPO_PREVENTA_ROMANA del evento, cargado en el seed 04__webhooks.sql de Integrations)."
+      "regla": "Se envía al guardar la preventa si se cumplen las dos condiciones: (a) la sucursal del encabezado de la preventa tiene el parámetro de sucursal de LDCOM 'Sucursal de romana' (Sucursal_Romana) y (b) hay líneas cuyo artículo es del tipo indicado en el parámetro general de LDCOM 'Tipo de artículo de romana' (Tipo_Articulo_Romana, un id de tipo de artículo). LDCOM informa SucursalEsRomana en el documento y ArticuloEsRomana en cada línea; Integrations solo filtra por esos dos datos. Si no aplica, el aviso se ignora sin error. Los parámetros TIPO_PREVENTA_ROMANA y TIPO_ARTICULO_ROMANA del evento se retiraron; en el seed 04__webhooks.sql de Integrations quedan solo MANDANTE y SOCIEDAD_FINANCIERA (el seed borra los retirados). Cambio en la rama feature/romana-por-tipo-articulo-y-sucursal de Integrations y LDCOM, pendiente de merge: hasta entonces rige la regla anterior en develop."
+    },
+    {
+      "tema": "Qué líneas viajan",
+      "regla": "Solo viajan las líneas de artículos de romana (ArticuloEsRomana). Las demás no se envían: POSICION se numera 10, 20… sobre las que van y CANTIDAD_REG_INTEGRAR es el conteo de esas líneas. Los mensajes de error 'Línea N' citan la línea original de la preventa. Cambio en la rama feature/romana-por-tipo-articulo-y-sucursal de Integrations y LDCOM, pendiente de merge: hasta entonces rige la regla anterior en develop."
+    },
+    {
+      "tema": "Datos nuevos que informa LDCOM en el documento",
+      "regla": "SucursalEsRomana (documento): sale del parámetro de sucursal Sucursal_Romana (valor SI) de la sucursal del encabezado de la preventa. ArticuloEsRomana (línea): verdadero si el tipo del artículo es el del parámetro general Tipo_Articulo_Romana. Si el emisor no informa alguno, Integrations lo toma como falso y no envía. Los campos que viajan a Dos Pinos no cambiaron de nombre ni de origen. Cambio en la rama feature/romana-por-tipo-articulo-y-sucursal de Integrations y LDCOM, pendiente de merge: hasta entonces rige la regla anterior en develop."
     },
     {
       "tema": "Duplicados",
@@ -124,9 +132,9 @@
       "bloque": "Encabezado",
       "campo": "CANTIDAD_REG_INTEGRAR",
       "doc": "Número, obligatorio",
-      "origen": "Cantidad de líneas del detalle.",
+      "origen": "Cantidad de líneas de romana que se envían (las demás líneas de la preventa no cuentan).",
       "porque": "Para que Romana compruebe que el pedido llegó completo. Se manda el conteo real porque Dos Pinos no lo valida.",
-      "descripcion": "Cuántos artículos trae el pedido. Sirve para que Romana compruebe que llegó completo.",
+      "descripcion": "Cuántos artículos de romana trae el pedido. Sirve para que Romana compruebe que llegó completo.",
       "ejemplo": "1",
       "estado": "Decidido por nosotros",
       "nota": "Dos Pinos aceptó un conteo distinto del detalle en desarrollo; LDCOM siempre manda el real.",
@@ -220,12 +228,12 @@
       "bloque": "Detalle (una por artículo)",
       "campo": "POSICION",
       "doc": "Número, obligatorio",
-      "origen": "Orden de la línea en la preventa, de 10 en 10.",
+      "origen": "Orden de la línea entre las de romana que se envían, de 10 en 10.",
       "porque": "Va de 10 en 10 como en el ejemplo del contrato, que es como SAP numera las líneas de un pedido.",
-      "descripcion": "El número de línea dentro del pedido: 10, 20, 30...",
+      "descripcion": "El número de línea dentro del pedido enviado a Romana: 10, 20, 30...",
       "ejemplo": "10",
       "estado": "Decidido por nosotros",
-      "nota": "Va de 10 en 10 como en el ejemplo del contrato.",
+      "nota": "Va de 10 en 10 como en el ejemplo del contrato; se numera sobre las líneas que viajan, sin huecos.",
       "pregunta": null
     },
     {
