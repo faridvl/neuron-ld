@@ -57,6 +57,10 @@
     {
       "tema": "Fallas",
       "regla": "Una falla de esta integración nunca detiene ni revierte la venta, la devolución ni el cierre de caja en el POS. El rastro queda en Integrations (Monitor 360)."
+    },
+    {
+      "tema": "Venta financiada",
+      "regla": "El diagrama FL-01 de Dos Pinos dibuja el crédito de asociados con dos salidas: el consolidado del cierre y la autorización en SFA. La venta financiada y su devolución salen por las dos interfaces: SFA (autorización y nota de crédito) y el aviso general de ventas. Ningún documento las excluye del aviso general."
     }
   ],
   "preguntas": [
@@ -305,7 +309,7 @@
       "descripcion": "Es la clase de documento en SAP: dice si es una venta o una devolución.",
       "ejemplo": "ZVNA",
       "estado": "Provisional",
-      "nota": "El servicio real rechaza ZVNH y ZREH del contrato; solo acepta ZVNA y ZVNB. Falta saber cuál es venta y cuál devolución, y si hay más clases (crédito, asociados).",
+      "nota": "El servicio real rechaza ZVNH y ZREH del contrato; solo acepta ZVNA y ZVNB. Falta saber cuál es venta y cuál devolución, y si hay más clases (crédito, asociados). 2026-11-25: el comentario de la celda M37 del Excel '(POS12) Ventas.xlsx' trae el catálogo: YAP5 Pedido vend./caj., YAP2 Pedido Granel, YAD1 Dev. Artic./Sacos, YAD8 Reversión art./Sacos, ZAUR Pedido Regalia AGV, ZVNA Pedido x Int. APP, ZVNB Reversión APP. Regla de Farid Villacis: la clase sale del subdocumento de la venta por mapeo; falta definir qué clase lleva cada subdocumento. Hoy el código manda fijo ZVNA venta y ZVNB devolución.",
       "pregunta": "2, 17",
       "duda": "¿cuál es venta y cuál devolución?",
       "porque_duda": "la tabla dice 'Clase de documento' y los ejemplos traen ZVNH/ZREH, pero el servicio rechaza esos y solo acepta ZVNA y ZVNB, sin decir cuál es cuál."
@@ -523,7 +527,7 @@
       "descripcion": "Es el motivo de la devolución. LDCOM no guarda ese dato.",
       "ejemplo": "B00",
       "estado": "Provisional",
-      "nota": "Opcional. El mapeo oficial dice 'Motivo del pedido o motivo de devolución'. LDCOM no tiene motivos de devolución, así que va vacío.",
+      "nota": "Opcional. El mapeo oficial dice 'Motivo del pedido o motivo de devolución'. LDCOM no tiene motivos de devolución, así que va vacío. 2026-11-25: la lista de motivos sí existe, en la página 'Facturación' de Confluence (B00 Dev-Buen estado, B01 Dev-Producto mal estado, B02 Dev-Mejores precios en la competencia, B03 a B06 y B09 anulaciones, B07 Cambio de producto, B08 NC-Consignación, B12 Otros). Regla de Farid Villacis: el motivo es el subdocumento de la devolución. Hoy el código manda fijo B00 y LDCOM no lee el subdocumento.",
       "pregunta": 15,
       "duda": "¿hace falta en devoluciones?",
       "porque_duda": "la tabla dice 'Motivo del pedido o motivo de devolución' y es opcional, pero LDCOM no guarda motivos de devolución; va vacío."
@@ -635,7 +639,7 @@
       "descripcion": "Es un campo de textos libres separados por punto y coma.",
       "ejemplo": "(pendiente)",
       "estado": "Pregunta a Dos Pinos",
-      "nota": "Requerido, máximo 100. Falta saber qué textos quieren y qué mandar cuando no hay ninguno.",
+      "nota": "Requerido, máximo 100. Falta saber qué textos quieren y qué mandar cuando no hay ninguno. 2026-11-25, regla de Farid Villacis: en contado van las formas de pago y en crédito el monto. Falta el formato exacto (código por forma de pago y separador). Hoy el código manda las observaciones de la factura o 'A'.",
       "pregunta": 3,
       "duda": "¿qué textos quieren y qué va si no hay?",
       "porque_duda": "la tabla dice 'Campo de textos, se separan por ;' (máx. 100) y el servicio no acepta vacío."
@@ -713,7 +717,7 @@
       "descripcion": "Dice si la venta fue de contado o a crédito.",
       "ejemplo": "Z001",
       "estado": "Provisional",
-      "nota": "Falta el código exacto de cada uno (los ejemplos traen Z001 y Z005).",
+      "nota": "Falta el código exacto de cada uno (los ejemplos traen Z001 y Z005). 2026-11-25: contado Z001, crédito Z005 (dicho por Farid Villacis). El servicio real exige ZTERM de cabecera: en UAT rechazó el crédito enviado vacío ('Cab linea 1: ZTERM es requerido').",
       "pregunta": 12,
       "duda": "¿qué código es contado y cuál crédito?",
       "porque_duda": "la tabla dice 'CRÉDITO O CONTADO' y los ejemplos traen Z001 y Z005, sin decir cuál es cuál."
@@ -897,7 +901,7 @@
       "descripcion": "Es el tipo de cobro de la línea: precio, descuento, impuesto, etc.",
       "ejemplo": "ZPR1",
       "estado": "Provisional",
-      "nota": "El servicio valida que sea una clase válida. Solo se conoce ZPR1 (precio); las demás clases no las definió Dos Pinos.",
+      "nota": "El servicio valida que sea una clase válida. Solo se conoce ZPR1 (precio); las demás clases no las definió Dos Pinos. 2026-11-25: el comentario de la celda M89 del Excel trae el catálogo: ZPR1 Precio, ZPR4 Precio Devolución, ZR10 Reducción precio 100%, ZK06 Descuentos (-), YIC, YIDA, YIEB, YFAM, YIBA, YIV IVA 13%, YIV1, YIV2, YIV4, YIV9. El ejemplo de devolución de Confluence usa ZPR1 y el servicio real aceptó devoluciones con ZPR1. Hoy el código manda una sola condición por línea (ZPR1).",
       "pregunta": 13,
       "duda": "¿qué clases de condición hay?",
       "porque_duda": "la tabla dice 'Clase de condición' y solo conocemos ZPR1 (precio); faltan las de descuento, impuesto y bonificación."
