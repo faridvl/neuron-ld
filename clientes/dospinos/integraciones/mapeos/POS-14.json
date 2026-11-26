@@ -4,7 +4,7 @@
   "sentido": "LDCOM -> Dos Pinos (saliente)",
   "endpoint": "POST https://usw3-gw.dm-us.informaticacloud.com/devapi.dospinos.com/agv/v1/p_LDP10_PedidosGraneles (desarrollo; hoy no hay URL de producción)",
   "autenticacion": "OAuth2 client_credentials: token Bearer pedido a https://dm-us.informaticacloud.com/authz-service/oauth/token",
-  "dispara": "El hecho PREVENTA_CREADA de LDCOM, solo cuando la preventa es de tipo granel (parámetro del evento TIPO_PREVENTA_GRANEL, igual que POS-24 con romana).",
+  "dispara": "El hecho PREVENTA_CREADA de LDCOM, solo cuando el id del tipo de preventa está en el parámetro del evento TIPO_PREVENTA_GRANEL_IDS (lista de TipoPreventa_Id separados por coma).",
   "cuando_se_envia": "Al instante, cuando se guarda la preventa granel. Se puede reintentar: un reenvío idéntico vuelve como 'dato de control ya existe' y se toma como enviado.",
   "fuente_documentacion": "Contrato '(LDP10) Pedidos Graneles.xlsx', hoja 'Formato Informatica' (Diego Arias, 2026-09-21), y la carpeta 'POS-14 Pedidos Graneles' de Bruno corrida contra el desarrollo de Dos Pinos el 2026-11-04 (obligatorios, largos y reenvíos).",
   "estado_general": "Provisional",
@@ -12,7 +12,7 @@
   "reglas": [
     {
       "tema": "Cuándo se envía",
-      "regla": "Solo las preventas de tipo granel, al guardarlas. El nombre del tipo es un parámetro del evento, cargado en el seed 04__webhooks.sql de Integrations."
+      "regla": "Solo las preventas cuyo tipo está en la lista de ids del parámetro TIPO_PREVENTA_GRANEL_IDS del evento, al crearlas (editar una preventa no vuelve a avisar). Se decide por TipoPreventa_Id, no por el nombre del tipo. Los ids cambian por ambiente: el seed 04__webhooks.sql trae un valor de ejemplo y no pisa el existente; sin el parámetro no se envía ninguna."
     },
     {
       "tema": "Qué es éxito",
@@ -239,7 +239,7 @@
       "campo": "CENTRO_AV",
       "doc": "CHAR 4, obligatorio (CODIGO DEL CENTRO DEL AV)",
       "origen": "CrossReference: sucursal de la preventa -> centro SAP de esa sucursal.",
-      "porque": "Confirmado por el desarrollador: el centro es la sucursal. Se resuelve con los mapeos de CrossReference, igual que el transportista; si la sucursal no tiene mapeo, el envío falla con un mensaje claro y llega al Monitor.",
+      "porque": "Confirmado por el desarrollador: el centro es la sucursal. Se resuelve con los mapeos de CrossReference; si la sucursal no tiene mapeo, el envío falla con un mensaje claro y llega al Monitor.",
       "descripcion": "Centro SAP del almacén veterinario que pide.",
       "ejemplo": "1518",
       "estado": "Decidido por nosotros",
@@ -294,14 +294,14 @@
       "bloque": "Encabezado del pedido",
       "campo": "ID_ACREEDOR_TR",
       "doc": "CHAR 10, obligatorio (CODIGO PROVEEDOR TRANSPORTE)",
-      "origen": "CrossReference: sucursal de la preventa -> código SAP del proveedor de transporte de esa sucursal.",
-      "porque": "Hay un transportista por sucursal; se mapea sin tocar código. Si la sucursal no tiene mapeo, el envío falla con un mensaje claro y llega al Monitor.",
-      "descripcion": "Proveedor del transporte (acreedor SAP) de la sucursal.",
-      "ejemplo": "0000100234",
+      "origen": "Código de interfaz del proveedor transportista que el cajero elige en la preventa (PV_Preventa_Encabezado.Prov_Codigo_Interfaz). Viaja tal cual, sin ceros de relleno; vacío si la preventa no tiene transportista.",
+      "porque": "No hay un transportista fijo por sucursal: se elige en cada preventa. Un código de más de 10 caracteres falla con un mensaje claro y llega al Monitor.",
+      "descripcion": "Proveedor del transporte (acreedor SAP) de la preventa.",
+      "ejemplo": "100002",
       "estado": "Decidido por nosotros",
-      "duda": "",
-      "porque_duda": "",
-      "nota": "Ejemplo ilustrativo.",
+      "duda": "Qué hace SAP cuando llega vacío.",
+      "porque_duda": "El desarrollo de Dos Pinos lo recibe vacío sin rechazarlo, pero no valida contenido.",
+      "nota": "El POS solo ofrece elegir transportista cuando la preventa tiene artículos con flete.",
       "pregunta": null
     },
     {
@@ -377,7 +377,7 @@
       "bloque": "Detalle (una por artículo)",
       "campo": "UNIDAD_MED",
       "doc": "CHAR 3, obligatorio",
-      "origen": "Unidad de medida de la línea traducida con el catálogo de unidades de CrossReference.",
+      "origen": "Unidad de medida del artículo de la línea (Articulo_Info.Unidad_Id, que LDCOM manda en el aviso) traducida con el catálogo de unidades de CrossReference.",
       "porque": "Es el catálogo que ya existe para las unidades SAP.",
       "descripcion": "Unidad (UN, KG...).",
       "ejemplo": "UN",
